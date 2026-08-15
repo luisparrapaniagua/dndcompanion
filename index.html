@@ -332,13 +332,33 @@ body.theme-simple .map-stage-wrap,body.theme-simple .stat{border-radius:0!import
   text-align:center
 }
 
+
+/* ===== v0.5.4 Map navigation + transport ===== */
+.map-stage-wrap{
+  cursor:grab;
+  touch-action:none;
+  overscroll-behavior:contain;
+}
+.map-stage-wrap.dragging{cursor:grabbing}
+.map-stage-wrap.measuring{cursor:crosshair}
+.map-stage canvas{touch-action:none}
+.map-toolbar .map-nav-mode.active{background:var(--gold);color:#171009}
+.map-zoom-group{user-select:none}
+.transport .toggle-play{
+  min-width:46px;
+  font-weight:900;
+}
+.transport .skip-btn{
+  min-width:42px;
+}
+
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="sidebar">
   <div class="sidebar-head">
-    <div class="brand">Leonardo's D&D companion<small>Adventuring Toolkit · v0.5.3</small></div>
+    <div class="brand">Leonardo's D&D companion<small>Adventuring Toolkit · v0.5.4</small></div>
     <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Colapsar o expandir sidebar">‹</button>
   </div>
   <div class="rule"></div>
@@ -439,9 +459,10 @@ body.theme-simple .map-stage-wrap,body.theme-simple .stat{border-radius:0!import
       <div class="status"><span id="statusDot" class="dot"></span><span id="statusText">Inicializando YouTube…</span></div>
     </div>
     <div class="transport">
-      <button onclick="pauseCurrent()">Ⅱ</button>
-      <button class="primary" onclick="resumeCurrent()">▶</button>
-      <button onclick="stopAll()">■</button>
+      <button class="skip-btn" onclick="playPreviousMusicTrack()" title="Anterior">⏮</button>
+      <button class="primary toggle-play" id="playPauseBtn" onclick="togglePlayPause()" title="Play/Pausa">▶</button>
+      <button class="skip-btn" onclick="playNextMusicTrack()" title="Siguiente">⏭</button>
+      <button onclick="stopAll()" title="Stop">■</button>
     </div>
     <div class="master">
       <span>Volumen</span>
@@ -487,6 +508,9 @@ let mapRoutePoints=[];
 let mapLinePoints=[];
 let mapZoom=1;
 let mapFitZoom=1;
+let mapInteractionMode='pan';
+let mapPanState=null;
+let mapPinchState=null;
 let charactersData={version:1,characters:[]};
 let selectedCharacterId=null;
 const isiOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
@@ -630,8 +654,15 @@ function onYouTubeIframeAPIReady(){
 }
 function onMainReady(){readyCount++;if(readyCount===2){ytReady=true;setStatus('YouTube listo','ready')}}
 function onMainPlayerStateChange(e){
- if(!window.YT||e.data!==YT.PlayerState.ENDED||e.target!==players[activeIndex])return;
- if(scenePlayMode&&scenePlayCategoryId)setTimeout(playNextSceneTrack,120);
+ if(!window.YT||e.target!==players[activeIndex])return;
+ if(e.data===YT.PlayerState.PLAYING){
+   isMusicPlaying=true;updatePlayPauseButton();
+ }else if(e.data===YT.PlayerState.PAUSED||e.data===YT.PlayerState.CUED){
+   isMusicPlaying=false;updatePlayPauseButton();
+ }else if(e.data===YT.PlayerState.ENDED){
+   isMusicPlaying=false;updatePlayPauseButton();
+   if(scenePlayMode&&scenePlayCategoryId)setTimeout(playNextSceneTrack,120);
+ }
 }
 function onPlayerError(e){const m={2:'ID inválido',5:'Error HTML5',100:'Video privado/eliminado',101:'Embed bloqueado',150:'Embed bloqueado',153:'Identificación de cliente'};setStatus(`YouTube ${e.data}: ${m[e.data]||'error'}`,'error')}
 function onAutoplayBlocked(){setStatus('Safari bloqueó autoplay. Pulse Play en diagnóstico una vez.','error')}
@@ -647,7 +678,7 @@ async function playTrack(track,category){
  if(!ytReady)return;
  if(transitionTimer){clearInterval(transitionTimer);transitionTimer=null}
  const master=+$('masterVolume').value,fadeMs=+(settings().fadeSeconds??4)*1000;
- currentTrack=track;$('nowTitle').textContent=track.title;$('nowMeta').textContent=`${category.name} · ${track.author||'YouTube'}`;renderTracks();
+ currentTrack=track;isMusicPlaying=true;updatePlayPauseButton();$('nowTitle').textContent=track.title;$('nowMeta').textContent=`${category.name} · ${track.author||'YouTube'}`;renderTracks();
  if(isiOS){
    const p=players[activeIndex];setStatus('Transición iPad','fading');
    await ramp(p,master,0,fadeMs/2);try{p.loadVideoById(track.youtubeId);p.playVideo()}catch{};await wait(160);await ramp(p,0,master,fadeMs/2);setStatus('Reproduciendo','ready');return;
@@ -656,9 +687,39 @@ async function playTrack(track,category){
  if(fadeMs===0){try{old.stopVideo()}catch{}setVol(next,master);setStatus('Reproduciendo','ready');return}
  setStatus('Crossfade','fading');const st=performance.now();transitionTimer=setInterval(()=>{const f=Math.min(1,(performance.now()-st)/fadeMs);setVol(old,master*(1-f));setVol(next,master*f);if(f>=1){clearInterval(transitionTimer);transitionTimer=null;try{old.stopVideo()}catch{}setVol(next,master);setStatus('Reproduciendo','ready')}},60);
 }
-function pauseCurrent(){try{players[activeIndex].pauseVideo();setStatus('Pausado')}catch{}}
-function resumeCurrent(){ensureAudio().then(()=>{try{players[activeIndex].playVideo();setStatus('Reproduciendo','ready')}catch{}})}
-function stopAll(){scenePlayMode=null;scenePlayCategoryId=null;players.forEach(p=>{try{p.stopVideo()}catch{}});currentTrack=null;$('nowTitle').textContent='Nada reproduciéndose';$('nowMeta').textContent='Seleccione una pista';setStatus('Detenido');renderTracks()}
+function updatePlayPauseButton(){
+ const b=$('playPauseBtn');if(!b)return;
+ b.textContent=isMusicPlaying?'Ⅱ':'▶';
+ b.title=isMusicPlaying?'Pausar':'Reproducir';
+}
+function pauseCurrent(){
+ try{players[activeIndex].pauseVideo();isMusicPlaying=false;updatePlayPauseButton();setStatus('Pausado')}catch{}
+}
+function resumeCurrent(){
+ ensureAudio().then(()=>{try{players[activeIndex].playVideo();isMusicPlaying=true;updatePlayPauseButton();setStatus('Reproduciendo','ready')}catch{}})
+}
+function togglePlayPause(){
+ if(isMusicPlaying)pauseCurrent();else resumeCurrent();
+}
+function playPreviousMusicTrack(){
+ const c=currentTrack ? library.categories.find(cat=>cat.tracks?.some(t=>t.id===currentTrack.id)) : selectedCat();
+ if(!c?.tracks?.length)return;
+ const i=c.tracks.findIndex(t=>t.id===currentTrack?.id);
+ const idx=i<0?0:(i-1+c.tracks.length)%c.tracks.length;
+ scenePlayCategoryId=c.id;
+ if(!scenePlayMode)scenePlayMode='ordered';
+ playTrack(c.tracks[idx],c);
+}
+function playNextMusicTrack(){
+ const c=currentTrack ? library.categories.find(cat=>cat.tracks?.some(t=>t.id===currentTrack.id)) : selectedCat();
+ if(!c?.tracks?.length)return;
+ const i=c.tracks.findIndex(t=>t.id===currentTrack?.id);
+ const idx=i<0?0:(i+1)%c.tracks.length;
+ scenePlayCategoryId=c.id;
+ if(!scenePlayMode)scenePlayMode='ordered';
+ playTrack(c.tracks[idx],c);
+}
+function stopAll(){scenePlayMode=null;scenePlayCategoryId=null;isMusicPlaying=false;updatePlayPauseButton();players.forEach(p=>{try{p.stopVideo()}catch{}});currentTrack=null;$('nowTitle').textContent='Nada reproduciéndose';$('nowMeta').textContent='Seleccione una pista';setStatus('Detenido');renderTracks()}
 $('masterVolume').oninput=e=>{const v=+e.target.value;$('volumeLabel').textContent=v+'%';setVol(players[activeIndex],v)};
 
 async function sha256(s){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join('')}
@@ -1242,8 +1303,9 @@ async function renderSelectedMap(){
  const m=currentMap(),stage=$('mapStage'),controls=$('mapControls'),status=$('mapStatus');if(!stage||!controls)return;
  if(!m){stage.innerHTML='<div class="map-empty">Agregue un mapa PNG o JPG.</div>';controls.innerHTML='';status.innerHTML='';return}
  controls.innerHTML=`<div class="map-toolbar">
-   <button class="secondarybtn measure-toggle ${mapMeasureMode==='line'?'active':''}" onclick="setMeasureMode('line')">Distancia lineal</button>
-   <button class="secondarybtn measure-toggle ${mapMeasureMode==='route'?'active':''}" onclick="setMeasureMode('route')">Ruta a mano alzada</button>
+   <button class="secondarybtn map-nav-mode ${mapInteractionMode==='pan'?'active':''}" onclick="setMapInteractionMode('pan')">Mover mapa</button>
+   <button class="secondarybtn measure-toggle ${mapInteractionMode==='measure'&&mapMeasureMode==='line'?'active':''}" onclick="setMeasureMode('line')">Distancia lineal</button>
+   <button class="secondarybtn measure-toggle ${mapInteractionMode==='measure'&&mapMeasureMode==='route'?'active':''}" onclick="setMeasureMode('route')">Ruta a mano alzada</button>
    <button class="secondarybtn" onclick="clearMapMeasurement()">Limpiar medición</button>
    <div class="map-zoom-group">
      <button class="secondarybtn" onclick="zoomMapOut()" title="Alejar">−</button>
@@ -1252,7 +1314,7 @@ async function renderSelectedMap(){
      <span class="map-zoom-label" id="mapZoomLabel">100%</span>
    </div>
    <button class="secondarybtn" onclick="openMapForm('${m.id}')">Editar escala</button>
- </div><div class="map-mode-help">${mapMeasureMode==='line'?'Toque/clic en origen y luego en destino.':'Arrastre sobre el mapa siguiendo la ruta.'}</div><div class="distance-readout" id="distanceReadout">Sin medición</div>`;
+ </div><div class="map-mode-help">${mapInteractionMode==='pan'?'Arrastre para mover. Use rueda del mouse o gesto de pellizco para acercar/alejar.':mapMeasureMode==='line'?'Toque/clic en origen y luego en destino.':'Arrastre sobre el mapa siguiendo la ruta.'}</div><div class="distance-readout" id="distanceReadout">Sin medición</div>`;
 
  stage.innerHTML='<div class="map-empty">Cargando mapa…</div>';
  let imageData='';
@@ -1290,11 +1352,7 @@ function setupMapCanvas(m,img){
 
  applyMapZoom();
 
- canvas.onpointerdown=e=>mapPointerDown(e,canvas);
- canvas.onpointermove=e=>mapPointerMove(e,canvas);
- canvas.onpointerup=e=>mapPointerUp(e,canvas);
- canvas.onpointercancel=e=>mapPointerUp(e,canvas);
-
+ setupGoogleStyleMapInteractions(canvas);
  drawMapMeasurement();
  updateMapZoomLabel();
 }
@@ -1334,38 +1392,123 @@ function fitMapToViewport(){
  wrap.scrollLeft=0;
  wrap.scrollTop=0;
 }
-function zoomMapIn(){
+function zoomMapAt(clientX,clientY,factor){
  const wrap=document.querySelector('.map-stage-wrap');
- const beforeX=wrap?wrap.scrollLeft+wrap.clientWidth/2:0;
- const beforeY=wrap?wrap.scrollTop+wrap.clientHeight/2:0;
- const old=mapZoom;
- mapZoom=Math.min(4,mapZoom*1.25);
+ if(!wrap)return;
+ const rect=wrap.getBoundingClientRect();
+ const localX=clientX-rect.left+wrap.scrollLeft;
+ const localY=clientY-rect.top+wrap.scrollTop;
+ const oldZoom=mapZoom;
+ mapZoom=Math.max(Math.max(0.05,mapFitZoom*0.5),Math.min(4,mapZoom*factor));
+ if(Math.abs(mapZoom-oldZoom)<0.0001)return;
  applyMapZoom();
- if(wrap&&old>0){
-   const ratio=mapZoom/old;
-   wrap.scrollLeft=Math.max(0,beforeX*ratio-wrap.clientWidth/2);
-   wrap.scrollTop=Math.max(0,beforeY*ratio-wrap.clientHeight/2);
- }
+ const ratio=mapZoom/oldZoom;
+ wrap.scrollLeft=Math.max(0,localX*ratio-(clientX-rect.left));
+ wrap.scrollTop=Math.max(0,localY*ratio-(clientY-rect.top));
+}
+function zoomMapIn(){
+ const wrap=document.querySelector('.map-stage-wrap');if(!wrap)return;
+ const r=wrap.getBoundingClientRect();
+ zoomMapAt(r.left+r.width/2,r.top+r.height/2,1.25);
 }
 function zoomMapOut(){
- const wrap=document.querySelector('.map-stage-wrap');
- const beforeX=wrap?wrap.scrollLeft+wrap.clientWidth/2:0;
- const beforeY=wrap?wrap.scrollTop+wrap.clientHeight/2:0;
- const old=mapZoom;
- mapZoom=Math.max(Math.min(mapFitZoom,1)*0.5,mapZoom/1.25);
- applyMapZoom();
- if(wrap&&old>0){
-   const ratio=mapZoom/old;
-   wrap.scrollLeft=Math.max(0,beforeX*ratio-wrap.clientWidth/2);
-   wrap.scrollTop=Math.max(0,beforeY*ratio-wrap.clientHeight/2);
- }
+ const wrap=document.querySelector('.map-stage-wrap');if(!wrap)return;
+ const r=wrap.getBoundingClientRect();
+ zoomMapAt(r.left+r.width/2,r.top+r.height/2,0.8);
 }
 function updateMapZoomLabel(){
  const el=$('mapZoomLabel');
  if(el)el.textContent=Math.round(mapZoom*100)+'%';
 }
+function setMapInteractionMode(mode){
+ mapInteractionMode=mode;
+ renderSelectedMap();
+}
+function setMeasureMode(mode){
+ mapMeasureMode=mode;
+ mapInteractionMode='measure';
+ mapRoutePoints=[];mapLinePoints=[];
+ renderSelectedMap();
+}
+function setupGoogleStyleMapInteractions(canvas){
+ const wrap=document.querySelector('.map-stage-wrap');
+ if(!wrap)return;
+
+ wrap.classList.toggle('measuring',mapInteractionMode==='measure');
+
+ const activePointers=new Map();
+
+ wrap.onwheel=e=>{
+   e.preventDefault();
+   const factor=e.deltaY<0?1.12:0.89;
+   zoomMapAt(e.clientX,e.clientY,factor);
+ };
+
+ canvas.onpointerdown=e=>{
+   e.preventDefault();
+   canvas.setPointerCapture?.(e.pointerId);
+   activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+
+   if(activePointers.size===2){
+     const pts=[...activePointers.values()];
+     mapPinchState={
+       distance:Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y),
+       center:{x:(pts[0].x+pts[1].x)/2,y:(pts[0].y+pts[1].y)/2},
+       zoom:mapZoom
+     };
+     mapPanState=null;
+     return;
+   }
+
+   if(mapInteractionMode==='pan'){
+     mapPanState={
+       pointerId:e.pointerId,
+       x:e.clientX,y:e.clientY,
+       scrollLeft:wrap.scrollLeft,scrollTop:wrap.scrollTop
+     };
+     wrap.classList.add('dragging');
+   }else{
+     mapPointerDown(e,canvas);
+   }
+ };
+
+ canvas.onpointermove=e=>{
+   if(activePointers.has(e.pointerId)){
+     activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+   }
+
+   if(activePointers.size===2){
+     const pts=[...activePointers.values()];
+     const d=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y);
+     const center={x:(pts[0].x+pts[1].x)/2,y:(pts[0].y+pts[1].y)/2};
+     if(mapPinchState?.distance){
+       const targetFactor=d/mapPinchState.distance;
+       const desired=Math.max(Math.max(0.05,mapFitZoom*0.5),Math.min(4,mapPinchState.zoom*targetFactor));
+       const factor=desired/mapZoom;
+       if(Number.isFinite(factor)&&factor>0)zoomMapAt(center.x,center.y,factor);
+     }
+     return;
+   }
+
+   if(mapInteractionMode==='pan'&&mapPanState?.pointerId===e.pointerId){
+     wrap.scrollLeft=mapPanState.scrollLeft-(e.clientX-mapPanState.x);
+     wrap.scrollTop=mapPanState.scrollTop-(e.clientY-mapPanState.y);
+   }else if(mapInteractionMode==='measure'){
+     mapPointerMove(e,canvas);
+   }
+ };
+
+ const finishPointer=e=>{
+   activePointers.delete(e.pointerId);
+   if(mapInteractionMode==='measure')mapPointerUp(e,canvas);
+   if(mapPanState?.pointerId===e.pointerId)mapPanState=null;
+   if(activePointers.size<2)mapPinchState=null;
+   wrap.classList.remove('dragging');
+ };
+ canvas.onpointerup=finishPointer;
+ canvas.onpointercancel=finishPointer;
+}
 function canvasPoint(e,canvas){const r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)*(canvas.width/r.width),y:(e.clientY-r.top)*(canvas.height/r.height)}}
-function setMeasureMode(mode){mapMeasureMode=mode;mapRoutePoints=[];mapLinePoints=[];renderSelectedMap()}
 function clearMapMeasurement(){mapRoutePoints=[];mapLinePoints=[];drawMapMeasurement();updateDistanceReadout()}
 function mapPointerDown(e,canvas){
  e.preventDefault();canvas.setPointerCapture?.(e.pointerId);const p=canvasPoint(e,canvas);
@@ -1375,10 +1518,10 @@ function mapPointerDown(e,canvas){
 function mapPointerMove(e,canvas){if(mapMeasureMode!=='route'||!mapPointerActive)return;e.preventDefault();const p=canvasPoint(e,canvas);const last=mapRoutePoints[mapRoutePoints.length-1];if(!last||Math.hypot(p.x-last.x,p.y-last.y)>3){mapRoutePoints.push(p);drawMapMeasurement();updateDistanceReadout()}}
 function mapPointerUp(e,canvas){if(mapMeasureMode==='route'&&mapPointerActive){mapPointerActive=false;updateDistanceReadout()}}
 function drawMapMeasurement(){
- const c=$('mapCanvas');if(!c)return;const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);ctx.lineWidth=3;ctx.strokeStyle='#ffdf78';ctx.fillStyle='#ffdf78';ctx.lineJoin='round';ctx.lineCap='round';
+ const c=$('mapCanvas');if(!c)return;const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);ctx.lineWidth=7;ctx.strokeStyle='#4b2354';ctx.fillStyle='#4b2354';ctx.lineJoin='round';ctx.lineCap='round';
  const pts=mapMeasureMode==='line'?mapLinePoints:mapRoutePoints;if(!pts.length)return;
  ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i].x,pts[i].y);ctx.stroke();
- for(const p of (mapMeasureMode==='line'?pts:[])){ctx.beginPath();ctx.arc(p.x,p.y,6,0,Math.PI*2);ctx.fill()}
+ for(const p of (mapMeasureMode==='line'?pts:[])){ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);ctx.fill()}
 }
 function segmentWorldDistance(a,b,m,canvas){
  const sx=m.worldWidth/canvas.width,sy=m.worldHeight/canvas.height;

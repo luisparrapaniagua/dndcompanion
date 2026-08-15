@@ -1,4 +1,4 @@
-# Leonardo's D&D companion v0.5.3
+# Leonardo's D&D companion v0.5.4
 
 Companion musical web/PWA para sesiones de D&D.
 
@@ -140,3 +140,21 @@ Las playlists privadas pueden requerir autenticación adicional y no forman part
 ## Cambio v0.5.3
 
 - Tipografía global cambiada a Verdana.
+
+
+## Cambios v0.5.4
+
+### Mapas
+- Navegación estilo Google Maps:
+  - arrastrar para mover;
+  - rueda del mouse para zoom;
+  - gesto pinch en pantallas táctiles;
+  - zoom centrado en el cursor/gesto;
+  - controles + / - / Ajustar.
+- Nuevo modo `Mover mapa`.
+- Modos de medición separados del modo de navegación.
+- Rutas y líneas de medición más gruesas, en púrpura oscuro.
+
+### Música
+- Barra inferior: Anterior · Play/Pausa · Siguiente · Stop.
+- Play y Pausa ahora comparten un solo botón y cambian según el estado del reproductor.
