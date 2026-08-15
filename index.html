@@ -102,7 +102,7 @@ button{touch-action:manipulation}
 <body>
 <div class="app">
 <aside class="sidebar">
-  <div class="brand">Leonardo's D&D companion<small>Codex Sonorum · v0.4.3</small></div>
+  <div class="brand">Leonardo's D&D companion<small>Codex Sonorum · v0.4.4</small></div>
   <div class="rule"></div>
   <div class="section-label">Escenas</div>
   <div id="categories"></div>
@@ -168,7 +168,6 @@ button{touch-action:manipulation}
 </div>
 
 <div id="modalRoot"></div>
-<div id="importerHost" style="position:fixed;left:-9999px;top:-9999px;width:320px;height:200px"></div>
 
 <script>
 const APP = {
@@ -185,7 +184,7 @@ const LS_PINHASH='dnd.v04.pinHash';
 let library={schemaVersion:1,revision:0,updatedAt:null,categories:[]};
 let remoteLibrary=null, selectedCategory=null, currentTrack=null;
 let players=[null,null], activeIndex=0, ytReady=false, readyCount=0, audioReady=false, transitionTimer=null;
-let editMode=false, importerPlayer=null, importerResolve=null, importerState=null;
+let editMode=false;
 let syncInProgress=false;
 const isiOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 const $=id=>document.getElementById(id);
@@ -271,7 +270,6 @@ function onYouTubeIframeAPIReady(){
  const common={height:'200',width:'356',playerVars:{autoplay:0,controls:1,playsinline:1,rel:0,origin}};
  players[0]=new YT.Player('playerA',{...common,events:{onReady:onMainReady,onError:onPlayerError,onAutoplayBlocked:onAutoplayBlocked}});
  players[1]=new YT.Player('playerB',{...common,events:{onReady:onMainReady,onError:onPlayerError,onAutoplayBlocked:onAutoplayBlocked}});
- importerPlayer=new YT.Player('importerHost',{height:'200',width:'320',playerVars:{autoplay:0,controls:0,playsinline:1,origin},events:{onStateChange:onImporterState,onError:e=>{if(importerResolve){importerResolve({error:e.data});importerResolve=null}}}});
 }
 function onMainReady(){readyCount++;if(readyCount===2){ytReady=true;setStatus('YouTube listo','ready')}}
 function onPlayerError(e){const m={2:'ID inválido',5:'Error HTML5',100:'Video privado/eliminado',101:'Embed bloqueado',150:'Embed bloqueado',153:'Identificación de cliente'};setStatus(`YouTube ${e.data}: ${m[e.data]||'error'}`,'error')}
@@ -451,66 +449,180 @@ function deleteTrack(id,catId){
  c.tracks=c.tracks.filter(x=>x.id!==id);
  markDirty();closeModal();renderAll();openCategoryForm(catId);
 }
-function extractPlaylistId(v){try{const u=new URL(v);return u.searchParams.get('list')||v}catch{return v.trim()}}
+
+function extractPlaylistId(v){
+ try{
+   const u=new URL(v);
+   return u.searchParams.get('list')||v.trim();
+ }catch{
+   return v.trim();
+ }
+}
+
 function openImportPlaylist(targetCatId){
  if(!editMode)return toggleEditMode();
- modal(`<div class="modalhead"><h2>Importar playlist</h2><button class="close" onclick="closeModal()">×</button></div><div class="modalbody">
- <div class="notice">Use una playlist pública o no listada. YouTube entregará los IDs y el companion intentará recuperar el título de cada video sin reproducirlo.</div>
- <div class="formgrid"><div class="field full"><label>URL o ID de playlist</label><input id="playlistUrl" placeholder="https://youtube.com/playlist?list=..."></div><div class="field"><label>Importar en</label><select id="playlistCat">${library.categories.map(c=>`<option value="${c.id}" ${c.id===(targetCatId||selectedCategory)?'selected':''}>${escapeHtml(c.name)}</option>`).join('')}</select></div><div class="field"><label>Intensidad por defecto</label><select id="playlistIntensity">${['Calm','Soft','Warm','Medium','High','Epic','Boss'].map(x=>`<option ${x==='Medium'?'selected':''}>${x}</option>`).join('')}</select></div></div>
- <div id="importProgress" class="import-progress"></div></div><div class="modalfoot"><button class="secondarybtn" onclick="closeModal()">Cancelar</button><button class="primarybtn" onclick="beginPlaylistImport()">Importar</button></div>`);
+ const s=settings();
+ modal(`<div class="modalhead"><h2>Importar playlist</h2><button class="close" onclick="closeModal()">×</button></div>
+ <div class="modalbody">
+ <div class="notice">Importa playlists públicas usando YouTube Data API. La app conserva el orden, evita duplicados y pagina automáticamente si hay más de 50 videos.</div>
+ <div class="formgrid">
+   <div class="field full"><label>URL o ID de playlist</label><input id="playlistUrl" placeholder="https://youtube.com/playlist?list=..."></div>
+   <div class="field"><label>Importar en</label><select id="playlistCat">${library.categories.map(c=>`<option value="${c.id}" ${c.id===(targetCatId||selectedCategory)?'selected':''}>${escapeHtml(c.name)}</option>`).join('')}</select></div>
+   <div class="field"><label>Intensidad por defecto</label><select id="playlistIntensity">${['Calm','Soft','Warm','Medium','High','Epic','Boss'].map(x=>`<option ${x==='Medium'?'selected':''}>${x}</option>`).join('')}</select></div>
+ </div>
+ <div id="importProgress" class="import-progress"></div>
+ </div>
+ <div class="modalfoot">
+   <button class="secondarybtn" onclick="closeModal()">Cancelar</button>
+   <button class="primarybtn" id="importPlaylistBtn" onclick="beginPlaylistImport()">Importar</button>
+ </div>`);
 }
-async function beginPlaylistImport(){
- if(!importerPlayer)return alert('YouTube aún no está listo.');
- const pid=extractPlaylistId($('playlistUrl').value),catId=$('playlistCat').value,intensity=$('playlistIntensity').value;
- if(!pid)return alert('Ingrese una playlist.');
- const progress=$('importProgress');progress.textContent='Leyendo playlist…';
- try{
-   const ids=await getPlaylistIds(pid);
-   if(!ids.length)throw new Error('YouTube no devolvió videos.');
-   const dest=library.categories.find(c=>c.id===catId),existing=new Set(dest.tracks.map(t=>t.youtubeId));
-   let added=0;
-   for(let i=0;i<ids.length;i++){
-     const vid=ids[i];progress.textContent=`Leyendo ${i+1} de ${ids.length}…`;
-     if(existing.has(vid))continue;
-     let meta=await cueAndReadMetadata(vid);
-     dest.tracks.push({id:uid('tr'),title:meta.title||`YouTube ${vid}`,author:meta.author||'YouTube',youtubeId:vid,intensity,favorite:false});
-     existing.add(vid);added++;
+
+async function fetchPlaylistItemsPage({playlistId,apiKey,pageToken=''}) {
+ const params=new URLSearchParams({
+   part:'snippet,contentDetails',
+   playlistId,
+   maxResults:'50',
+   key:apiKey
+ });
+ if(pageToken)params.set('pageToken',pageToken);
+
+ const r=await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?${params.toString()}`,{
+   cache:'no-store'
+ });
+ const data=await r.json().catch(()=>null);
+ if(!r.ok){
+   const msg=data?.error?.message||`YouTube API ${r.status}`;
+   const err=new Error(msg);
+   err.status=r.status;
+   err.payload=data;
+   throw err;
+ }
+ return data;
+}
+
+async function fetchAllPlaylistItems({playlistId,apiKey,onProgress}) {
+ const all=[];
+ let pageToken='',page=0;
+ do{
+   page++;
+   onProgress?.(`Leyendo playlist · página ${page}…`);
+   const data=await fetchPlaylistItemsPage({playlistId,apiKey,pageToken});
+   for(const item of (data.items||[])){
+     const snippet=item.snippet||{};
+     const videoId=item.contentDetails?.videoId||snippet.resourceId?.videoId||'';
+     all.push({
+       videoId,
+       title:snippet.title||'',
+       author:snippet.videoOwnerChannelTitle||snippet.channelTitle||'YouTube',
+       position:Number.isFinite(snippet.position)?snippet.position:all.length,
+       availabilityTitle:snippet.title||''
+     });
    }
-   markDirty();selectedCategory=catId;renderAll();progress.textContent=`Listo: ${added} pistas nuevas.`;
-   setTimeout(()=>{closeModal();openCategoryForm(catId)},800);
- }catch(e){progress.textContent='No se pudo importar: '+e.message}
+   pageToken=data.nextPageToken||'';
+ }while(pageToken);
+ return all.sort((a,b)=>a.position-b.position);
 }
-function getPlaylistIds(pid){
- return new Promise((resolve,reject)=>{
-   let done=false,tries=0;
-   try{importerPlayer.cuePlaylist({listType:'playlist',list:pid,index:0,startSeconds:0})}catch(e){reject(e);return}
-   const poll=setInterval(()=>{tries++;let arr=[];try{arr=importerPlayer.getPlaylist()||[]}catch{}if(arr.length){clearInterval(poll);resolve(arr)}else if(tries>40){clearInterval(poll);reject(new Error('Playlist no disponible o privada.'))}},250);
- });
+
+function isUnavailablePlaylistItem(item){
+ if(!item.videoId)return true;
+ const t=(item.title||'').trim().toLowerCase();
+ return !t || t==='deleted video' || t==='private video';
 }
-function cueAndReadMetadata(id){
- return new Promise(resolve=>{
-   let finished=false;
-   const finish=()=>{if(finished)return;finished=true;let d={};try{d=importerPlayer.getVideoData()||{}}catch{}resolve({title:d.title||'',author:d.author||''})};
-   importerResolve=()=>finish();
-   try{importerPlayer.cueVideoById(id)}catch{finish()}
-   setTimeout(finish,1800);
- });
+
+async function beginPlaylistImport(){
+ const s=settings();
+ const apiKey=(s.youtubeApiKey||'').trim();
+ if(!apiKey){
+   alert('Configure primero la YouTube Data API key en ⚙.');
+   openSettings();
+   return;
+ }
+
+ const pid=extractPlaylistId($('playlistUrl').value);
+ const catId=$('playlistCat').value;
+ const intensity=$('playlistIntensity').value;
+ if(!pid)return alert('Ingrese una playlist.');
+
+ const progress=$('importProgress');
+ const btn=$('importPlaylistBtn');
+ btn.disabled=true;
+ btn.textContent='Importando...';
+
+ try{
+   const items=await fetchAllPlaylistItems({
+     playlistId:pid,
+     apiKey,
+     onProgress:t=>progress.textContent=t
+   });
+
+   const dest=library.categories.find(c=>c.id===catId);
+   if(!dest)throw new Error('Categoría destino no encontrada.');
+
+   const existing=new Set(dest.tracks.map(t=>t.youtubeId));
+   let added=0,duplicates=0,unavailable=0;
+
+   for(let i=0;i<items.length;i++){
+     const item=items[i];
+     progress.textContent=`Procesando ${i+1} de ${items.length}…`;
+
+     if(isUnavailablePlaylistItem(item)){
+       unavailable++;
+       continue;
+     }
+     if(existing.has(item.videoId)){
+       duplicates++;
+       continue;
+     }
+
+     dest.tracks.push({
+       id:uid('tr'),
+       title:item.title,
+       author:item.author||'YouTube',
+       youtubeId:item.videoId,
+       intensity,
+       favorite:false
+     });
+     existing.add(item.videoId);
+     added++;
+   }
+
+   if(added>0){
+     markDirty();
+     selectedCategory=catId;
+     renderAll();
+   }
+
+   progress.textContent=`Listo: ${added} importadas · ${duplicates} duplicadas · ${unavailable} no disponibles.`;
+
+   setTimeout(()=>{
+     closeModal();
+     openCategoryForm(catId);
+   },1100);
+
+ }catch(e){
+   console.error(e);
+   progress.textContent='No se pudo importar: '+e.message;
+ }finally{
+   btn.disabled=false;
+   btn.textContent='Importar';
+ }
 }
-function onImporterState(e){if(importerResolve && e.data===YT.PlayerState.CUED){const r=importerResolve;importerResolve=null;r()}}
 
 function openSettings(){
  const s=settings(),hasPin=!!localStorage.getItem(LS_PINHASH);
  modal(`<div class="modalhead"><h2>Configuración</h2><button class="close" onclick="closeModal()">×</button></div><div class="modalbody">
- <div class="notice">El token queda guardado solo en este navegador. Use un fine-grained token limitado a este repositorio con Contents: Read and write.</div>
+ <div class="notice">Las credenciales quedan guardadas solo en este navegador. Use un token GitHub limitado al repositorio y una YouTube Data API key para importar playlists públicas.</div>
  <div class="formgrid">
  <div class="field"><label>Owner</label><input id="setOwner" value="${escapeHtml(s.owner||APP.repoOwner)}"></div><div class="field"><label>Repositorio</label><input id="setRepo" value="${escapeHtml(s.repo||APP.repoName)}"></div>
  <div class="field"><label>Branch</label><input id="setBranch" value="${escapeHtml(s.branch||APP.branch)}"></div><div class="field"><label>Crossfade (segundos)</label><select id="setFade">${[0,2,4,6,10].map(x=>`<option value="${x}" ${Number(s.fadeSeconds??4)===x?'selected':''}>${x}</option>`).join('')}</select></div>
  <div class="field full"><label>GitHub token (opcional hasta sincronizar)</label><input id="setToken" type="password" value="${escapeHtml(s.token||'')}" placeholder="github_pat_..."></div>
+ <div class="field full"><label>YouTube Data API key</label><input id="setYouTubeApiKey" type="password" value="${escapeHtml(s.youtubeApiKey||'')}" placeholder="AIza..."></div>
  </div>
  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="secondarybtn" onclick="openYouTubeTab()">Abrir YouTube / Premium</button><button class="secondarybtn" onclick="downloadLibrary()">Exportar JSON</button><button class="secondarybtn" onclick="$('jsonFile').click()">Importar JSON local</button><input id="jsonFile" class="hidden" type="file" accept=".json,application/json" onchange="importJsonFile(this)">${hasPin?'<button class="secondarybtn" onclick="changePin()">Cambiar PIN</button>':''}</div>
  </div><div class="modalfoot"><button class="secondarybtn" onclick="reloadFromRepository()">Recargar repositorio</button><button class="primarybtn" onclick="saveSettingsForm()">Guardar</button></div>`);
 }
-function saveSettingsForm(){saveSettings({owner:$('setOwner').value.trim(),repo:$('setRepo').value.trim(),branch:$('setBranch').value.trim(),fadeSeconds:+$('setFade').value,token:$('setToken').value.trim()});closeModal();setStatus('Configuración guardada','ready')}
+function saveSettingsForm(){saveSettings({owner:$('setOwner').value.trim(),repo:$('setRepo').value.trim(),branch:$('setBranch').value.trim(),fadeSeconds:+$('setFade').value,token:$('setToken').value.trim(),youtubeApiKey:$('setYouTubeApiKey').value.trim()});closeModal();setStatus('Configuración guardada','ready')}
 function openYouTubeTab(){window.open('https://www.youtube.com/','_blank','noopener')}
 function changePin(){closeModal();openFirstSetup()}
 function downloadLibrary(){

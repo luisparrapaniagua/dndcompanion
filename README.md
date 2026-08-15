@@ -1,4 +1,4 @@
-# Leonardo's D&D companion v0.4.3
+# Leonardo's D&D companion v0.4.4
 
 Companion musical web/PWA para sesiones de D&D.
 
@@ -61,3 +61,15 @@ Las playlists privadas pueden requerir autenticación adicional y no forman part
 ## Cambio v0.4.3
 
 - Nombre oficial de la app: `Leonardo's D&D companion`.
+
+
+## Cambios v0.4.4
+
+- El importador de playlists deja de depender de YouTube IFrame `cuePlaylist()`.
+- Usa YouTube Data API `playlistItems.list`.
+- Requiere una YouTube Data API key guardada solo en el navegador.
+- Paginación automática de 50 elementos por página.
+- Conserva el orden original de la playlist.
+- Evita duplicados por `videoId`.
+- Detecta videos privados/eliminados.
+- Resumen final: importadas, duplicadas y no disponibles.
