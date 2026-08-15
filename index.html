@@ -97,12 +97,118 @@ button{touch-action:manipulation}
  .app{grid-template-columns:1fr}.sidebar{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:16px}.brand small{display:inline;margin-left:8px}.section-label{margin-top:15px}.sidebar #categories{display:flex;overflow:auto;gap:6px;padding-bottom:4px}.category{min-width:max-content;width:auto}.side-actions{display:none}.quick{grid-template-columns:repeat(4,minmax(80px,1fr));overflow:auto}
  .main{padding:20px 14px 190px}.now{left:0}.nowrow{grid-template-columns:1fr}.master{justify-content:flex-start}.topbar{align-items:flex-start;flex-direction:column}.top-actions{width:100%}.sync-state{margin-left:auto}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.players{grid-template-columns:1fr}
 }
+
+/* ===== UX v0.4.5 ===== */
+.sidebar-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.sidebar-toggle{flex:0 0 auto;width:32px;height:32px;border:1px solid var(--line);background:#1a1511;color:#cdbfa9;border-radius:8px;cursor:pointer}
+.app.sidebar-collapsed{grid-template-columns:68px 1fr}
+.app.sidebar-collapsed .sidebar{padding-left:10px;padding-right:10px;overflow-x:hidden}
+.app.sidebar-collapsed .brand{font-size:0}
+.app.sidebar-collapsed .brand:before{font-size:15px;margin:7px 0 0 7px;display:inline-block}
+.app.sidebar-collapsed .brand small,.app.sidebar-collapsed .section-label,.app.sidebar-collapsed .category span:nth-child(2),.app.sidebar-collapsed .category .count,.app.sidebar-collapsed .side-actions{display:none!important}
+.app.sidebar-collapsed .category{justify-content:center;padding:11px 6px;font-size:18px}
+.app.sidebar-collapsed .category.active:before{top:6px;bottom:6px}
+body.sidebar-is-collapsed .now{left:68px}
+
+.grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.track,.scene-play-card{padding:11px 12px;border-radius:10px}
+.track h3{font-size:15px;margin-bottom:4px}
+.track p{font-size:11px;line-height:1.35}
+.kicker{margin-bottom:6px;font-size:8px}
+.row{margin-top:9px}
+.play{padding:6px 9px;font-size:11px}
+.scene-play-card{background:linear-gradient(180deg,rgba(44,33,24,.98),rgba(27,21,16,.98));border:1px solid #5a432c;box-shadow:0 6px 20px rgba(0,0,0,.12);display:flex;flex-direction:column;justify-content:space-between;min-height:116px}
+.scene-play-card .scene-title{font:700 15px/1.25 Georgia,serif;color:#f1e2c8}
+.scene-play-card .scene-meta{color:var(--muted);font-size:11px;margin-top:4px}
+.scene-buttons{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}
+.scene-buttons button{flex:1;min-width:90px;border:1px solid #71542f;background:#211912;color:#dac8aa;border-radius:8px;padding:7px 8px;font-size:10px;cursor:pointer}
+.scene-buttons button.active{background:linear-gradient(#d1a65f,#b9853d);color:#1d140b;font-weight:800}
+.scene-mode-badge{font-size:9px;color:var(--gold2);letter-spacing:.08em;text-transform:uppercase;margin-top:5px}
+
+.emoji-picker{grid-column:1/-1;border:1px solid #46372a;border-radius:8px;background:#14100d}
+.emoji-picker summary{padding:9px 10px;cursor:pointer;color:#b8a78e;font-size:11px}
+.emoji-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;padding:9px;border-top:1px solid #392d23}
+.emoji-grid button{height:34px;border:1px solid #46372a;background:#211912;border-radius:7px;font-size:18px;cursor:pointer}
+.emoji-grid button:hover{border-color:#86653d;background:#2a2119}
+
+.playlist-select-tools{display:flex;gap:7px;align-items:center;margin:12px 0 8px;flex-wrap:wrap}
+.playlist-preview{display:flex;flex-direction:column;gap:5px;max-height:330px;overflow:auto;border:1px solid #3c2f24;border-radius:8px;padding:6px;background:#100d0b}
+.playlist-row{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:8px;padding:8px;border-bottom:1px solid #2d241c}
+.playlist-row:last-child{border-bottom:0}
+.playlist-row input{width:17px;height:17px;accent-color:var(--gold)}
+.playlist-row strong{font-size:12px;display:block}
+.playlist-row small{font-size:10px;color:#897c69;display:block;margin-top:2px}
+.playlist-row .tag{font-size:9px;padding:3px 5px;border:1px solid #4a3a2b;border-radius:5px;color:#a99b86}
+.playlist-row.disabled{opacity:.48}
+
+/* Simple */
+body.theme-simple{background:#111;color:#eee}
+body.theme-simple .app{background:#111}
+body.theme-simple .sidebar,body.theme-simple .now,body.theme-simple .modal{background:#151515}
+body.theme-simple .sidebar,body.theme-simple .now,body.theme-simple .modal,body.theme-simple .track,body.theme-simple .scene-play-card,body.theme-simple .edititem,body.theme-simple .notice,body.theme-simple .debug,body.theme-simple .playlist-preview{box-shadow:none;border-radius:0}
+body.theme-simple .grid{display:block}
+body.theme-simple .track,body.theme-simple .scene-play-card{background:transparent;border:0;border-bottom:1px solid #383838;margin:0;padding:12px 4px}
+body.theme-simple .track:hover{transform:none;background:#171717}
+body.theme-simple button,body.theme-simple input,body.theme-simple select,body.theme-simple textarea,body.theme-simple .category,body.theme-simple .audio-chip,body.theme-simple .emoji-picker,body.theme-simple .emoji-grid button,body.theme-simple .playlist-row .tag{border-radius:0!important}
+body.theme-simple .play,body.theme-simple .transport button.primary,body.theme-simple .primarybtn,body.theme-simple .scene-buttons button.active{background:#ddd;color:#111;border-color:#ddd}
+body.theme-simple .scene-buttons button{background:transparent}
+body.theme-simple .title h1,body.theme-simple .track h3,body.theme-simple .scene-title,body.theme-simple .brand{font-family:Inter,system-ui,sans-serif}
+
+/* Light */
+body.theme-light{--ink:#2b2926;--muted:#736d65;--gold:#93672f;--gold2:#77511f;--bg:#f4f1eb;--panel:#fff;--panel2:#eee9e1;--line:#d2c7b8;--shadow:0 10px 30px rgba(66,50,30,.10);background:#f4f1eb;color:var(--ink)}
+body.theme-light .sidebar{background:#eee8df;border-color:#d2c7b8}
+body.theme-light .brand,body.theme-light .title h1,body.theme-light .track h3,body.theme-light .scene-title{color:#292621}
+body.theme-light .category{color:#4d4943}
+body.theme-light .category:hover,body.theme-light .category.active{background:#fff;border-color:#c9baa7;color:#171513}
+body.theme-light .main{background:#f7f4ef}
+body.theme-light .track,body.theme-light .scene-play-card,body.theme-light .edititem{background:#fff;border-color:#d8cdbf}
+body.theme-light .track p,body.theme-light .scene-meta{color:#756f67}
+body.theme-light .searchbar input,body.theme-light .filter,body.theme-light .field input,body.theme-light .field select,body.theme-light .field textarea{background:#fff;color:#282622;border-color:#cec2b3}
+body.theme-light .now{background:rgba(247,244,239,.97);border-color:#d2c7b8}
+body.theme-light .transport button,body.theme-light .iconbtn,body.theme-light .textbtn,body.theme-light .secondarybtn,body.theme-light .mini{background:#fff;color:#34302b;border-color:#cdbfae}
+body.theme-light .modal{background:#faf7f2;border-color:#cab9a3}
+body.theme-light .modalhead h2{color:#2e2923}
+body.theme-light .notice,body.theme-light .playlist-preview{background:#fff;border-color:#d8cdbf;color:#615b54}
+body.theme-light .audio-chip{background:#fff;color:#795721;border-color:#d1bd9f}
+
+/* Medieval */
+body.theme-medieval{--ink:#342315;--muted:#6f573e;--gold:#7b4b20;--gold2:#9e672e;--bg:#d4b77d;--panel:#ead39e;--panel2:#caa66a;--line:#7a5632;background:repeating-linear-gradient(0deg,rgba(85,55,22,.035) 0 1px,transparent 1px 4px),radial-gradient(circle at 22% 13%,rgba(255,244,198,.42),transparent 28%),radial-gradient(circle at 77% 75%,rgba(101,64,25,.16),transparent 34%),#d8bd83;color:#342315}
+body.theme-medieval .main{background:repeating-linear-gradient(90deg,rgba(99,65,31,.025) 0 1px,transparent 1px 5px),linear-gradient(rgba(235,211,158,.80),rgba(219,187,125,.88))}
+body.theme-medieval .sidebar{background:repeating-linear-gradient(90deg,rgba(255,255,255,.03) 0 2px,rgba(0,0,0,.035) 2px 5px),linear-gradient(90deg,#49301e,#624126 45%,#442b1a);border-color:#2b1a10}
+body.theme-medieval .brand,body.theme-medieval .sidebar .category{color:#f5dfb3}
+body.theme-medieval .sidebar .category:hover,body.theme-medieval .sidebar .category.active{background:rgba(255,224,166,.10);border-color:#967048}
+body.theme-medieval .title h1,body.theme-medieval .track h3,body.theme-medieval .scene-title{color:#392414;text-shadow:0 1px rgba(255,255,255,.25)}
+body.theme-medieval .track,body.theme-medieval .scene-play-card,body.theme-medieval .edititem,body.theme-medieval .notice,body.theme-medieval .playlist-preview{background:repeating-linear-gradient(0deg,rgba(90,57,25,.025) 0 1px,transparent 1px 4px),linear-gradient(135deg,#f0dca9,#dfbd7e);border-color:#8d6337;box-shadow:0 7px 18px rgba(70,40,15,.16)}
+body.theme-medieval .track p,body.theme-medieval .scene-meta,body.theme-medieval .edititem small{color:#72583d}
+body.theme-medieval .play,body.theme-medieval .primarybtn,body.theme-medieval .scene-buttons button.active,body.theme-medieval .transport button.primary{background:repeating-linear-gradient(90deg,rgba(255,255,255,.035) 0 2px,rgba(0,0,0,.045) 2px 6px),linear-gradient(#82542d,#5c351c);color:#f5e2ba;border-color:#3d2515;text-shadow:0 1px #261408}
+body.theme-medieval .scene-buttons button,body.theme-medieval .secondarybtn,body.theme-medieval .mini,body.theme-medieval .iconbtn,body.theme-medieval .textbtn{background:repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 2px,rgba(0,0,0,.035) 2px 6px),linear-gradient(#765033,#4d321f);color:#f2ddb5;border-color:#3c281a}
+body.theme-medieval .searchbar input,body.theme-medieval .filter,body.theme-medieval .field input,body.theme-medieval .field select,body.theme-medieval .field textarea{background:#f3deb0;color:#382515;border-color:#8c663d}
+body.theme-medieval .modal{background:linear-gradient(#e8cf98,#cfa868);border-color:#69451f}
+body.theme-medieval .modalhead h2{color:#392414}
+body.theme-medieval .now{background:repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 2px,rgba(0,0,0,.04) 2px 6px),rgba(57,37,23,.98);color:#f0d9ae;border-color:#29180e}
+body.theme-medieval .now .np strong{color:#f5dfb6}
+body.theme-medieval .now .np span,body.theme-medieval .now .status,body.theme-medieval .now .master{color:#cbb48f}
+body.theme-medieval .audio-chip{background:#55371f;color:#edd2a1;border-color:#7e5d39}
+
+@media(max-width:880px){
+ .app.sidebar-collapsed{grid-template-columns:1fr}
+ body.sidebar-is-collapsed .now{left:0}
+ .sidebar-head{align-items:center}
+ .app.sidebar-collapsed .sidebar{height:auto;padding:12px 14px}
+ .app.sidebar-collapsed .brand{display:none}
+ .app.sidebar-collapsed .rule,.app.sidebar-collapsed #categories,.app.sidebar-collapsed .section-label,.app.sidebar-collapsed .side-actions{display:none!important}
+ .emoji-grid{grid-template-columns:repeat(8,1fr)}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="sidebar">
-  <div class="brand">Leonardo's D&D companion<small>Codex Sonorum · v0.4.4</small></div>
+  <div class="sidebar-head">
+    <div class="brand">Leonardo's D&D companion<small>Codex Sonorum · v0.4.5</small></div>
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Colapsar o expandir sidebar">‹</button>
+  </div>
   <div class="rule"></div>
   <div class="section-label">Escenas</div>
   <div id="categories"></div>
@@ -186,6 +292,9 @@ let remoteLibrary=null, selectedCategory=null, currentTrack=null;
 let players=[null,null], activeIndex=0, ytReady=false, readyCount=0, audioReady=false, transitionTimer=null;
 let editMode=false;
 let syncInProgress=false;
+let scenePlayMode=null;
+let scenePlayCategoryId=null;
+let playlistImportPreview=null;
 const isiOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 const $=id=>document.getElementById(id);
 const settings=()=>JSON.parse(localStorage.getItem(LS_SETTINGS)||'{}');
@@ -229,7 +338,19 @@ function markDirty(){
   library.baseRevision=remoteLibrary?.revision ?? library.revision ?? 0;
   localStorage.setItem(LS_DRAFT,JSON.stringify(library));localStorage.setItem(LS_DIRTY,'1');setSync('Cambios locales','dirty');
 }
-function renderAll(){renderCategories();renderHeader();renderTracks();updateEditUI()}
+function renderAll(){applyUiPreferences();renderCategories();renderHeader();renderTracks();updateEditUI()}
+function applyUiPreferences(){
+ const s=settings(),style=s.appStyle||'legacy',collapsed=!!s.sidebarCollapsed;
+ document.body.classList.remove('theme-legacy','theme-simple','theme-light','theme-medieval');
+ document.body.classList.add('theme-'+style);
+ document.querySelector('.app')?.classList.toggle('sidebar-collapsed',collapsed);
+ document.body.classList.toggle('sidebar-is-collapsed',collapsed);
+ const btn=$('sidebarToggle');if(btn){btn.textContent=collapsed?'›':'‹';btn.title=collapsed?'Expandir sidebar':'Colapsar sidebar'}
+}
+function toggleSidebar(){
+ const collapsed=!document.querySelector('.app')?.classList.contains('sidebar-collapsed');
+ saveSettings({sidebarCollapsed:collapsed});applyUiPreferences();
+}
 function selectedCat(){return library.categories.find(c=>c.id===selectedCategory)||library.categories[0]}
 function renderHeader(){
  const c=selectedCat(); if(!c)return;
@@ -246,32 +367,40 @@ function renderTracks(){
  const c=selectedCat(); if(!c){$('tracks').innerHTML='';return}
  const q=($('searchInput')?.value||'').toLowerCase(), f=$('intensityFilter')?.value||'';
  let tracks=(c.tracks||[]).filter(t=>(!q||`${t.title} ${t.author||''}`.toLowerCase().includes(q))&&(!f||t.intensity===f));
- if(!tracks.length){$('tracks').innerHTML='<div class="empty">No hay pistas para mostrar en esta escena.</div>';return}
- $('tracks').innerHTML=tracks.map(t=>{
-   const playing=currentTrack?.id===t.id;
-   return `<article class="track ${playing?'playing':''} ${t.favorite?'favorite':''}" data-id="${t.id}">
-     <button class="seal" title="Favorito" data-fav="${t.id}" style="border:0;background:none;cursor:pointer">★</button>
-     <div class="kicker">${escapeHtml(t.intensity||'Track')}</div>
-     <h3>${escapeHtml(t.title||'Sin título')}</h3>
-     <p>${escapeHtml(t.author||'YouTube')}</p>
-     <div class="row"><button class="play">${playing?'SONANDO':'REPRODUCIR'}</button><a class="open" target="_blank" rel="noopener" href="https://music.youtube.com/watch?v=${encodeURIComponent(t.youtubeId)}">YouTube Music ↗</a></div>
-   </article>`;
- }).join('');
- document.querySelectorAll('.track').forEach(card=>card.onclick=e=>{
-   const fav=e.target.closest('[data-fav]'); if(fav){e.stopPropagation();toggleFavorite(fav.dataset.fav);return}
-   if(e.target.closest('a'))return;
-   const t=c.tracks.find(x=>x.id===card.dataset.id); if(t)playTrack(t,c);
- });
+ const sceneMode=(scenePlayCategoryId===c.id)?scenePlayMode:null;
+ const sceneCard=`<article class="scene-play-card"><div><div class="kicker">Escena completa</div><div class="scene-title">${escapeHtml(c.icon||'◆')} ${escapeHtml(c.name)}</div><div class="scene-meta">${c.tracks.length} pistas disponibles</div>${sceneMode?`<div class="scene-mode-badge">Modo: ${sceneMode==='ordered'?'en orden':'aleatorio'}</div>`:''}</div><div class="scene-buttons"><button class="${sceneMode==='ordered'?'active':''}" onclick="startScenePlayback('ordered')">▶ Reproducir en orden</button><button class="${sceneMode==='random'?'active':''}" onclick="startScenePlayback('random')">⤨ Reproducir aleatorio</button></div></article>`;
+ if(!tracks.length){$('tracks').innerHTML=sceneCard+'<div class="empty">No hay pistas para mostrar en esta escena.</div>';return}
+ $('tracks').innerHTML=sceneCard+tracks.map(t=>{const playing=currentTrack?.id===t.id;return `<article class="track ${playing?'playing':''} ${t.favorite?'favorite':''}" data-id="${t.id}"><button class="seal" title="Favorito" data-fav="${t.id}" style="border:0;background:none;cursor:pointer">★</button><div class="kicker">${escapeHtml(t.intensity||'Track')}</div><h3>${escapeHtml(t.title||'Sin título')}</h3><p>${escapeHtml(t.author||'YouTube')}</p><div class="row"><button class="play">${playing?'SONANDO':'▶ REPRODUCIR'}</button></div></article>`}).join('');
+ document.querySelectorAll('.track').forEach(card=>card.onclick=e=>{const fav=e.target.closest('[data-fav]');if(fav){e.stopPropagation();toggleFavorite(fav.dataset.fav);return}scenePlayMode=null;scenePlayCategoryId=null;const t=c.tracks.find(x=>x.id===card.dataset.id);if(t)playTrack(t,c)});
+}
+async function startScenePlayback(mode){
+ const c=selectedCat();if(!c?.tracks?.length){setStatus('La escena no tiene pistas','error');return}
+ scenePlayMode=mode;scenePlayCategoryId=c.id;
+ const first=mode==='random'?c.tracks[Math.floor(Math.random()*c.tracks.length)]:c.tracks[0];
+ renderTracks();await playTrack(first,c);
+}
+function playNextSceneTrack(){
+ if(!scenePlayMode||!scenePlayCategoryId)return;
+ const c=library.categories.find(x=>x.id===scenePlayCategoryId);if(!c?.tracks?.length)return;
+ let next;
+ if(scenePlayMode==='ordered'){const i=c.tracks.findIndex(t=>t.id===currentTrack?.id);next=c.tracks[(i+1+c.tracks.length)%c.tracks.length]}
+ else if(c.tracks.length===1)next=c.tracks[0];
+ else{const pool=c.tracks.filter(t=>t.id!==currentTrack?.id);next=pool[Math.floor(Math.random()*pool.length)]}
+ if(next)playTrack(next,c);
 }
 function toggleFavorite(id){const c=selectedCat(),t=c.tracks.find(x=>x.id===id);if(t){t.favorite=!t.favorite;markDirty();renderTracks()}}
 
 function onYouTubeIframeAPIReady(){
  const origin=window.location.origin;
  const common={height:'200',width:'356',playerVars:{autoplay:0,controls:1,playsinline:1,rel:0,origin}};
- players[0]=new YT.Player('playerA',{...common,events:{onReady:onMainReady,onError:onPlayerError,onAutoplayBlocked:onAutoplayBlocked}});
- players[1]=new YT.Player('playerB',{...common,events:{onReady:onMainReady,onError:onPlayerError,onAutoplayBlocked:onAutoplayBlocked}});
+ players[0]=new YT.Player('playerA',{...common,events:{onReady:onMainReady,onError:onPlayerError,onAutoplayBlocked:onAutoplayBlocked,onStateChange:onMainPlayerStateChange}});
+ players[1]=new YT.Player('playerB',{...common,events:{onReady:onMainReady,onError:onPlayerError,onAutoplayBlocked:onAutoplayBlocked,onStateChange:onMainPlayerStateChange}});
 }
 function onMainReady(){readyCount++;if(readyCount===2){ytReady=true;setStatus('YouTube listo','ready')}}
+function onMainPlayerStateChange(e){
+ if(!window.YT||e.data!==YT.PlayerState.ENDED||e.target!==players[activeIndex])return;
+ if(scenePlayMode&&scenePlayCategoryId)setTimeout(playNextSceneTrack,120);
+}
 function onPlayerError(e){const m={2:'ID inválido',5:'Error HTML5',100:'Video privado/eliminado',101:'Embed bloqueado',150:'Embed bloqueado',153:'Identificación de cliente'};setStatus(`YouTube ${e.data}: ${m[e.data]||'error'}`,'error')}
 function onAutoplayBlocked(){setStatus('Safari bloqueó autoplay. Pulse Play en diagnóstico una vez.','error')}
 async function ensureAudio(){
@@ -297,7 +426,7 @@ async function playTrack(track,category){
 }
 function pauseCurrent(){try{players[activeIndex].pauseVideo();setStatus('Pausado')}catch{}}
 function resumeCurrent(){ensureAudio().then(()=>{try{players[activeIndex].playVideo();setStatus('Reproduciendo','ready')}catch{}})}
-function stopAll(){players.forEach(p=>{try{p.stopVideo()}catch{}});currentTrack=null;$('nowTitle').textContent='Nada reproduciéndose';$('nowMeta').textContent='Seleccione una pista';setStatus('Detenido');renderTracks()}
+function stopAll(){scenePlayMode=null;scenePlayCategoryId=null;players.forEach(p=>{try{p.stopVideo()}catch{}});currentTrack=null;$('nowTitle').textContent='Nada reproduciéndose';$('nowMeta').textContent='Seleccione una pista';setStatus('Detenido');renderTracks()}
 $('masterVolume').oninput=e=>{const v=+e.target.value;$('volumeLabel').textContent=v+'%';setVol(players[activeIndex],v)};
 
 async function sha256(s){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join('')}
@@ -341,6 +470,9 @@ function renderCategoryEditor(){
  library.categories.map((c,i)=>`<div class="edititem"><span style="font-size:21px">${escapeHtml(c.icon||'◆')}</span><div class="grow"><strong>${escapeHtml(c.name)}</strong><small>${c.tracks.length} pistas · ${escapeHtml(c.description||'')}</small></div><button class="mini" onclick="moveCategory('${c.id}',-1)">↑</button><button class="mini" onclick="moveCategory('${c.id}',1)">↓</button><button class="mini" onclick="openCategoryForm('${c.id}')">Editar</button></div>`).join('')
  }</div>`;
 }
+const CATEGORY_EMOJIS=["🌲", "🌳", "🍂", "🌧️", "⛈️", "❄️", "🌊", "🔥", "🌋", "🌙", "☀️", "⭐", "✨", "🕯️", "🏕️", "🏰", "🏯", "🏚️", "⛪", "🗿", "🍺", "🍷", "🍖", "🪕", "🎻", "🎶", "⚔️", "🛡️", "🏹", "🗡️", "🪓", "🔨", "💀", "☠️", "👻", "🧟", "🧙", "🧝", "🧚", "🐉", "🐺", "🦇", "🕷️", "🐍", "🦅", "🐎", "👑", "💎", "🔮", "🗝️", "📜", "📖", "🧭", "🗺️", "⚓", "⛵", "🚪", "⛓️", "❤️", "🎭"];
+function emojiPickerHtml(){return `<details class="emoji-picker"><summary>Elegir emoji</summary><div class="emoji-grid">${CATEGORY_EMOJIS.map(e=>`<button type="button" onclick="selectCategoryEmoji(this.textContent)">${e}</button>`).join('')}</div></details>`}
+function selectCategoryEmoji(e){const input=$('catIcon');if(input)input.value=e}
 function openCategoryForm(id){
  const isNew=!id;
  const c=isNew?{id:'',name:'',icon:'◆',description:'',accent:'#c69a52',tracks:[]}:library.categories.find(x=>x.id===id);
@@ -350,6 +482,7 @@ function openCategoryForm(id){
    <div class="formgrid">
      <div class="field"><label>Nombre</label><input id="catName" value="${escapeHtml(c.name)}"></div>
      <div class="field"><label>Icono / emoji</label><input id="catIcon" value="${escapeHtml(c.icon||'◆')}"></div>
+     ${emojiPickerHtml()}
      <div class="field full"><label>Descripción</label><input id="catDesc" value="${escapeHtml(c.description||'')}"></div>
      <div class="field"><label>Color</label><input id="catAccent" type="color" value="${c.accent||'#c69a52'}"></div>
    </div>
@@ -461,168 +594,55 @@ function extractPlaylistId(v){
 
 function openImportPlaylist(targetCatId){
  if(!editMode)return toggleEditMode();
- const s=settings();
- modal(`<div class="modalhead"><h2>Importar playlist</h2><button class="close" onclick="closeModal()">×</button></div>
- <div class="modalbody">
- <div class="notice">Importa playlists públicas usando YouTube Data API. La app conserva el orden, evita duplicados y pagina automáticamente si hay más de 50 videos.</div>
- <div class="formgrid">
-   <div class="field full"><label>URL o ID de playlist</label><input id="playlistUrl" placeholder="https://youtube.com/playlist?list=..."></div>
-   <div class="field"><label>Importar en</label><select id="playlistCat">${library.categories.map(c=>`<option value="${c.id}" ${c.id===(targetCatId||selectedCategory)?'selected':''}>${escapeHtml(c.name)}</option>`).join('')}</select></div>
-   <div class="field"><label>Intensidad por defecto</label><select id="playlistIntensity">${['Calm','Soft','Warm','Medium','High','Epic','Boss'].map(x=>`<option ${x==='Medium'?'selected':''}>${x}</option>`).join('')}</select></div>
- </div>
- <div id="importProgress" class="import-progress"></div>
- </div>
- <div class="modalfoot">
-   <button class="secondarybtn" onclick="closeModal()">Cancelar</button>
-   <button class="primarybtn" id="importPlaylistBtn" onclick="beginPlaylistImport()">Importar</button>
- </div>`);
+ playlistImportPreview=null;
+ modal(`<div class="modalhead"><h2>Importar playlist</h2><button class="close" onclick="closeModal()">×</button></div><div class="modalbody"><div class="notice">Cargue una playlist pública. Después podrá elegir exactamente cuáles canciones importar.</div><div class="formgrid"><div class="field full"><label>URL o ID de playlist</label><input id="playlistUrl" placeholder="https://youtube.com/playlist?list=..."></div><div class="field"><label>Importar en</label><select id="playlistCat">${library.categories.map(c=>`<option value="${c.id}" ${c.id===(targetCatId||selectedCategory)?'selected':''}>${escapeHtml(c.name)}</option>`).join('')}</select></div><div class="field"><label>Intensidad por defecto</label><select id="playlistIntensity">${['Calm','Soft','Warm','Medium','High','Epic','Boss'].map(x=>`<option ${x==='Medium'?'selected':''}>${x}</option>`).join('')}</select></div></div><div id="importProgress" class="import-progress"></div><div id="playlistSelection"></div></div><div class="modalfoot"><button class="secondarybtn" onclick="closeModal()">Cancelar</button><button class="primarybtn" id="loadPlaylistBtn" onclick="previewPlaylistImport()">Cargar playlist</button><button class="primarybtn hidden" id="confirmPlaylistBtn" onclick="confirmPlaylistImport()">Importar seleccionadas</button></div>`);
 }
-
 async function fetchPlaylistItemsPage({playlistId,apiKey,pageToken=''}) {
- const params=new URLSearchParams({
-   part:'snippet,contentDetails',
-   playlistId,
-   maxResults:'50',
-   key:apiKey
- });
- if(pageToken)params.set('pageToken',pageToken);
-
- const r=await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?${params.toString()}`,{
-   cache:'no-store'
- });
- const data=await r.json().catch(()=>null);
- if(!r.ok){
-   const msg=data?.error?.message||`YouTube API ${r.status}`;
-   const err=new Error(msg);
-   err.status=r.status;
-   err.payload=data;
-   throw err;
- }
- return data;
+ const params=new URLSearchParams({part:'snippet,contentDetails',playlistId,maxResults:'50',key:apiKey});if(pageToken)params.set('pageToken',pageToken);
+ const r=await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?${params.toString()}`,{cache:'no-store'});const data=await r.json().catch(()=>null);
+ if(!r.ok){const err=new Error(data?.error?.message||`YouTube API ${r.status}`);err.status=r.status;err.payload=data;throw err}return data;
 }
-
 async function fetchAllPlaylistItems({playlistId,apiKey,onProgress}) {
- const all=[];
- let pageToken='',page=0;
- do{
-   page++;
-   onProgress?.(`Leyendo playlist · página ${page}…`);
-   const data=await fetchPlaylistItemsPage({playlistId,apiKey,pageToken});
-   for(const item of (data.items||[])){
-     const snippet=item.snippet||{};
-     const videoId=item.contentDetails?.videoId||snippet.resourceId?.videoId||'';
-     all.push({
-       videoId,
-       title:snippet.title||'',
-       author:snippet.videoOwnerChannelTitle||snippet.channelTitle||'YouTube',
-       position:Number.isFinite(snippet.position)?snippet.position:all.length,
-       availabilityTitle:snippet.title||''
-     });
-   }
-   pageToken=data.nextPageToken||'';
- }while(pageToken);
+ const all=[];let pageToken='',page=0;do{page++;onProgress?.(`Leyendo playlist · página ${page}…`);const data=await fetchPlaylistItemsPage({playlistId,apiKey,pageToken});
+ for(const item of (data.items||[])){const s=item.snippet||{};all.push({videoId:item.contentDetails?.videoId||s.resourceId?.videoId||'',title:s.title||'',author:s.videoOwnerChannelTitle||s.channelTitle||'YouTube',position:Number.isFinite(s.position)?s.position:all.length})}pageToken=data.nextPageToken||''}while(pageToken);
  return all.sort((a,b)=>a.position-b.position);
 }
-
-function isUnavailablePlaylistItem(item){
- if(!item.videoId)return true;
- const t=(item.title||'').trim().toLowerCase();
- return !t || t==='deleted video' || t==='private video';
+function isUnavailablePlaylistItem(item){if(!item.videoId)return true;const t=(item.title||'').trim().toLowerCase();return !t||t==='deleted video'||t==='private video'}
+async function previewPlaylistImport(){
+ const s=settings(),apiKey=(s.youtubeApiKey||'').trim();if(!apiKey){alert('Configure primero la YouTube Data API key en ⚙.');openSettings();return}
+ const pid=extractPlaylistId($('playlistUrl').value),catId=$('playlistCat').value;if(!pid)return alert('Ingrese una playlist.');
+ const progress=$('importProgress'),btn=$('loadPlaylistBtn');btn.disabled=true;btn.textContent='Cargando...';
+ try{const items=await fetchAllPlaylistItems({playlistId:pid,apiKey,onProgress:t=>progress.textContent=t});const dest=library.categories.find(c=>c.id===catId);if(!dest)throw new Error('Categoría destino no encontrada.');
+ const existing=new Set(dest.tracks.map(t=>t.youtubeId));playlistImportPreview={items,catId};renderPlaylistSelection(items,existing);
+ progress.textContent=`${items.length} elementos encontrados · ${items.filter(i=>!isUnavailablePlaylistItem(i)&&!existing.has(i.videoId)).length} disponibles para importar.`;$('confirmPlaylistBtn').classList.remove('hidden');btn.textContent='Recargar playlist';
+ }catch(e){console.error(e);progress.textContent='No se pudo cargar: '+e.message}finally{btn.disabled=false;if(btn.textContent==='Cargando...')btn.textContent='Cargar playlist'}
 }
-
-async function beginPlaylistImport(){
- const s=settings();
- const apiKey=(s.youtubeApiKey||'').trim();
- if(!apiKey){
-   alert('Configure primero la YouTube Data API key en ⚙.');
-   openSettings();
-   return;
- }
-
- const pid=extractPlaylistId($('playlistUrl').value);
- const catId=$('playlistCat').value;
- const intensity=$('playlistIntensity').value;
- if(!pid)return alert('Ingrese una playlist.');
-
- const progress=$('importProgress');
- const btn=$('importPlaylistBtn');
- btn.disabled=true;
- btn.textContent='Importando...';
-
- try{
-   const items=await fetchAllPlaylistItems({
-     playlistId:pid,
-     apiKey,
-     onProgress:t=>progress.textContent=t
-   });
-
-   const dest=library.categories.find(c=>c.id===catId);
-   if(!dest)throw new Error('Categoría destino no encontrada.');
-
-   const existing=new Set(dest.tracks.map(t=>t.youtubeId));
-   let added=0,duplicates=0,unavailable=0;
-
-   for(let i=0;i<items.length;i++){
-     const item=items[i];
-     progress.textContent=`Procesando ${i+1} de ${items.length}…`;
-
-     if(isUnavailablePlaylistItem(item)){
-       unavailable++;
-       continue;
-     }
-     if(existing.has(item.videoId)){
-       duplicates++;
-       continue;
-     }
-
-     dest.tracks.push({
-       id:uid('tr'),
-       title:item.title,
-       author:item.author||'YouTube',
-       youtubeId:item.videoId,
-       intensity,
-       favorite:false
-     });
-     existing.add(item.videoId);
-     added++;
-   }
-
-   if(added>0){
-     markDirty();
-     selectedCategory=catId;
-     renderAll();
-   }
-
-   progress.textContent=`Listo: ${added} importadas · ${duplicates} duplicadas · ${unavailable} no disponibles.`;
-
-   setTimeout(()=>{
-     closeModal();
-     openCategoryForm(catId);
-   },1100);
-
- }catch(e){
-   console.error(e);
-   progress.textContent='No se pudo importar: '+e.message;
- }finally{
-   btn.disabled=false;
-   btn.textContent='Importar';
- }
+function renderPlaylistSelection(items,existing){
+ $('playlistSelection').innerHTML=`<div class="playlist-select-tools"><button class="mini" onclick="setPlaylistChecks(true)">Seleccionar todas</button><button class="mini" onclick="setPlaylistChecks(false)">Ninguna</button><span id="playlistSelectedCount" style="font-size:11px;color:var(--muted)"></span></div><div class="playlist-preview" onchange="updatePlaylistSelectedCount()">${items.map((item,i)=>{const unavailable=isUnavailablePlaylistItem(item),duplicate=existing.has(item.videoId),disabled=unavailable||duplicate;return `<label class="playlist-row ${disabled?'disabled':''}"><input type="checkbox" data-playlist-index="${i}" ${disabled?'disabled':'checked'}><div><strong>${escapeHtml(item.title||'Video no disponible')}</strong><small>${escapeHtml(item.author||'YouTube')}</small></div><span class="tag">${unavailable?'No disponible':duplicate?'Ya existe':'Nueva'}</span></label>`}).join('')}</div>`;updatePlaylistSelectedCount();
 }
-
+function setPlaylistChecks(value){document.querySelectorAll('[data-playlist-index]:not(:disabled)').forEach(x=>x.checked=value);updatePlaylistSelectedCount()}
+function updatePlaylistSelectedCount(){const selected=document.querySelectorAll('[data-playlist-index]:checked').length,available=document.querySelectorAll('[data-playlist-index]:not(:disabled)').length,el=$('playlistSelectedCount');if(el)el.textContent=`${selected} de ${available} seleccionadas`}
+async function confirmPlaylistImport(){
+ if(!playlistImportPreview)return;const catId=$('playlistCat').value,intensity=$('playlistIntensity').value,dest=library.categories.find(c=>c.id===catId);if(!dest)return alert('Categoría destino no encontrada.');
+ const selectedIndexes=[...document.querySelectorAll('[data-playlist-index]:checked')].map(x=>Number(x.dataset.playlistIndex));if(!selectedIndexes.length)return alert('Seleccione al menos una canción.');
+ const existing=new Set(dest.tracks.map(t=>t.youtubeId));let added=0,duplicates=0,unavailable=0;
+ for(const i of selectedIndexes){const item=playlistImportPreview.items[i];if(!item||isUnavailablePlaylistItem(item)){unavailable++;continue}if(existing.has(item.videoId)){duplicates++;continue}dest.tracks.push({id:uid('tr'),title:item.title,author:item.author||'YouTube',youtubeId:item.videoId,intensity,favorite:false});existing.add(item.videoId);added++}
+ if(added>0){markDirty();selectedCategory=catId;renderAll()}$('importProgress').textContent=`Listo: ${added} importadas · ${duplicates} duplicadas · ${unavailable} no disponibles.`;$('confirmPlaylistBtn').disabled=true;setTimeout(()=>{closeModal();openCategoryForm(catId)},900);
+}
 function openSettings(){
  const s=settings(),hasPin=!!localStorage.getItem(LS_PINHASH);
  modal(`<div class="modalhead"><h2>Configuración</h2><button class="close" onclick="closeModal()">×</button></div><div class="modalbody">
  <div class="notice">Las credenciales quedan guardadas solo en este navegador. Use un token GitHub limitado al repositorio y una YouTube Data API key para importar playlists públicas.</div>
  <div class="formgrid">
  <div class="field"><label>Owner</label><input id="setOwner" value="${escapeHtml(s.owner||APP.repoOwner)}"></div><div class="field"><label>Repositorio</label><input id="setRepo" value="${escapeHtml(s.repo||APP.repoName)}"></div>
- <div class="field"><label>Branch</label><input id="setBranch" value="${escapeHtml(s.branch||APP.branch)}"></div><div class="field"><label>Crossfade (segundos)</label><select id="setFade">${[0,2,4,6,10].map(x=>`<option value="${x}" ${Number(s.fadeSeconds??4)===x?'selected':''}>${x}</option>`).join('')}</select></div>
+ <div class="field"><label>Branch</label><input id="setBranch" value="${escapeHtml(s.branch||APP.branch)}"></div><div class="field"><label>Crossfade (segundos)</label><select id="setFade">${[0,2,4,6,10].map(x=>`<option value="${x}" ${Number(s.fadeSeconds??4)===x?'selected':''}>${x}</option>`).join('')}</select></div><div class="field"><label>Estilo de la app</label><select id="setAppStyle"><option value="legacy" ${(s.appStyle||'legacy')==='legacy'?'selected':''}>Legacy</option><option value="simple" ${s.appStyle==='simple'?'selected':''}>Simple</option><option value="light" ${s.appStyle==='light'?'selected':''}>Light</option><option value="medieval" ${s.appStyle==='medieval'?'selected':''}>Medieval</option></select></div>
  <div class="field full"><label>GitHub token (opcional hasta sincronizar)</label><input id="setToken" type="password" value="${escapeHtml(s.token||'')}" placeholder="github_pat_..."></div>
  <div class="field full"><label>YouTube Data API key</label><input id="setYouTubeApiKey" type="password" value="${escapeHtml(s.youtubeApiKey||'')}" placeholder="AIza..."></div>
  </div>
  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="secondarybtn" onclick="openYouTubeTab()">Abrir YouTube / Premium</button><button class="secondarybtn" onclick="downloadLibrary()">Exportar JSON</button><button class="secondarybtn" onclick="$('jsonFile').click()">Importar JSON local</button><input id="jsonFile" class="hidden" type="file" accept=".json,application/json" onchange="importJsonFile(this)">${hasPin?'<button class="secondarybtn" onclick="changePin()">Cambiar PIN</button>':''}</div>
  </div><div class="modalfoot"><button class="secondarybtn" onclick="reloadFromRepository()">Recargar repositorio</button><button class="primarybtn" onclick="saveSettingsForm()">Guardar</button></div>`);
 }
-function saveSettingsForm(){saveSettings({owner:$('setOwner').value.trim(),repo:$('setRepo').value.trim(),branch:$('setBranch').value.trim(),fadeSeconds:+$('setFade').value,token:$('setToken').value.trim(),youtubeApiKey:$('setYouTubeApiKey').value.trim()});closeModal();setStatus('Configuración guardada','ready')}
+function saveSettingsForm(){saveSettings({owner:$('setOwner').value.trim(),repo:$('setRepo').value.trim(),branch:$('setBranch').value.trim(),fadeSeconds:+$('setFade').value,appStyle:$('setAppStyle').value,token:$('setToken').value.trim(),youtubeApiKey:$('setYouTubeApiKey').value.trim()});closeModal();applyUiPreferences();renderAll();setStatus('Configuración guardada','ready')}
 function openYouTubeTab(){window.open('https://www.youtube.com/','_blank','noopener')}
 function changePin(){closeModal();openFirstSetup()}
 function downloadLibrary(){
@@ -808,6 +828,7 @@ async function syncToGitHub(){
 }
 
 const yt=document.createElement('script');yt.src='https://www.youtube.com/iframe_api';document.head.appendChild(yt);
+applyUiPreferences();
 loadInitialLibrary();
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 </script>

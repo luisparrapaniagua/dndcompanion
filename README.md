@@ -1,4 +1,4 @@
-# Leonardo's D&D companion v0.4.4
+# Leonardo's D&D companion v0.4.5
 
 Companion musical web/PWA para sesiones de D&D.
 
@@ -73,3 +73,12 @@ Las playlists privadas pueden requerir autenticación adicional y no forman part
 - Evita duplicados por `videoId`.
 - Detecta videos privados/eliminados.
 - Resumen final: importadas, duplicadas y no disponibles.
+
+## Cambios v0.4.5
+- Sidebar colapsable, con preferencia persistente por dispositivo.
+- Cada escena agrega reproducción en orden y aleatoria.
+- La reproducción de escena continúa automáticamente al terminar una pista.
+- Tarjetas de canciones más compactas y sin enlace YouTube Music.
+- Estilos: Legacy, Simple, Light y Medieval.
+- Selector colapsable con 60 emojis útiles.
+- Importación de playlist con previsualización y selección individual.
