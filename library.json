@@ -98,10 +98,19 @@
     {
       "id": "horror",
       "name": "Horror",
-      "icon": "👻",
+      "icon": ":-P",
       "description": "Ruinas, secretos, peligro y presencias extrañas",
       "accent": "#6e6588",
-      "tracks": []
+      "tracks": [
+        {
+          "title": "test",
+          "author": "",
+          "youtubeId": "Rsix-xK7S20",
+          "intensity": "Medium",
+          "id": "tr-msug8l9h-2intu",
+          "favorite": false
+        }
+      ]
     },
     {
       "id": "emotional",
