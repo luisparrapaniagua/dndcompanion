@@ -203,7 +203,7 @@ body.theme-medieval .audio-chip{background:#55371f;color:#edd2a1;border-color:#7
 
 /* ===== v0.5.0 — multi-module companion ===== */
 :root{
-  --ui-font:"Avenir Next Condensed","Arial Narrow","Helvetica Neue Condensed","Roboto Condensed",Arial,sans-serif;
+  --ui-font:"Audrey Sans","Audrey","Avenir Next Condensed","Arial Narrow","Helvetica Neue Condensed",Arial,sans-serif;
 }
 html,body,button,input,select,textarea{font-family:var(--ui-font)!important}
 .title h1,.track h3,.scene-title,.brand,.modalhead h2,.np strong{font-family:var(--ui-font)!important;font-weight:800;letter-spacing:.02em}
@@ -238,7 +238,7 @@ body.sidebar-unpinned:not(.sidebar-hovering) .now{left:68px}
 .scene-nav-buttons button{flex:1;border:1px solid #5b4632;background:#1c1612;color:#cfb995;border-radius:8px;padding:6px 8px;cursor:pointer;font-size:10px}
 
 /* Simple theme keeps visible square cards */
-body.theme-simple .grid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0}
+body.theme-simple .grid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
 body.theme-simple .track,body.theme-simple .scene-play-card{
   background:#151515!important;border:1px solid #444!important;border-radius:0!important;
   margin:0!important;padding:11px 12px!important;display:block!important
@@ -302,13 +302,43 @@ body.theme-simple .map-stage-wrap,body.theme-simple .stat{border-radius:0!import
  .map-scale-grid{grid-template-columns:1fr 1fr}
 }
 
+
+/* ===== Map viewport v0.5.2 ===== */
+.map-stage-wrap{
+  min-height:420px;
+  height:min(68vh,760px);
+  overflow:auto;
+  display:block;
+}
+.map-stage{
+  position:relative;
+  display:block;
+  min-width:100%;
+  min-height:100%;
+}
+.map-stage img{
+  display:block;
+  max-width:none;
+  height:auto;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+.map-zoom-group{display:flex;gap:6px;align-items:center}
+.map-zoom-group button{min-width:38px}
+.map-zoom-label{
+  font-size:10px;
+  color:var(--muted);
+  min-width:48px;
+  text-align:center
+}
+
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="sidebar">
   <div class="sidebar-head">
-    <div class="brand">Leonardo's D&D companion<small>Adventuring Toolkit · v0.5.0</small></div>
+    <div class="brand">Leonardo's D&D companion<small>Adventuring Toolkit · v0.5.2</small></div>
     <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Colapsar o expandir sidebar">‹</button>
   </div>
   <div class="rule"></div>
@@ -436,6 +466,9 @@ const LS_SETTINGS='dnd.v04.settings';
 const LS_PINHASH='dnd.v04.pinHash';
 const LS_MAPS='dnd.v05.maps';
 const LS_CHARACTERS='dnd.v05.characters';
+const MAP_DB_NAME='leonardo-dnd-companion';
+const MAP_DB_VERSION=1;
+const MAP_IMAGE_STORE='mapImages';
 
 let library={schemaVersion:1,revision:0,updatedAt:null,categories:[]};
 let remoteLibrary=null, selectedCategory=null, currentTrack=null;
@@ -452,6 +485,8 @@ let mapMeasureMode='line';
 let mapPointerActive=false;
 let mapRoutePoints=[];
 let mapLinePoints=[];
+let mapZoom=1;
+let mapFitZoom=1;
 let charactersData={version:1,characters:[]};
 let selectedCharacterId=null;
 const isiOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
@@ -1026,22 +1061,120 @@ async function syncToGitHub(){
 
 
 /* ===== Maps ===== */
+function openMapDb(){
+ return new Promise((resolve,reject)=>{
+   const req=indexedDB.open(MAP_DB_NAME,MAP_DB_VERSION);
+   req.onupgradeneeded=()=>{
+     const db=req.result;
+     if(!db.objectStoreNames.contains(MAP_IMAGE_STORE))db.createObjectStore(MAP_IMAGE_STORE,{keyPath:'id'});
+   };
+   req.onsuccess=()=>resolve(req.result);
+   req.onerror=()=>reject(req.error||new Error('No se pudo abrir IndexedDB.'));
+ });
+}
+async function putMapImage(id,dataUrl){
+ const db=await openMapDb();
+ return new Promise((resolve,reject)=>{
+   const tx=db.transaction(MAP_IMAGE_STORE,'readwrite');
+   tx.objectStore(MAP_IMAGE_STORE).put({id,dataUrl});
+   tx.oncomplete=()=>{db.close();resolve()};
+   tx.onerror=()=>{const e=tx.error;db.close();reject(e||new Error('No se pudo guardar la imagen.'))};
+   tx.onabort=()=>{const e=tx.error;db.close();reject(e||new Error('Guardado de imagen cancelado.'))};
+ });
+}
+async function getMapImage(id){
+ const db=await openMapDb();
+ return new Promise((resolve,reject)=>{
+   const tx=db.transaction(MAP_IMAGE_STORE,'readonly');
+   const req=tx.objectStore(MAP_IMAGE_STORE).get(id);
+   req.onsuccess=()=>{const result=req.result?.dataUrl||'';db.close();resolve(result)};
+   req.onerror=()=>{const e=req.error;db.close();reject(e||new Error('No se pudo leer la imagen.'))};
+ });
+}
+async function deleteMapImage(id){
+ const db=await openMapDb();
+ return new Promise((resolve,reject)=>{
+   const tx=db.transaction(MAP_IMAGE_STORE,'readwrite');
+   tx.objectStore(MAP_IMAGE_STORE).delete(id);
+   tx.oncomplete=()=>{db.close();resolve()};
+   tx.onerror=()=>{const e=tx.error;db.close();reject(e||new Error('No se pudo eliminar la imagen.'))};
+ });
+}
+async function migrateLegacyMapImages(){
+ let changed=false;
+ for(const m of (mapsData.maps||[])){
+   if(m.imageData){
+     try{
+       await putMapImage(m.id,m.imageData);
+       delete m.imageData;
+       m.hasImage=true;
+       changed=true;
+     }catch(e){console.warn('No se pudo migrar imagen del mapa',m.id,e)}
+   }
+ }
+ if(changed)saveMaps();
+}
 function loadModuleData(){
- try{mapsData=JSON.parse(localStorage.getItem(LS_MAPS)||'{"version":1,"maps":[]}')}catch{mapsData={version:1,maps:[]}}
+ try{mapsData=JSON.parse(localStorage.getItem(LS_MAPS)||'{"version":2,"maps":[]}')}catch{mapsData={version:2,maps:[]}}
  try{charactersData=JSON.parse(localStorage.getItem(LS_CHARACTERS)||'{"version":1,"characters":[]}')}catch{charactersData={version:1,characters:[]}}
+ mapsData.version=2;
  selectedMapId=mapsData.maps[0]?.id||null;
  selectedCharacterId=charactersData.characters[0]?.id||null;
+ migrateLegacyMapImages().catch(console.warn);
 }
-function saveMaps(){localStorage.setItem(LS_MAPS,JSON.stringify(mapsData))}
+function saveMaps(){
+ // Metadata only. Never store base64 map images in localStorage.
+ const clean={...mapsData,version:2,maps:(mapsData.maps||[]).map(m=>{
+   const x={...m};delete x.imageData;return x;
+ })};
+ mapsData=clean;
+ try{
+   localStorage.setItem(LS_MAPS,JSON.stringify(clean));
+ }catch(e){
+   console.error(e);
+   alert('No se pudo guardar la metadata del mapa en este dispositivo.');
+ }
+}
 function saveCharacters(){localStorage.setItem(LS_CHARACTERS,JSON.stringify(charactersData))}
 function exportJsonFile(obj,name){const b=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),400)}
-function exportMapsJson(){exportJsonFile(mapsData,'maps.json')}
+async function exportMapsJson(){
+ const exported={version:2,maps:[]};
+ for(const m of mapsData.maps){
+   let imageData='';
+   try{imageData=await getMapImage(m.id)}catch(e){console.warn(e)}
+   exported.maps.push({...m,imageData});
+ }
+ exportJsonFile(exported,'maps.json');
+}
 function exportCharactersJson(){exportJsonFile(charactersData,'characters.json')}
-async function importMapsJson(inp){const f=inp.files?.[0];if(!f)return;try{const o=JSON.parse(await f.text());if(!Array.isArray(o.maps))throw 0;mapsData=o;saveMaps();selectedMapId=mapsData.maps[0]?.id||null;renderMapsModule()}catch{alert('maps.json no válido.')}}
+async function importMapsJson(inp){
+ const f=inp.files?.[0];if(!f)return;
+ try{
+   const o=JSON.parse(await f.text());if(!Array.isArray(o.maps))throw 0;
+   const cleanMaps=[];
+   for(const imported of o.maps){
+     const m={...imported};
+     if(m.imageData){
+       await putMapImage(m.id,m.imageData);
+       m.hasImage=true;
+       delete m.imageData;
+     }
+     cleanMaps.push(m);
+   }
+   mapsData={version:2,maps:cleanMaps};
+   saveMaps();
+   selectedMapId=mapsData.maps[0]?.id||null;
+   renderMapsModule();
+ }catch(e){
+   console.error(e);
+   alert('maps.json no válido o no se pudo almacenar una imagen.');
+ }
+ inp.value='';
+}
 async function importCharactersJson(inp){const f=inp.files?.[0];if(!f)return;try{const o=JSON.parse(await f.text());if(!Array.isArray(o.characters))throw 0;charactersData=o;saveCharacters();selectedCharacterId=charactersData.characters[0]?.id||null;renderCharactersModule()}catch{alert('characters.json no válido.')}}
 
 function openMapForm(id=''){
- const m=id?mapsData.maps.find(x=>x.id===id):{name:'',imageData:'',pixelWidth:0,pixelHeight:0,worldWidth:100,worldHeight:100,unit:'ft'};
+ const m=id?mapsData.maps.find(x=>x.id===id):{name:'',pixelWidth:0,pixelHeight:0,worldWidth:100,worldHeight:100,unit:'ft',hasImage:false};
  modal(`<div class="modalhead"><h2>${id?'Editar':'Nuevo'} mapa</h2><button class="close" onclick="closeModal()">×</button></div>
  <div class="modalbody"><div class="formgrid">
    <div class="field full"><label>Nombre</label><input id="mapName" value="${escapeHtml(m.name||'')}"></div>
@@ -1050,53 +1183,186 @@ function openMapForm(id=''){
    <div class="field"><label>Alto total real</label><input id="mapWorldH" type="number" step="any" min="0" value="${m.worldHeight||100}"></div>
    <div class="field"><label>Unidad</label><select id="mapUnit">${['ft','m','km','mi','hex','cuadros'].map(u=>`<option ${u===m.unit?'selected':''}>${u}</option>`).join('')}</select></div>
  </div>
- <div class="notice" style="margin-top:12px">La escala usa el ancho y alto completos del mapa. Las mediciones lineales y de ruta se calculan proporcionalmente sobre la imagen.</div>
- </div><div class="modalfoot">${id?`<button class="dangerbtn" onclick="deleteMap('${id}')">Eliminar</button>`:''}<button class="secondarybtn" onclick="closeModal()">Cancelar</button><button class="primarybtn" onclick="saveMapForm('${id}')">Guardar</button></div>`);
+ <div class="notice" style="margin-top:12px">Las imágenes se guardan en IndexedDB para evitar el límite de tamaño de localStorage. El JSON exportado sí incluye la imagen para poder mover el mapa a otro dispositivo.</div>
+ </div><div class="modalfoot">${id?`<button class="dangerbtn" onclick="deleteMap('${id}')">Eliminar</button>`:''}<button class="secondarybtn" onclick="closeModal()">Cancelar</button><button class="primarybtn" id="saveMapBtn" onclick="saveMapForm('${id}')">Guardar</button></div>`);
 }
 async function fileToDataUrl(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
 async function imageDimensions(dataUrl){return new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve({w:i.naturalWidth,h:i.naturalHeight});i.onerror=reject;i.src=dataUrl})}
 async function saveMapForm(id){
- const name=$('mapName').value.trim(),worldWidth=+$('mapWorldW').value,worldHeight=+$('mapWorldH').value,unit=$('mapUnit').value,file=$('mapImageFile').files?.[0];
- if(!name||worldWidth<=0||worldHeight<=0)return alert('Nombre y escala válida son obligatorios.');
- let m=id?mapsData.maps.find(x=>x.id===id):{id:uid('map'),imageData:'',pixelWidth:0,pixelHeight:0};
- if(file){m.imageData=await fileToDataUrl(file);const d=await imageDimensions(m.imageData);m.pixelWidth=d.w;m.pixelHeight=d.h}
- if(!m.imageData)return alert('Seleccione una imagen PNG o JPG.');
- Object.assign(m,{name,worldWidth,worldHeight,unit});
- if(!id)mapsData.maps.push(m);
- saveMaps();selectedMapId=m.id;closeModal();renderMapsModule();
+ const btn=$('saveMapBtn');
+ if(btn){btn.disabled=true;btn.textContent='Guardando...'}
+ try{
+   const name=$('mapName').value.trim(),worldWidth=+$('mapWorldW').value,worldHeight=+$('mapWorldH').value,unit=$('mapUnit').value,file=$('mapImageFile').files?.[0];
+   if(!name||worldWidth<=0||worldHeight<=0)throw new Error('Nombre y escala válida son obligatorios.');
+
+   let m=id?mapsData.maps.find(x=>x.id===id):{id:uid('map'),pixelWidth:0,pixelHeight:0,hasImage:false};
+   if(!m)throw new Error('Mapa no encontrado.');
+
+   if(file){
+     const dataUrl=await fileToDataUrl(file);
+     const d=await imageDimensions(dataUrl);
+     await putMapImage(m.id,dataUrl);
+     m.pixelWidth=d.w;m.pixelHeight=d.h;m.hasImage=true;
+   }else if(!id){
+     throw new Error('Seleccione una imagen PNG o JPG.');
+   }else{
+     const existing=await getMapImage(m.id);
+     if(!existing)throw new Error('Este mapa no tiene una imagen almacenada. Seleccione una imagen.');
+     m.hasImage=true;
+   }
+
+   Object.assign(m,{name,worldWidth,worldHeight,unit});
+   if(!id)mapsData.maps.push(m);
+   saveMaps();
+   selectedMapId=m.id;
+   closeModal();
+   renderMapsModule();
+ }catch(e){
+   console.error(e);
+   alert('No se pudo guardar el mapa: '+(e?.message||e));
+ }finally{
+   if(btn){btn.disabled=false;btn.textContent='Guardar'}
+ }
 }
-function deleteMap(id){if(!confirm('¿Eliminar este mapa?'))return;mapsData.maps=mapsData.maps.filter(x=>x.id!==id);saveMaps();selectedMapId=mapsData.maps[0]?.id||null;closeModal();renderMapsModule()}
+async function deleteMap(id){
+ if(!confirm('¿Eliminar este mapa?'))return;
+ mapsData.maps=mapsData.maps.filter(x=>x.id!==id);
+ saveMaps();
+ try{await deleteMapImage(id)}catch(e){console.warn(e)}
+ selectedMapId=mapsData.maps[0]?.id||null;closeModal();renderMapsModule()
+}
 function renderMapsModule(){
  const list=$('mapList');if(!list)return;
  list.innerHTML=mapsData.maps.map(m=>`<div class="map-list-item ${m.id===selectedMapId?'active':''}" onclick="selectMap('${m.id}')"><span>🗺️</span><div class="grow"><strong>${escapeHtml(m.name)}</strong><small>${m.worldWidth} × ${m.worldHeight} ${escapeHtml(m.unit)}</small></div><button class="mini" onclick="event.stopPropagation();openMapForm('${m.id}')">Editar</button></div>`).join('')||'<div class="map-empty">Sin mapas.</div>';
  renderSelectedMap();
 }
-function selectMap(id){selectedMapId=id;mapRoutePoints=[];mapLinePoints=[];renderMapsModule()}
+function selectMap(id){selectedMapId=id;mapRoutePoints=[];mapLinePoints=[];mapZoom=1;mapFitZoom=1;renderMapsModule()}
 function currentMap(){return mapsData.maps.find(x=>x.id===selectedMapId)}
-function renderSelectedMap(){
+async function renderSelectedMap(){
  const m=currentMap(),stage=$('mapStage'),controls=$('mapControls'),status=$('mapStatus');if(!stage||!controls)return;
  if(!m){stage.innerHTML='<div class="map-empty">Agregue un mapa PNG o JPG.</div>';controls.innerHTML='';status.innerHTML='';return}
  controls.innerHTML=`<div class="map-toolbar">
    <button class="secondarybtn measure-toggle ${mapMeasureMode==='line'?'active':''}" onclick="setMeasureMode('line')">Distancia lineal</button>
    <button class="secondarybtn measure-toggle ${mapMeasureMode==='route'?'active':''}" onclick="setMeasureMode('route')">Ruta a mano alzada</button>
    <button class="secondarybtn" onclick="clearMapMeasurement()">Limpiar medición</button>
+   <div class="map-zoom-group">
+     <button class="secondarybtn" onclick="zoomMapOut()" title="Alejar">−</button>
+     <button class="secondarybtn" onclick="fitMapToViewport()" title="Ajustar mapa al espacio">Ajustar</button>
+     <button class="secondarybtn" onclick="zoomMapIn()" title="Acercar">+</button>
+     <span class="map-zoom-label" id="mapZoomLabel">100%</span>
+   </div>
    <button class="secondarybtn" onclick="openMapForm('${m.id}')">Editar escala</button>
  </div><div class="map-mode-help">${mapMeasureMode==='line'?'Toque/clic en origen y luego en destino.':'Arrastre sobre el mapa siguiendo la ruta.'}</div><div class="distance-readout" id="distanceReadout">Sin medición</div>`;
- stage.innerHTML=`<img id="mapImage" src="${m.imageData}" alt="${escapeHtml(m.name)}"><canvas id="mapCanvas"></canvas>`;
+
+ stage.innerHTML='<div class="map-empty">Cargando mapa…</div>';
+ let imageData='';
+ try{imageData=await getMapImage(m.id)}catch(e){console.error(e)}
+ if(!imageData){
+   stage.innerHTML='<div class="map-empty">No se encontró la imagen de este mapa. Use Editar escala para volver a cargarla.</div>';
+   status.innerHTML=`<span>Escala: ${m.worldWidth} × ${m.worldHeight} ${escapeHtml(m.unit)}</span>`;
+   return;
+ }
+ stage.removeAttribute('data-zoom-initialized');
+ stage.innerHTML=`<img id="mapImage" src="${imageData}" alt="${escapeHtml(m.name)}"><canvas id="mapCanvas"></canvas>`;
  const img=$('mapImage');
  img.onload=()=>setupMapCanvas(m,img);
  if(img.complete)setupMapCanvas(m,img);
  status.innerHTML=`<span>Escala: ${m.worldWidth} × ${m.worldHeight} ${escapeHtml(m.unit)}</span><span>Imagen: ${m.pixelWidth} × ${m.pixelHeight}px</span>`;
 }
 function setupMapCanvas(m,img){
- const canvas=$('mapCanvas');if(!canvas)return;
- const displayW=img.width||img.naturalWidth,displayH=img.height||img.naturalHeight;
- canvas.width=displayW;canvas.height=displayH;canvas.style.width=displayW+'px';canvas.style.height=displayH+'px';
+ const canvas=$('mapCanvas'),wrap=document.querySelector('.map-stage-wrap'),stage=$('mapStage');
+ if(!canvas||!wrap||!stage)return;
+
+ // Fit the original image inside the visible viewport by default.
+ const naturalW=img.naturalWidth||m.pixelWidth||1;
+ const naturalH=img.naturalHeight||m.pixelHeight||1;
+ const availableW=Math.max(1,wrap.clientWidth-2);
+ const availableH=Math.max(1,wrap.clientHeight-2);
+
+ mapFitZoom=Math.min(availableW/naturalW,availableH/naturalH,1);
+ if(!Number.isFinite(mapFitZoom)||mapFitZoom<=0)mapFitZoom=1;
+
+ // First render of a map uses fit-to-screen.
+ if(!stage.dataset.zoomInitialized){
+   mapZoom=mapFitZoom;
+   stage.dataset.zoomInitialized='1';
+ }
+
+ applyMapZoom();
+
  canvas.onpointerdown=e=>mapPointerDown(e,canvas);
  canvas.onpointermove=e=>mapPointerMove(e,canvas);
  canvas.onpointerup=e=>mapPointerUp(e,canvas);
  canvas.onpointercancel=e=>mapPointerUp(e,canvas);
+
  drawMapMeasurement();
+ updateMapZoomLabel();
+}
+function applyMapZoom(){
+ const img=$('mapImage'),canvas=$('mapCanvas'),stage=$('mapStage');
+ if(!img||!canvas||!stage)return;
+ const naturalW=img.naturalWidth||currentMap()?.pixelWidth||1;
+ const naturalH=img.naturalHeight||currentMap()?.pixelHeight||1;
+ const displayW=Math.max(1,Math.round(naturalW*mapZoom));
+ const displayH=Math.max(1,Math.round(naturalH*mapZoom));
+
+ img.style.width=displayW+'px';
+ img.style.height=displayH+'px';
+
+ // Canvas coordinate space remains at original image resolution.
+ canvas.width=naturalW;
+ canvas.height=naturalH;
+ canvas.style.width=displayW+'px';
+ canvas.style.height=displayH+'px';
+
+ stage.style.width=displayW+'px';
+ stage.style.height=displayH+'px';
+ stage.style.minWidth=displayW+'px';
+ stage.style.minHeight=displayH+'px';
+
+ drawMapMeasurement();
+ updateMapZoomLabel();
+}
+function fitMapToViewport(){
+ const img=$('mapImage'),wrap=document.querySelector('.map-stage-wrap');
+ if(!img||!wrap)return;
+ const naturalW=img.naturalWidth||currentMap()?.pixelWidth||1;
+ const naturalH=img.naturalHeight||currentMap()?.pixelHeight||1;
+ mapFitZoom=Math.min(Math.max(1,wrap.clientWidth-2)/naturalW,Math.max(1,wrap.clientHeight-2)/naturalH,1);
+ mapZoom=mapFitZoom;
+ applyMapZoom();
+ wrap.scrollLeft=0;
+ wrap.scrollTop=0;
+}
+function zoomMapIn(){
+ const wrap=document.querySelector('.map-stage-wrap');
+ const beforeX=wrap?wrap.scrollLeft+wrap.clientWidth/2:0;
+ const beforeY=wrap?wrap.scrollTop+wrap.clientHeight/2:0;
+ const old=mapZoom;
+ mapZoom=Math.min(4,mapZoom*1.25);
+ applyMapZoom();
+ if(wrap&&old>0){
+   const ratio=mapZoom/old;
+   wrap.scrollLeft=Math.max(0,beforeX*ratio-wrap.clientWidth/2);
+   wrap.scrollTop=Math.max(0,beforeY*ratio-wrap.clientHeight/2);
+ }
+}
+function zoomMapOut(){
+ const wrap=document.querySelector('.map-stage-wrap');
+ const beforeX=wrap?wrap.scrollLeft+wrap.clientWidth/2:0;
+ const beforeY=wrap?wrap.scrollTop+wrap.clientHeight/2:0;
+ const old=mapZoom;
+ mapZoom=Math.max(Math.min(mapFitZoom,1)*0.5,mapZoom/1.25);
+ applyMapZoom();
+ if(wrap&&old>0){
+   const ratio=mapZoom/old;
+   wrap.scrollLeft=Math.max(0,beforeX*ratio-wrap.clientWidth/2);
+   wrap.scrollTop=Math.max(0,beforeY*ratio-wrap.clientHeight/2);
+ }
+}
+function updateMapZoomLabel(){
+ const el=$('mapZoomLabel');
+ if(el)el.textContent=Math.round(mapZoom*100)+'%';
 }
 function canvasPoint(e,canvas){const r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)*(canvas.width/r.width),y:(e.clientY-r.top)*(canvas.height/r.height)}}
 function setMeasureMode(mode){mapMeasureMode=mode;mapRoutePoints=[];mapLinePoints=[];renderSelectedMap()}
@@ -1124,6 +1390,13 @@ function currentMeasuredDistance(){
 }
 function updateDistanceReadout(){const m=currentMap(),el=$('distanceReadout');if(!el||!m)return;const d=currentMeasuredDistance();el.textContent=d?`Distancia: ${formatDistance(d)} ${m.unit}`:'Sin medición'}
 function formatDistance(d){return d>=100?d.toFixed(0):d>=10?d.toFixed(1):d.toFixed(2)}
+
+
+window.addEventListener('resize',()=>{
+ if(activeModule!=='maps'||!currentMap())return;
+ const wasNearFit=Math.abs(mapZoom-mapFitZoom)<0.02;
+ if(wasNearFit)setTimeout(fitMapToViewport,80);
+});
 
 /* ===== Characters ===== */
 function openCharacterForm(id=''){

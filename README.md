@@ -1,4 +1,4 @@
-# Leonardo's D&D companion v0.5.0
+# Leonardo's D&D companion v0.5.2
 
 Companion musical web/PWA para sesiones de D&D.
 
@@ -109,3 +109,29 @@ Las playlists privadas pueden requerir autenticación adicional y no forman part
 - Personalidad, objetivos, vínculos, secretos del DM, notas y tags.
 - HP editable durante la sesión.
 - Importar/exportar `characters.json`.
+
+
+## Cambios v0.5.1
+
+- Corrección de persistencia de mapas:
+  - imágenes en IndexedDB;
+  - metadata en localStorage;
+  - ya no se guardan PNG/JPG base64 dentro de localStorage.
+- Migración automática de mapas antiguos que sí tengan `imageData`.
+- Exportar `maps.json` sigue incluyendo las imágenes para portabilidad.
+- Importar `maps.json` restaura imágenes en IndexedDB.
+- Tema Simple recupera 10 px de separación entre boxes.
+- Fuente preferida: Audrey Sans / Audrey, con fallback sans serif condensado.
+
+
+## Cambios v0.5.2
+
+- Los mapas se muestran ajustados al espacio disponible en pantalla.
+- La resolución original se conserva solo como referencia interna para medición.
+- Controles de zoom:
+  - Alejar
+  - Ajustar
+  - Acercar
+- Zoom máximo: 400%.
+- Las mediciones siguen usando coordenadas de resolución original y no cambian al hacer zoom.
+- El botón Ajustar vuelve a encajar completamente el mapa en el visor.
