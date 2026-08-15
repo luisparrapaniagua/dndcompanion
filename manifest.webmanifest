@@ -1,0 +1,10 @@
+{
+  "name": "D&D Music Companion",
+  "short_name": "D&D Music",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0d1015",
+  "theme_color": "#0d1015",
+  "description": "Companion musical para sesiones de Dungeons & Dragons."
+}
