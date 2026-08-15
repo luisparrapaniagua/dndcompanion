@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#110d0a">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
-<title>D&D Music Companion</title>
+<title>Leonardo's D&D companion</title>
 <style>
 :root{
   --ink:#efe4cf; --muted:#a99c89; --gold:#c69a52; --gold2:#e3bd79;
@@ -48,6 +48,9 @@ button{touch-action:manipulation}
 .top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .iconbtn,.textbtn{border:1px solid var(--line);background:#1b1511;color:#d5c5ac;border-radius:9px;padding:9px 11px;cursor:pointer}
 .iconbtn:hover,.textbtn:hover{border-color:#755a37;color:white}
+.textbtn:disabled,.iconbtn:disabled,.primarybtn:disabled,.secondarybtn:disabled{
+ opacity:.55;cursor:not-allowed;filter:saturate(.55)
+}
 .sync-state{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px}
 .sync-dot{width:7px;height:7px;border-radius:50%;background:#777}
 .sync-dot.clean{background:#6f9b6e}.sync-dot.dirty{background:#c69a52}.sync-dot.conflict{background:#b85e53}
@@ -99,16 +102,14 @@ button{touch-action:manipulation}
 <body>
 <div class="app">
 <aside class="sidebar">
-  <div class="brand">D&D MUSIC COMPANION<small>Codex Sonorum · v0.4</small></div>
+  <div class="brand">Leonardo's D&D companion<small>Codex Sonorum · v0.4.3</small></div>
   <div class="rule"></div>
   <div class="section-label">Escenas</div>
   <div id="categories"></div>
-  <div class="section-label">Acceso rápido</div>
-  <div class="quick" id="quickScenes"></div>
   <div class="section-label edit-only hidden">Biblioteca</div>
   <div class="side-actions edit-only hidden">
-    <button onclick="openLibrary()">Editar</button>
-    <button onclick="openImportPlaylist()">Importar playlist</button>
+    <button onclick="openLibrary()">Categorías</button>
+    <button onclick="openCategoryForm(selectedCategory)">Editar actual</button>
   </div>
 </aside>
 
@@ -121,7 +122,7 @@ button{touch-action:manipulation}
     </div>
     <div class="top-actions">
       <button class="textbtn edit-only hidden" onclick="openLibrary()">Biblioteca</button>
-      <button class="textbtn edit-only hidden" onclick="syncToGitHub()">Sync</button>
+      <button class="textbtn edit-only hidden" data-action="sync" onclick="syncToGitHub()">Sync</button>
       <button class="iconbtn" id="lockBtn" onclick="toggleEditMode()">🔒</button>
       <button class="iconbtn" onclick="openSettings()">⚙</button>
       <div class="sync-state"><span id="syncDot" class="sync-dot"></span><span id="syncText">Cargando...</span></div>
@@ -185,6 +186,7 @@ let library={schemaVersion:1,revision:0,updatedAt:null,categories:[]};
 let remoteLibrary=null, selectedCategory=null, currentTrack=null;
 let players=[null,null], activeIndex=0, ytReady=false, readyCount=0, audioReady=false, transitionTimer=null;
 let editMode=false, importerPlayer=null, importerResolve=null, importerState=null;
+let syncInProgress=false;
 const isiOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 const $=id=>document.getElementById(id);
 const settings=()=>JSON.parse(localStorage.getItem(LS_SETTINGS)||'{}');
@@ -228,7 +230,7 @@ function markDirty(){
   library.baseRevision=remoteLibrary?.revision ?? library.revision ?? 0;
   localStorage.setItem(LS_DRAFT,JSON.stringify(library));localStorage.setItem(LS_DIRTY,'1');setSync('Cambios locales','dirty');
 }
-function renderAll(){renderCategories();renderQuick();renderHeader();renderTracks();updateEditUI()}
+function renderAll(){renderCategories();renderHeader();renderTracks();updateEditUI()}
 function selectedCat(){return library.categories.find(c=>c.id===selectedCategory)||library.categories[0]}
 function renderHeader(){
  const c=selectedCat(); if(!c)return;
@@ -240,11 +242,7 @@ function renderCategories(){
  $('categories').innerHTML=library.categories.map(c=>`<button class="category ${c.id===selectedCategory?'active':''}" data-id="${c.id}" style="${c.id===selectedCategory?`--cat-accent:${c.accent||'#c69a52'}`:''}"><span>${escapeHtml(c.icon||'◆')}</span><span>${escapeHtml(c.name)}</span><span class="count">${c.tracks?.length||0}</span></button>`).join('');
  document.querySelectorAll('.category').forEach(b=>b.onclick=()=>{selectedCategory=b.dataset.id;renderAll()});
 }
-function renderQuick(){
- const cats=library.categories.slice(0,4);
- $('quickScenes').innerHTML=cats.map(c=>`<button data-id="${c.id}">${escapeHtml(c.icon||'◆')} ${escapeHtml(c.name)}</button>`).join('');
- document.querySelectorAll('#quickScenes button').forEach(b=>b.onclick=()=>{selectedCategory=b.dataset.id;renderAll();const c=selectedCat();if(c?.tracks?.[0])playTrack(c.tracks[0],c)});
-}
+
 function renderTracks(){
  const c=selectedCat(); if(!c){$('tracks').innerHTML='';return}
  const q=($('searchInput')?.value||'').toLowerCase(), f=$('intensityFilter')?.value||'';
@@ -332,12 +330,13 @@ function openFirstSetup(){
 }
 async function saveFirstPin(){const p=$('newPin').value.trim();if(p.length<4)return alert('Use al menos 4 caracteres.');localStorage.setItem(LS_PINHASH,await sha256(p));editMode=true;closeModal();renderAll();openSettings()}
 
-function openLibrary(tab='categories'){
+
+function openLibrary(){
  if(!editMode)return toggleEditMode();
- modal(`<div class="modalhead"><h2>Biblioteca</h2><button class="close" onclick="closeModal()">×</button></div>
- <div class="modalbody"><div class="tabs"><button class="${tab==='categories'?'active':''}" onclick="closeModal();openLibrary('categories')">Categorías</button><button class="${tab==='tracks'?'active':''}" onclick="closeModal();openLibrary('tracks')">Pistas</button></div><div id="libraryBody"></div></div>
+ modal(`<div class="modalhead"><h2>Categorías</h2><button class="close" onclick="closeModal()">×</button></div>
+ <div class="modalbody"><div id="libraryBody"></div></div>
  <div class="modalfoot"><button class="secondarybtn" onclick="closeModal()">Cerrar</button></div>`);
- if(tab==='categories')renderCategoryEditor();else renderTrackEditor();
+ renderCategoryEditor();
 }
 function renderCategoryEditor(){
  $('libraryBody').innerHTML=`<div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="primarybtn" onclick="openCategoryForm()">+ Categoría</button></div><div class="library-list">${
@@ -345,50 +344,119 @@ function renderCategoryEditor(){
  }</div>`;
 }
 function openCategoryForm(id){
- const c=id?library.categories.find(x=>x.id===id):{name:'',icon:'◆',description:'',accent:'#c69a52'};
- modal(`<div class="modalhead"><h2>${id?'Editar':'Nueva'} categoría</h2><button class="close" onclick="closeModal()">×</button></div><div class="modalbody"><div class="formgrid">
- <div class="field"><label>Nombre</label><input id="catName" value="${escapeHtml(c.name)}"></div><div class="field"><label>Icono / emoji</label><input id="catIcon" value="${escapeHtml(c.icon||'◆')}"></div>
- <div class="field full"><label>Descripción</label><input id="catDesc" value="${escapeHtml(c.description||'')}"></div><div class="field"><label>Color</label><input id="catAccent" type="color" value="${c.accent||'#c69a52'}"></div>
- </div></div><div class="modalfoot">${id?`<button class="dangerbtn" onclick="deleteCategory('${id}')">Eliminar</button>`:''}<button class="secondarybtn" onclick="openLibrary()">Cancelar</button><button class="primarybtn" onclick="saveCategory('${id||''}')">Guardar</button></div>`);
+ const isNew=!id;
+ const c=isNew?{id:'',name:'',icon:'◆',description:'',accent:'#c69a52',tracks:[]}:library.categories.find(x=>x.id===id);
+ if(!c)return;
+ modal(`<div class="modalhead"><h2>${isNew?'Nueva':'Editar'} categoría</h2><button class="close" onclick="closeModal()">×</button></div>
+ <div class="modalbody">
+   <div class="formgrid">
+     <div class="field"><label>Nombre</label><input id="catName" value="${escapeHtml(c.name)}"></div>
+     <div class="field"><label>Icono / emoji</label><input id="catIcon" value="${escapeHtml(c.icon||'◆')}"></div>
+     <div class="field full"><label>Descripción</label><input id="catDesc" value="${escapeHtml(c.description||'')}"></div>
+     <div class="field"><label>Color</label><input id="catAccent" type="color" value="${c.accent||'#c69a52'}"></div>
+   </div>
+   ${isNew ? '' : `
+   <div class="rule" style="margin:22px 0"></div>
+   <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px">
+      <div><div class="eyebrow" style="margin:0 0 4px">Pistas de la categoría</div><strong>${c.tracks.length} pistas</strong></div>
+      <div><button class="secondarybtn" onclick="openImportPlaylist('${c.id}')">Importar playlist</button> <button class="primarybtn" onclick="openTrackForm('', '${c.id}')">+ Pista</button></div>
+   </div>
+   <div class="library-list" id="categoryTrackList">
+     ${renderCategoryTrackRows(c)}
+   </div>`}
+ </div>
+ <div class="modalfoot">
+   ${!isNew?`<button class="dangerbtn" onclick="deleteCategory('${c.id}')">Eliminar categoría</button>`:''}
+   <button class="secondarybtn" onclick="openLibrary()">Volver</button>
+   <button class="primarybtn" onclick="saveCategory('${c.id||''}')">Guardar categoría</button>
+ </div>`);
+}
+function renderCategoryTrackRows(c){
+ if(!c.tracks.length)return '<div class="empty">Esta categoría todavía no tiene pistas.</div>';
+ return c.tracks.map((t,i)=>`<div class="edititem">
+   <div class="grow"><strong>${escapeHtml(t.title)}</strong><small>${escapeHtml(t.author||'YouTube')} · ${escapeHtml(t.intensity||'')}</small></div>
+   <button class="mini" onclick="moveTrackInCategory('${c.id}','${t.id}',-1)">↑</button>
+   <button class="mini" onclick="moveTrackInCategory('${c.id}','${t.id}',1)">↓</button>
+   <button class="mini" onclick="openTrackForm('${t.id}','${c.id}')">Editar</button>
+ </div>`).join('');
 }
 function saveCategory(id){
  const obj={name:$('catName').value.trim(),icon:$('catIcon').value.trim()||'◆',description:$('catDesc').value.trim(),accent:$('catAccent').value};
  if(!obj.name)return alert('Ingrese un nombre.');
- if(id){Object.assign(library.categories.find(x=>x.id===id),obj)}else{obj.id=uid('cat');obj.tracks=[];library.categories.push(obj);selectedCategory=obj.id}
+ if(id){
+   const cat=library.categories.find(x=>x.id===id);
+   Object.assign(cat,obj);
+ }else{
+   obj.id=uid('cat');obj.tracks=[];
+   library.categories.push(obj);selectedCategory=obj.id;
+ }
  markDirty();closeModal();renderAll();openLibrary();
 }
-function deleteCategory(id){const c=library.categories.find(x=>x.id===id);if(c.tracks.length&&!confirm(`La categoría contiene ${c.tracks.length} pistas. ¿Eliminar todo?`))return;if(!c.tracks.length&&!confirm('¿Eliminar categoría?'))return;library.categories=library.categories.filter(x=>x.id!==id);if(selectedCategory===id)selectedCategory=library.categories[0]?.id;markDirty();closeModal();renderAll();openLibrary()}
-function moveCategory(id,d){const i=library.categories.findIndex(x=>x.id===id),j=i+d;if(j<0||j>=library.categories.length)return;[library.categories[i],library.categories[j]]=[library.categories[j],library.categories[i]];markDirty();renderAll();renderCategoryEditor()}
-
-function renderTrackEditor(){
- const c=selectedCat();
- $('libraryBody').innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px"><span style="color:#a99c89;font-size:12px">${escapeHtml(c.name)}</span><div><button class="secondarybtn" onclick="openImportPlaylist()">Importar playlist</button> <button class="primarybtn" onclick="openTrackForm()">+ Pista</button></div></div><div class="library-list">${
- c.tracks.map((t,i)=>`<div class="edititem"><div class="grow"><strong>${escapeHtml(t.title)}</strong><small>${escapeHtml(t.author||'YouTube')} · ${escapeHtml(t.intensity||'')}</small></div><button class="mini" onclick="moveTrack('${t.id}',-1)">↑</button><button class="mini" onclick="moveTrack('${t.id}',1)">↓</button><button class="mini" onclick="openTrackForm('${t.id}')">Editar</button></div>`).join('')||'<div class="empty">Sin pistas.</div>'
- }</div>`;
+function deleteCategory(id){
+ const c=library.categories.find(x=>x.id===id);
+ if(!c)return;
+ const msg=c.tracks.length?`La categoría contiene ${c.tracks.length} pistas. ¿Eliminar categoría y todas sus pistas?`:'¿Eliminar categoría?';
+ if(!confirm(msg))return;
+ library.categories=library.categories.filter(x=>x.id!==id);
+ if(selectedCategory===id)selectedCategory=library.categories[0]?.id;
+ markDirty();closeModal();renderAll();openLibrary();
+}
+function moveCategory(id,d){
+ const i=library.categories.findIndex(x=>x.id===id),j=i+d;
+ if(j<0||j>=library.categories.length)return;
+ [library.categories[i],library.categories[j]]=[library.categories[j],library.categories[i]];
+ markDirty();renderAll();renderCategoryEditor();
+}
+function moveTrackInCategory(catId,trackId,d){
+ const c=library.categories.find(x=>x.id===catId); if(!c)return;
+ const i=c.tracks.findIndex(x=>x.id===trackId),j=i+d;
+ if(j<0||j>=c.tracks.length)return;
+ [c.tracks[i],c.tracks[j]]=[c.tracks[j],c.tracks[i]];
+ markDirty();renderTracks();openCategoryForm(catId);
 }
 function extractYouTubeId(v){try{const u=new URL(v);if(u.hostname.includes('youtu.be'))return u.pathname.slice(1).split('/')[0];return u.searchParams.get('v')||v}catch{return v.trim()}}
-function openTrackForm(id){
- const c=selectedCat(),t=id?c.tracks.find(x=>x.id===id):{title:'',author:'',youtubeId:'',intensity:'Medium',favorite:false};
- modal(`<div class="modalhead"><h2>${id?'Editar':'Nueva'} pista</h2><button class="close" onclick="closeModal()">×</button></div><div class="modalbody"><div class="formgrid">
- <div class="field full"><label>Título</label><input id="trTitle" value="${escapeHtml(t.title)}"></div><div class="field"><label>Autor / canal</label><input id="trAuthor" value="${escapeHtml(t.author||'')}"></div><div class="field"><label>Intensidad</label><select id="trIntensity">${['Calm','Soft','Warm','Medium','High','Epic','Boss'].map(x=>`<option ${x===t.intensity?'selected':''}>${x}</option>`).join('')}</select></div>
- <div class="field full"><label>YouTube o YouTube Music URL / ID</label><input id="trUrl" value="${escapeHtml(t.youtubeId)}"></div><div class="field"><label>Destino</label><select id="trCat">${library.categories.map(x=>`<option value="${x.id}" ${x.id===c.id?'selected':''}>${escapeHtml(x.name)}</option>`).join('')}</select></div>
- </div></div><div class="modalfoot">${id?`<button class="dangerbtn" onclick="deleteTrack('${id}')">Eliminar</button>`:''}<button class="secondarybtn" onclick="openLibrary('tracks')">Cancelar</button><button class="primarybtn" onclick="saveTrack('${id||''}')">Guardar</button></div>`);
-}
-function saveTrack(id){
- const src=selectedCat(),dest=library.categories.find(x=>x.id===$('trCat').value),obj={title:$('trTitle').value.trim(),author:$('trAuthor').value.trim(),youtubeId:extractYouTubeId($('trUrl').value),intensity:$('trIntensity').value};
- if(!obj.title||!obj.youtubeId)return alert('Título y video son obligatorios.');
- if(id){const t=src.tracks.find(x=>x.id===id);Object.assign(t,obj);if(dest.id!==src.id){src.tracks=src.tracks.filter(x=>x.id!==id);dest.tracks.push(t)}}else dest.tracks.push({...obj,id:uid('tr'),favorite:false});
- markDirty();closeModal();renderAll();openLibrary('tracks');
-}
-function deleteTrack(id){if(!confirm('¿Eliminar esta pista?'))return;const c=selectedCat();c.tracks=c.tracks.filter(x=>x.id!==id);markDirty();closeModal();renderAll();openLibrary('tracks')}
-function moveTrack(id,d){const c=selectedCat(),i=c.tracks.findIndex(x=>x.id===id),j=i+d;if(j<0||j>=c.tracks.length)return;[c.tracks[i],c.tracks[j]]=[c.tracks[j],c.tracks[i]];markDirty();renderTracks();renderTrackEditor()}
 
+function openTrackForm(id,catId){
+ const src=library.categories.find(x=>x.id===catId)||selectedCat();
+ const t=id?src.tracks.find(x=>x.id===id):{title:'',author:'',youtubeId:'',intensity:'Medium',favorite:false};
+ if(!src||!t)return;
+ modal(`<div class="modalhead"><h2>${id?'Editar':'Nueva'} pista</h2><button class="close" onclick="closeModal()">×</button></div><div class="modalbody"><div class="formgrid">
+ <div class="field full"><label>Título</label><input id="trTitle" value="${escapeHtml(t.title)}"></div>
+ <div class="field"><label>Autor / canal</label><input id="trAuthor" value="${escapeHtml(t.author||'')}"></div>
+ <div class="field"><label>Intensidad</label><select id="trIntensity">${['Calm','Soft','Warm','Medium','High','Epic','Boss'].map(x=>`<option ${x===t.intensity?'selected':''}>${x}</option>`).join('')}</select></div>
+ <div class="field full"><label>YouTube o YouTube Music URL / ID</label><input id="trUrl" value="${escapeHtml(t.youtubeId)}"></div>
+ <div class="field"><label>Destino</label><select id="trCat">${library.categories.map(x=>`<option value="${x.id}" ${x.id===src.id?'selected':''}>${escapeHtml(x.name)}</option>`).join('')}</select></div>
+ </div></div>
+ <div class="modalfoot">
+ ${id?`<button class="dangerbtn" onclick="deleteTrack('${id}','${src.id}')">Eliminar</button>`:''}
+ <button class="secondarybtn" onclick="openCategoryForm('${src.id}')">Cancelar</button>
+ <button class="primarybtn" onclick="saveTrack('${id||''}','${src.id}')">Guardar</button>
+ </div>`);
+}
+function saveTrack(id,srcCatId){
+ const src=library.categories.find(x=>x.id===srcCatId),dest=library.categories.find(x=>x.id===$('trCat').value);
+ const obj={title:$('trTitle').value.trim(),author:$('trAuthor').value.trim(),youtubeId:extractYouTubeId($('trUrl').value),intensity:$('trIntensity').value};
+ if(!obj.title||!obj.youtubeId)return alert('Título y video son obligatorios.');
+ if(id){
+   const t=src.tracks.find(x=>x.id===id);Object.assign(t,obj);
+   if(dest.id!==src.id){src.tracks=src.tracks.filter(x=>x.id!==id);dest.tracks.push(t)}
+ }else{
+   dest.tracks.push({...obj,id:uid('tr'),favorite:false});
+ }
+ markDirty();selectedCategory=dest.id;closeModal();renderAll();openCategoryForm(dest.id);
+}
+function deleteTrack(id,catId){
+ if(!confirm('¿Eliminar esta pista?'))return;
+ const c=library.categories.find(x=>x.id===catId); if(!c)return;
+ c.tracks=c.tracks.filter(x=>x.id!==id);
+ markDirty();closeModal();renderAll();openCategoryForm(catId);
+}
 function extractPlaylistId(v){try{const u=new URL(v);return u.searchParams.get('list')||v}catch{return v.trim()}}
-function openImportPlaylist(){
+function openImportPlaylist(targetCatId){
  if(!editMode)return toggleEditMode();
  modal(`<div class="modalhead"><h2>Importar playlist</h2><button class="close" onclick="closeModal()">×</button></div><div class="modalbody">
  <div class="notice">Use una playlist pública o no listada. YouTube entregará los IDs y el companion intentará recuperar el título de cada video sin reproducirlo.</div>
- <div class="formgrid"><div class="field full"><label>URL o ID de playlist</label><input id="playlistUrl" placeholder="https://youtube.com/playlist?list=..."></div><div class="field"><label>Importar en</label><select id="playlistCat">${library.categories.map(c=>`<option value="${c.id}" ${c.id===selectedCategory?'selected':''}>${escapeHtml(c.name)}</option>`).join('')}</select></div><div class="field"><label>Intensidad por defecto</label><select id="playlistIntensity">${['Calm','Soft','Warm','Medium','High','Epic','Boss'].map(x=>`<option ${x==='Medium'?'selected':''}>${x}</option>`).join('')}</select></div></div>
+ <div class="formgrid"><div class="field full"><label>URL o ID de playlist</label><input id="playlistUrl" placeholder="https://youtube.com/playlist?list=..."></div><div class="field"><label>Importar en</label><select id="playlistCat">${library.categories.map(c=>`<option value="${c.id}" ${c.id===(targetCatId||selectedCategory)?'selected':''}>${escapeHtml(c.name)}</option>`).join('')}</select></div><div class="field"><label>Intensidad por defecto</label><select id="playlistIntensity">${['Calm','Soft','Warm','Medium','High','Epic','Boss'].map(x=>`<option ${x==='Medium'?'selected':''}>${x}</option>`).join('')}</select></div></div>
  <div id="importProgress" class="import-progress"></div></div><div class="modalfoot"><button class="secondarybtn" onclick="closeModal()">Cancelar</button><button class="primarybtn" onclick="beginPlaylistImport()">Importar</button></div>`);
 }
 async function beginPlaylistImport(){
@@ -409,7 +477,7 @@ async function beginPlaylistImport(){
      existing.add(vid);added++;
    }
    markDirty();selectedCategory=catId;renderAll();progress.textContent=`Listo: ${added} pistas nuevas.`;
-   setTimeout(()=>{closeModal();openLibrary('tracks')},800);
+   setTimeout(()=>{closeModal();openCategoryForm(catId)},800);
  }catch(e){progress.textContent='No se pudo importar: '+e.message}
 }
 function getPlaylistIds(pid){
@@ -452,28 +520,179 @@ async function importJsonFile(inp){const f=inp.files?.[0];if(!f)return;try{const
 async function reloadFromRepository(){if(localStorage.getItem(LS_DIRTY)==='1'&&!confirm('Hay cambios locales. ¿Descartarlos y cargar GitHub?'))return;localStorage.setItem(LS_DIRTY,'0');closeModal();await loadInitialLibrary()}
 
 function b64Utf8(str){const bytes=new TextEncoder().encode(str);let bin='';for(const b of bytes)bin+=String.fromCharCode(b);return btoa(bin)}
-async function syncToGitHub(){
- if(!editMode)return toggleEditMode();
- const s=settings(),token=s.token;if(!token){alert('Configure primero el token de GitHub en ⚙.');openSettings();return}
- const owner=s.owner||APP.repoOwner,repo=s.repo||APP.repoName,branch=s.branch||APP.branch,path=APP.libraryPath;
- setSync('Sincronizando...');
+async function fetchGitHubLibraryState({owner,repo,branch,path,token}){
+ const headers={
+   'Accept':'application/vnd.github+json',
+   'Authorization':`Bearer ${token}`,
+   'X-GitHub-Api-Version':'2022-11-28'
+ };
+ const get=await fetch(
+   `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${path}?ref=${encodeURIComponent(branch)}`,
+   {headers,cache:'no-store'}
+ );
+ if(get.status===404){
+   return {headers,sha:null,remote:null};
+ }
+ if(!get.ok){
+   let tx=await get.text();
+   throw new Error(`GitHub GET ${get.status}: ${tx.slice(0,180)}`);
+ }
+ const info=await get.json();
+ let remote=null;
  try{
-   const headers={'Accept':'application/vnd.github+json','Authorization':`Bearer ${token}`,'X-GitHub-Api-Version':'2022-11-28'};
-   const get=await fetch(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${path}?ref=${encodeURIComponent(branch)}`,{headers});
-   let sha=null,remote=null;
-   if(get.ok){const info=await get.json();sha=info.sha;const raw=await fetch(info.download_url+'?ts='+Date.now());if(raw.ok)remote=await raw.json()}
-   else if(get.status!==404)throw new Error(`GitHub ${get.status}`);
-   const base=library.baseRevision??remoteLibrary?.revision??library.revision??0;
-   if(remote && (remote.revision||0)>base){
-     setSync('Conflicto con GitHub','conflict');
-     if(!confirm(`GitHub tiene revisión ${remote.revision} y sus cambios parten de ${base}. ¿Sobrescribir de todos modos?`))return;
+   const raw=await fetch(info.download_url+'?ts='+Date.now(),{cache:'no-store'});
+   if(raw.ok)remote=await raw.json();
+ }catch(e){
+   console.warn('Could not parse remote library.json metadata.',e);
+ }
+ return {headers,sha:info.sha||null,remote};
+}
+
+async function writeLibraryToGitHub({
+ owner,
+ repo,
+ branch,
+ path,
+ token,
+ libraryToWrite,
+ retry=true
+}){
+ const state=await fetchGitHubLibraryState({owner,repo,branch,path,token});
+ const {headers,sha,remote}=state;
+
+ const base=libraryToWrite.baseRevision
+   ?? remoteLibrary?.revision
+   ?? libraryToWrite.revision
+   ?? 0;
+
+ if(remote && (remote.revision||0)>base){
+   setSync('Conflicto con GitHub','conflict');
+   const overwrite=confirm(
+     `GitHub tiene revisión ${remote.revision} y sus cambios parten de ${base}. ¿Sobrescribir de todos modos?`
+   );
+   if(!overwrite){
+     const err=new Error('Sincronización cancelada por conflicto de revisión.');
+     err.code='REVISION_CONFLICT_CANCELLED';
+     throw err;
    }
-   const next=clone(library);delete next.baseRevision;next.revision=Math.max(remote?.revision||0,library.revision||0)+1;next.updatedAt=new Date().toISOString();
-   const body={message:`Update music library r${next.revision}`,content:b64Utf8(JSON.stringify(next,null,2)),branch};if(sha)body.sha=sha;
-   const put=await fetch(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${path}`,{method:'PUT',headers:{...headers,'Content-Type':'application/json'},body:JSON.stringify(body)});
-   if(!put.ok){let tx=await put.text();throw new Error(`GitHub ${put.status}: ${tx.slice(0,180)}`)}
-   library=next;remoteLibrary=clone(next);localStorage.setItem(LS_DRAFT,JSON.stringify(next));localStorage.setItem(LS_DIRTY,'0');setSync(`Sync r${next.revision}`,'clean');renderAll();
- }catch(e){console.error(e);setSync('Error de sync','conflict');alert('No se pudo sincronizar: '+e.message)}
+ }
+
+ const next=clone(libraryToWrite);
+ delete next.baseRevision;
+ next.revision=Math.max(remote?.revision||0,libraryToWrite.revision||0)+1;
+ next.updatedAt=new Date().toISOString();
+
+ const body={
+   message:`Update music library r${next.revision}`,
+   content:b64Utf8(JSON.stringify(next,null,2)),
+   branch
+ };
+ if(sha)body.sha=sha;
+
+ const put=await fetch(
+   `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${path}`,
+   {
+     method:'PUT',
+     headers:{...headers,'Content-Type':'application/json'},
+     body:JSON.stringify(body)
+   }
+ );
+
+ if(put.status===409 && retry){
+   console.warn('GitHub SHA conflict. Reloading SHA and retrying once.');
+   return writeLibraryToGitHub({
+     owner,
+     repo,
+     branch,
+     path,
+     token,
+     libraryToWrite,
+     retry:false
+   });
+ }
+
+ if(!put.ok){
+   let tx=await put.text();
+   throw new Error(`GitHub PUT ${put.status}: ${tx.slice(0,180)}`);
+ }
+
+ return {
+   library:next,
+   response:await put.json().catch(()=>null)
+ };
+}
+
+async function syncToGitHub(){
+ if(syncInProgress){
+   return;
+ }
+ if(!editMode){
+   return toggleEditMode();
+ }
+
+ const s=settings(),token=s.token;
+ if(!token){
+   alert('Configure primero el token de GitHub en ⚙.');
+   openSettings();
+   return;
+ }
+
+ syncInProgress=true;
+ const syncButtons=document.querySelectorAll('[data-action="sync"]');
+ syncButtons.forEach(b=>{
+   b.disabled=true;
+   b.dataset.originalText=b.textContent;
+   b.textContent='Sincronizando...';
+ });
+
+ setSync('Sincronizando...');
+
+ try{
+   const owner=s.owner||APP.repoOwner;
+   const repo=s.repo||APP.repoName;
+   const branch=s.branch||APP.branch;
+   const path=APP.libraryPath;
+
+   const result=await writeLibraryToGitHub({
+     owner,
+     repo,
+     branch,
+     path,
+     token,
+     libraryToWrite:clone(library),
+     retry:true
+   });
+
+   // Only a real successful GitHub PUT may clear the local dirty state.
+   library=result.library;
+   remoteLibrary=clone(result.library);
+   localStorage.setItem(LS_DRAFT,JSON.stringify(result.library));
+   localStorage.setItem(LS_DIRTY,'0');
+   setSync(`Sync r${result.library.revision}`,'clean');
+   renderAll();
+
+ }catch(e){
+   console.error(e);
+
+   // Never discard local edits or clear dirty on any failed/cancelled sync.
+   localStorage.setItem(LS_DRAFT,JSON.stringify(library));
+   localStorage.setItem(LS_DIRTY,'1');
+
+   if(e.code==='REVISION_CONFLICT_CANCELLED'){
+     setSync('Cambios locales sin sincronizar','dirty');
+   }else{
+     setSync('Error de sync','conflict');
+     alert('No se pudo sincronizar: '+e.message);
+   }
+
+ }finally{
+   syncInProgress=false;
+   syncButtons.forEach(b=>{
+     b.disabled=false;
+     b.textContent=b.dataset.originalText||'Sync';
+     delete b.dataset.originalText;
+   });
+ }
 }
 
 const yt=document.createElement('script');yt.src='https://www.youtube.com/iframe_api';document.head.appendChild(yt);

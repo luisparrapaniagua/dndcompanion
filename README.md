@@ -1,4 +1,4 @@
-# D&D Music Companion v0.4
+# Leonardo's D&D companion v0.4.3
 
 Companion musical web/PWA para sesiones de D&D.
 
@@ -37,3 +37,27 @@ El importador usa YouTube IFrame Player API para:
 - leer metadata básica al hacer `cueVideoById`.
 
 Las playlists privadas pueden requerir autenticación adicional y no forman parte de esta versión.
+
+
+## Cambios v0.4.1
+
+- Se elimina Acceso rápido del menú principal.
+- La edición pasa a ser centrada en cada categoría.
+- Al editar una categoría se muestran y administran únicamente sus pistas.
+- Agregar pista e importar playlist se realizan directamente dentro de la categoría.
+
+
+## Cambios v0.4.2
+
+- Lock global `syncInProgress`: nunca puede haber dos operaciones de Sync concurrentes.
+- Los botones con `data-action="sync"` se deshabilitan durante la operación.
+- `writeLibraryToGitHub()` encapsula GET SHA + validación + PUT.
+- Ante `409 Conflict`, relee el SHA y reintenta exactamente una vez.
+- No existe loop de reintentos.
+- `dirty=0` solo se escribe después de un PUT exitoso.
+- Ante cualquier error o cancelación, el borrador local se conserva y queda `dirty=1`.
+
+
+## Cambio v0.4.3
+
+- Nombre oficial de la app: `Leonardo's D&D companion`.

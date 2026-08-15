@@ -1,12 +1,12 @@
 {
-  "name": "D&D Music Companion",
-  "short_name": "D&D Music",
+  "name": "Leonardo's D&D companion",
+  "short_name": "Leonardo D&D",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#100d0b",
   "theme_color": "#110d0a",
-  "description": "Companion musical para sesiones de Dungeons & Dragons.",
+  "description": "Leonardo's musical companion for Dungeons & Dragons sessions.",
   "icons": [
     {
       "src": "./icon.svg",
