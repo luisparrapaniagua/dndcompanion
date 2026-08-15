@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "revision": 1,
-  "updatedAt": "2026-08-15T13:34:00Z",
+  "revision": 2,
+  "updatedAt": "2026-08-15T13:52:30.521Z",
   "categories": [
     {
       "id": "exploration",
@@ -94,14 +94,6 @@
           "favorite": false
         }
       ]
-    },
-    {
-      "id": "horror",
-      "name": "Horror",
-      "icon": "👻",
-      "description": "Ruinas, secretos, peligro y presencias extrañas",
-      "accent": "#6e6588",
-      "tracks": []
     },
     {
       "id": "emotional",
