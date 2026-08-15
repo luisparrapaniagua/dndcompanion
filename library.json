@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "revision": 1,
+  "updatedAt": "2026-08-15T13:34:00Z",
+  "categories": [
+    {
+      "id": "exploration",
+      "name": "Exploración",
+      "icon": "🌲",
+      "description": "Viaje, bosque, caminos y descubrimiento",
+      "accent": "#7d9a6d",
+      "tracks": [
+        {
+          "id": "tr-ex-1",
+          "title": "Fantasy Realm Ambience",
+          "author": "Fantasy ambience",
+          "youtubeId": "amwA16ye148",
+          "intensity": "Calm",
+          "favorite": false
+        },
+        {
+          "id": "tr-ex-2",
+          "title": "Fantasy Reading Session",
+          "author": "Fantasy background",
+          "youtubeId": "DfK4MdFQyN8",
+          "intensity": "Soft",
+          "favorite": false
+        }
+      ]
+    },
+    {
+      "id": "tavern",
+      "name": "Taberna",
+      "icon": "🍺",
+      "description": "Descanso, conversación, rumores y celebración",
+      "accent": "#b98952",
+      "tracks": [
+        {
+          "id": "tr-ta-1",
+          "title": "Medieval Fantasy Tavern",
+          "author": "D&D ambience",
+          "youtubeId": "vyg5jJrZ42s",
+          "intensity": "Warm",
+          "favorite": false
+        },
+        {
+          "id": "tr-ta-2",
+          "title": "Relaxing Medieval Tavern",
+          "author": "Medieval ambience",
+          "youtubeId": "-Bw_42P6D3o",
+          "intensity": "Calm",
+          "favorite": false
+        }
+      ]
+    },
+    {
+      "id": "combat",
+      "name": "Combate",
+      "icon": "⚔️",
+      "description": "Encuentros, persecuciones y presión táctica",
+      "accent": "#a65f4b",
+      "tracks": [
+        {
+          "id": "tr-co-1",
+          "title": "Dragon Castle",
+          "author": "Makai Symphony",
+          "youtubeId": "9gBTKiVqprE",
+          "intensity": "High",
+          "favorite": false
+        },
+        {
+          "id": "tr-co-2",
+          "title": "Combat Music Mix",
+          "author": "Epic battle music",
+          "youtubeId": "A48QqpWKWG8",
+          "intensity": "Epic",
+          "favorite": false
+        }
+      ]
+    },
+    {
+      "id": "boss",
+      "name": "Boss",
+      "icon": "🐉",
+      "description": "Amenazas mayores, clímax y enemigos legendarios",
+      "accent": "#854a57",
+      "tracks": [
+        {
+          "id": "tr-bo-1",
+          "title": "Battle Angel",
+          "author": "Epic battle mix",
+          "youtubeId": "6zLdsTYRszY",
+          "intensity": "Boss",
+          "favorite": false
+        }
+      ]
+    },
+    {
+      "id": "horror",
+      "name": "Horror",
+      "icon": "👻",
+      "description": "Ruinas, secretos, peligro y presencias extrañas",
+      "accent": "#6e6588",
+      "tracks": []
+    },
+    {
+      "id": "emotional",
+      "name": "Emocional",
+      "icon": "♥",
+      "description": "Pérdida, revelaciones, despedidas y vínculos",
+      "accent": "#9b6574",
+      "tracks": []
+    }
+  ]
+}

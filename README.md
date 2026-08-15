@@ -1,21 +1,39 @@
-# D&D Music Companion
+# D&D Music Companion v0.4
 
-MVP web/PWA para controlar música ambiental durante sesiones de D&D.
+Companion musical web/PWA para sesiones de D&D.
 
-## GitHub Pages
+## Archivos
 
-Settings → Pages → Deploy from a branch → `main` / `(root)`.
+- `index.html`: aplicación completa.
+- `library.json`: biblioteca canónica.
+- `manifest.webmanifest`: instalación PWA.
+- `sw.js`: shell offline.
+- `icon.svg`: icono.
 
-La aplicación quedará disponible en:
+## Publicación
 
-`https://luisparrapaniagua.github.io/dndcompanion/`
+GitHub Pages debe publicar `main` desde `/ (root)`.
 
-## Compatibilidad
+## Persistencia
 
-- Escritorio: intenta crossfade entre dos reproductores YouTube.
-- iPad/iPhone: usa fade-out → cambio → fade-in para mayor compatibilidad.
-- La primera reproducción requiere pulsar **Activar audio**.
+1. Al abrir, la app lee `library.json` desde GitHub Pages.
+2. Las ediciones se guardan de inmediato en `localStorage`.
+3. `Sync` actualiza `library.json` mediante GitHub Contents API.
+4. El token se guarda solo en el navegador del dispositivo.
 
-## Biblioteca
+## Token
 
-La biblioteca demo está en `index.html`, dentro de la constante `library`.
+Crear un fine-grained Personal Access Token limitado a este repositorio con:
+
+- Repository permissions → Contents → Read and write.
+
+No insertar el token directamente en el repositorio.
+
+## Playlist import
+
+El importador usa YouTube IFrame Player API para:
+- cargar/cue una playlist pública o no listada;
+- obtener `getPlaylist()` con los IDs;
+- leer metadata básica al hacer `cueVideoById`.
+
+Las playlists privadas pueden requerir autenticación adicional y no forman parte de esta versión.
