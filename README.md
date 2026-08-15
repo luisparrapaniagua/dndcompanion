@@ -1,4 +1,4 @@
-# Leonardo's D&D companion v0.5.2
+# Leonardo's D&D companion v0.5.3
 
 Companion musical web/PWA para sesiones de D&D.
 
@@ -135,3 +135,8 @@ Las playlists privadas pueden requerir autenticación adicional y no forman part
 - Zoom máximo: 400%.
 - Las mediciones siguen usando coordenadas de resolución original y no cambian al hacer zoom.
 - El botón Ajustar vuelve a encajar completamente el mapa en el visor.
+
+
+## Cambio v0.5.3
+
+- Tipografía global cambiada a Verdana.
