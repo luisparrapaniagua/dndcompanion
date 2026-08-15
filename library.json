@@ -4,112 +4,556 @@
   "updatedAt": "2026-08-15T13:34:00Z",
   "categories": [
     {
-      "id": "exploration",
-      "name": "Exploración",
-      "icon": "🌲",
-      "description": "Viaje, bosque, caminos y descubrimiento",
-      "accent": "#7d9a6d",
+      "name": "World",
+      "icon": "🌎",
+      "description": "",
+      "accent": "#5366c6",
+      "id": "cat-msuyaozz-3b6nq",
       "tracks": [
         {
-          "id": "tr-ex-1",
-          "title": "Fantasy Realm Ambience",
-          "author": "Fantasy ambience",
-          "youtubeId": "amwA16ye148",
-          "intensity": "Calm",
+          "id": "tr-msuyz839-gjur7",
+          "title": "Mortiis - Født til å herske (1994) (Dungeon Synth)",
+          "author": "Dungeon Synth & BM Promotion",
+          "youtubeId": "3KDMEiqi55s",
+          "intensity": "Medium",
           "favorite": false
         },
         {
-          "id": "tr-ex-2",
-          "title": "Fantasy Reading Session",
-          "author": "Fantasy background",
-          "youtubeId": "DfK4MdFQyN8",
-          "intensity": "Soft",
-          "favorite": false
-        }
-      ]
-    },
-    {
-      "id": "tavern",
-      "name": "Taberna",
-      "icon": "🍺",
-      "description": "Descanso, conversación, rumores y celebración",
-      "accent": "#b98952",
-      "tracks": [
-        {
-          "id": "tr-ta-1",
-          "title": "Medieval Fantasy Tavern",
-          "author": "D&D ambience",
-          "youtubeId": "vyg5jJrZ42s",
-          "intensity": "Warm",
+          "id": "tr-msuyz839-xuyz7",
+          "title": "Depressive Silence - Depressive Silence II (1996) (Dungeon Synth, Black Ambient)",
+          "author": "The Dungeon Synth Archives",
+          "youtubeId": "OxgVmpAk538",
+          "intensity": "Medium",
           "favorite": false
         },
         {
-          "id": "tr-ta-2",
-          "title": "Relaxing Medieval Tavern",
-          "author": "Medieval ambience",
-          "youtubeId": "-Bw_42P6D3o",
-          "intensity": "Calm",
-          "favorite": false
-        }
-      ]
-    },
-    {
-      "id": "combat",
-      "name": "Combate",
-      "icon": "⚔️",
-      "description": "Encuentros, persecuciones y presión táctica",
-      "accent": "#a65f4b",
-      "tracks": [
-        {
-          "id": "tr-co-1",
-          "title": "Dragon Castle",
-          "author": "Makai Symphony",
-          "youtubeId": "9gBTKiVqprE",
-          "intensity": "High",
+          "id": "tr-msuyz839-l6pr7",
+          "title": "Dreams",
+          "author": "Depressive Silence - Topic",
+          "youtubeId": "lWr3lUjVrl0",
+          "intensity": "Medium",
           "favorite": false
         },
         {
-          "id": "tr-co-2",
-          "title": "Combat Music Mix",
-          "author": "Epic battle music",
-          "youtubeId": "A48QqpWKWG8",
-          "intensity": "Epic",
+          "id": "tr-msuyz839-5ys68",
+          "title": "Depths of the Oceans",
+          "author": "Depressive Silence - Topic",
+          "youtubeId": "nuKf9XTIJNg",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuyz839-ldatb",
+          "title": "Atmosphere",
+          "author": "Depressive Silence - Topic",
+          "youtubeId": "IJBuE8GI6yY",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuyz839-8rq83",
+          "title": "Mourning",
+          "author": "Depressive Silence - Topic",
+          "youtubeId": "CINDddPmGWQ",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuyz839-9dhns",
+          "title": "Forest of Eternity",
+          "author": "Depressive Silence - Topic",
+          "youtubeId": "XxgedIIqzbo",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuyz839-oz4t5",
+          "title": "Winter And Slumber",
+          "author": "aindulmedir - Topic",
+          "youtubeId": "lOQnFIxGN5E",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuyz839-w5l25",
+          "title": "In a Forest Trapped",
+          "author": "Old Sorcery - Topic",
+          "youtubeId": "X7FZll3qH0Q",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuyz839-kwh56",
+          "title": "In Death's Sleep",
+          "author": "Depressive Silence - Topic",
+          "youtubeId": "OeMxKaerJq4",
+          "intensity": "Medium",
           "favorite": false
         }
       ]
     },
     {
-      "id": "boss",
-      "name": "Boss",
-      "icon": "🐉",
-      "description": "Amenazas mayores, clímax y enemigos legendarios",
-      "accent": "#854a57",
+      "name": "Imperia",
+      "icon": "⚜️",
+      "description": "",
+      "accent": "#c69a52",
+      "id": "cat-msuybkd6-s0cm1",
       "tracks": [
         {
-          "id": "tr-bo-1",
-          "title": "Battle Angel",
-          "author": "Epic battle mix",
-          "youtubeId": "6zLdsTYRszY",
-          "intensity": "Boss",
+          "id": "tr-msuz0mbz-t67vk",
+          "title": "Leaving Caladan",
+          "author": "Hans Zimmer - Topic",
+          "youtubeId": "z_ip4GUa5qg",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz0mbz-jggrc",
+          "title": "Holy War",
+          "author": "Hans Zimmer - Topic",
+          "youtubeId": "rlSkALaAaaM",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz0mbz-067v8",
+          "title": "Herald of the Change",
+          "author": "Hans Zimmer - Topic",
+          "youtubeId": "MkJ6IegZaIM",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz0mbz-nh717",
+          "title": "Ripples in the Sand",
+          "author": "Hans Zimmer - Topic",
+          "youtubeId": "a5Wq4OKY6SE",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz0mbz-lund3",
+          "title": "Armada",
+          "author": "Hans Zimmer - Topic",
+          "youtubeId": "K5cToSNtero",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz0mbz-ixrqo",
+          "title": "The Fall",
+          "author": "Hans Zimmer - Topic",
+          "youtubeId": "CVUH6_ITUb8",
+          "intensity": "Medium",
           "favorite": false
         }
       ]
     },
     {
-      "id": "horror",
-      "name": "Horror",
-      "icon": "👻",
-      "description": "Ruinas, secretos, peligro y presencias extrañas",
-      "accent": "#6e6588",
-      "tracks": []
+      "name": "Dinastic Union",
+      "icon": "👑",
+      "description": "",
+      "accent": "#53c65b",
+      "id": "cat-msuyc60f-pmqw0",
+      "tracks": [
+        {
+          "id": "tr-msuz1r3h-kr7b2",
+          "title": "Dracarys",
+          "author": "Ramin Djawadi - Topic",
+          "youtubeId": "jIsla-hNxf0",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz1r3h-l3fby",
+          "title": "A Lannister Always Pays His Debts",
+          "author": "Ramin Djawadi - Topic",
+          "youtubeId": "5qNtmne62Vo",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz1r3h-zwbx0",
+          "title": "I Paid the Iron Price",
+          "author": "Ramin Djawadi - Topic",
+          "youtubeId": "D0-ptcQc1I8",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz1r3h-rsjyv",
+          "title": "Chaos Is a Ladder",
+          "author": "Ramin Djawadi - Topic",
+          "youtubeId": "sTe_hPK2RHY",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz1r3h-z2kyl",
+          "title": "Dark Wings, Dark Words",
+          "author": "Ramin Djawadi - Topic",
+          "youtubeId": "fywMObuBTrI",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz1r3h-94agv",
+          "title": "Kingslayer",
+          "author": "Ramin Djawadi - Topic",
+          "youtubeId": "HzkvWIsafNo",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz1r3h-babct",
+          "title": "Heir to Winterfell",
+          "author": "Ramin Djawadi - Topic",
+          "youtubeId": "eXbWn_VyPPU",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz1r3h-wkn3j",
+          "title": "Mhysa",
+          "author": "Ramin Djawadi - Topic",
+          "youtubeId": "ggS5zjraJi4",
+          "intensity": "Medium",
+          "favorite": false
+        }
+      ]
     },
     {
-      "id": "emotional",
-      "name": "Emocional",
-      "icon": "♥",
-      "description": "Pérdida, revelaciones, despedidas y vínculos",
-      "accent": "#9b6574",
-      "tracks": []
+      "name": "Trantor",
+      "icon": "🪐",
+      "description": "",
+      "accent": "#c65375",
+      "id": "cat-msuydhxt-ggr3y",
+      "tracks": [
+        {
+          "id": "tr-msuz2q1o-bissk",
+          "title": "Oil Rig",
+          "author": "Hans Zimmer - Topic",
+          "youtubeId": "oEV-pqzFwlo",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz2q1o-4lenb",
+          "title": "Sent Here for a Reason",
+          "author": "Hans Zimmer - Topic",
+          "youtubeId": "6pYjBmby5GA",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz2q1o-g52iz",
+          "title": "Goodbye My Son",
+          "author": "Hans Zimmer - Topic",
+          "youtubeId": "Ucj4mQMyKkk",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz2q1o-5twyo",
+          "title": "Tornado",
+          "author": "Hans Zimmer - Topic",
+          "youtubeId": "GCNd-0dfIzU",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz2q1o-lajje",
+          "title": "This Is Clark Kent",
+          "author": "Hans Zimmer - Topic",
+          "youtubeId": "ceBiyITSHso",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz2q1o-1g355",
+          "title": "I Have So Many Questions",
+          "author": "Hans Zimmer - Topic",
+          "youtubeId": "8AbTJA2l7wc",
+          "intensity": "Medium",
+          "favorite": false
+        }
+      ]
+    },
+    {
+      "name": "Great houses",
+      "icon": "🇲🇰",
+      "description": "",
+      "accent": "#53c4c6",
+      "id": "cat-msuyel5w-ogjmi",
+      "tracks": [
+        {
+          "id": "tr-msuz3tfh-52wds",
+          "title": "From Nothing Comes a King",
+          "author": "Daniel Pemberton - Topic",
+          "youtubeId": "bvLmC5jM6cU",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz3tfh-0uh6b",
+          "title": "Vortigen and the Syrens",
+          "author": "Daniel Pemberton - Topic",
+          "youtubeId": "DV8P36EflLo",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz3tfh-hfjhk",
+          "title": "The Legend of Excalibur",
+          "author": "Daniel Pemberton - Topic",
+          "youtubeId": "uCXdtCcxR1Y",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz3tfh-1zk5o",
+          "title": "Seasoned Oak",
+          "author": "Daniel Pemberton - Topic",
+          "youtubeId": "qMdRPxbLwwI",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz3tfh-0sklu",
+          "title": "The Vikings & The Barons",
+          "author": "Daniel Pemberton - Topic",
+          "youtubeId": "b5khiQe8Ews",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz3tfh-820dg",
+          "title": "The Politics & The Life",
+          "author": "Daniel Pemberton - Topic",
+          "youtubeId": "M9o--l1EXQs",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz3tfh-du2nz",
+          "title": "Tower & Power",
+          "author": "Daniel Pemberton - Topic",
+          "youtubeId": "dif2a9VBU8k",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz3tfh-3vklz",
+          "title": "Assassins Breathe",
+          "author": "Daniel Pemberton - Topic",
+          "youtubeId": "Fjt70IZ-JE4",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz3tfh-ta12a",
+          "title": "Run Londinium",
+          "author": "Daniel Pemberton - Topic",
+          "youtubeId": "OLa-xBpvhcc",
+          "intensity": "Medium",
+          "favorite": false
+        }
+      ]
+    },
+    {
+      "name": "Free cities",
+      "icon": "⛓️‍💥",
+      "description": "",
+      "accent": "#8f8d8a",
+      "id": "cat-msuyf2s1-99zfz",
+      "tracks": [
+        {
+          "id": "tr-msuz51ju-oin06",
+          "title": "Main Title (Shōgun)",
+          "author": "Atticus Ross - Topic",
+          "youtubeId": "wjZ_nkI08b4",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz51ju-k6f8k",
+          "title": "Erasmus",
+          "author": "Atticus Ross - Topic",
+          "youtubeId": "y0gQ6etyQSc",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz51ju-nox6l",
+          "title": "Osaka Castle",
+          "author": "Atticus Ross - Topic",
+          "youtubeId": "GVN5CRGJrQs",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz51ju-fi9qz",
+          "title": "The Council Will Answer to Me",
+          "author": "Atticus Ross - Topic",
+          "youtubeId": "WFfbK8O7HAY",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz51ju-h3gyk",
+          "title": "Tanto",
+          "author": "Atticus Ross - Topic",
+          "youtubeId": "q_Zwp3G_VcU",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz51ju-4eto6",
+          "title": "Crimson Sky",
+          "author": "Atticus Ross - Topic",
+          "youtubeId": "SqtAon2goAA",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz51ju-ggs8q",
+          "title": "Three Hearts",
+          "author": "Atticus Ross - Topic",
+          "youtubeId": "cnY-tgJa_CY",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz51ju-gab47",
+          "title": "The Pull of Death",
+          "author": "Atticus Ross - Topic",
+          "youtubeId": "5IgMie-uxtY",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz51ju-bipqc",
+          "title": "Willow World",
+          "author": "Atticus Ross - Topic",
+          "youtubeId": "jOCXsFb_6w8",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz51ju-nqltd",
+          "title": "A Dream Within a Dream",
+          "author": "Atticus Ross - Topic",
+          "youtubeId": "Y2tITYnPqzM",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz51ju-dxzk0",
+          "title": "Land of Tears",
+          "author": "Atticus Ross - Topic",
+          "youtubeId": "HndvFPiB4qk",
+          "intensity": "Medium",
+          "favorite": false
+        }
+      ]
+    },
+    {
+      "name": "Nossia",
+      "icon": "🙏",
+      "description": "",
+      "accent": "#b0ac36",
+      "id": "cat-msuyg6n0-ml6s1",
+      "tracks": [
+        {
+          "id": "tr-msuz5y66-fe6yn",
+          "title": "Vichnaya Pamyat",
+          "author": "Release - Topic",
+          "youtubeId": "4Poc3MF8GFk",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz5y66-2ywev",
+          "title": "The Door",
+          "author": "Hildur Guðnadóttir - Topic",
+          "youtubeId": "QC1aBVDsoWw",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz5y66-yh8n8",
+          "title": "Bridge of Death (From “Chernobyl” TV Series Soundtrack)",
+          "author": "Hildur Guðnadóttir - Topic",
+          "youtubeId": "aM_HhU_CV44",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz5y66-qv1q6",
+          "title": "Evacuation",
+          "author": "Hildur Guðnadóttir - Topic",
+          "youtubeId": "JGID4ZhF45I",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz5y66-13pq3",
+          "title": "Pump Room",
+          "author": "Hildur Guðnadóttir - Topic",
+          "youtubeId": "XR68p_k_I88",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz5y66-mx8v7",
+          "title": "12 Hours Before",
+          "author": "Hildur Guðnadóttir - Topic",
+          "youtubeId": "NPoeV9Vgx_Q",
+          "intensity": "Medium",
+          "favorite": false
+        }
+      ]
+    },
+    {
+      "name": "Extras",
+      "icon": "📜",
+      "description": "",
+      "accent": "#c69a52",
+      "id": "cat-msuz6pww-tgwqo",
+      "tracks": [
+        {
+          "id": "tr-msuz73ug-l1y94",
+          "title": "Hollow Knight OST - Enter Hallownest",
+          "author": "Amellifera",
+          "youtubeId": "243Uguc-6mQ",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz73ug-hoqfd",
+          "title": "Hollow Knight OST - Sealed Vessel",
+          "author": "Amellifera",
+          "youtubeId": "ze0Rk-m0w2A",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz73ug-4k9wh",
+          "title": "Kass Song 10 Hours The legend of Zelda Breath of the Wild",
+          "author": "Legend of Mike",
+          "youtubeId": "131OXd7aFIA",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msuz73ug-y8q0x",
+          "title": "A King's Request (The Legend of Zelda: Breath of the Wild OST)",
+          "author": "Peaches Lamb",
+          "youtubeId": "bZJ5Id5GhHE",
+          "intensity": "Medium",
+          "favorite": false
+        }
+      ]
     }
   ]
 }

@@ -1,4 +1,4 @@
-# Leonardo's D&D companion v0.4.5
+# Leonardo's D&D companion v0.5.0
 
 Companion musical web/PWA para sesiones de D&D.
 
@@ -82,3 +82,30 @@ Las playlists privadas pueden requerir autenticación adicional y no forman part
 - Estilos: Legacy, Simple, Light y Medieval.
 - Selector colapsable con 60 emojis útiles.
 - Importación de playlist con previsualización y selección individual.
+
+
+## Cambios v0.5.0
+
+### Navegación
+- Sidebar colapsable y con opción de fijarlo.
+- Secciones: Música, Mapas y Personajes.
+
+### Música
+- Controles Anterior / Siguiente en reproducción de escena.
+- Fade/crossfade configurable de 0 a 30 segundos.
+- Tema Simple conserva tarjetas visibles, cuadradas y sin redondeos.
+- Tipografía Sans Serif condensada.
+
+### Mapas
+- Múltiples mapas PNG/JPG.
+- Escala por ancho y alto reales del mapa.
+- Medición lineal origen/destino.
+- Ruta a mano alzada con cálculo acumulado.
+- Importar/exportar `maps.json`.
+
+### Personajes
+- PCs, NPCs, aliados, enemigos y facciones.
+- Retrato, raza/especie, clase/rol, nivel, CA, HP, velocidad, percepción pasiva.
+- Personalidad, objetivos, vínculos, secretos del DM, notas y tags.
+- HP editable durante la sesión.
+- Importar/exportar `characters.json`.

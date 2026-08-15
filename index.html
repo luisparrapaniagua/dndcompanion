@@ -200,16 +200,125 @@ body.theme-medieval .audio-chip{background:#55371f;color:#edd2a1;border-color:#7
  .emoji-grid{grid-template-columns:repeat(8,1fr)}
 }
 
+
+/* ===== v0.5.0 — multi-module companion ===== */
+:root{
+  --ui-font:"Avenir Next Condensed","Arial Narrow","Helvetica Neue Condensed","Roboto Condensed",Arial,sans-serif;
+}
+html,body,button,input,select,textarea{font-family:var(--ui-font)!important}
+.title h1,.track h3,.scene-title,.brand,.modalhead h2,.np strong{font-family:var(--ui-font)!important;font-weight:800;letter-spacing:.02em}
+
+.module-nav{display:flex;flex-direction:column;gap:6px;margin:4px 0 12px}
+.module-nav button{display:flex;align-items:center;gap:9px;width:100%;border:1px solid transparent;background:transparent;color:#cfc2ae;padding:10px 11px;border-radius:9px;cursor:pointer;text-align:left}
+.module-nav button:hover{background:#211a14;border-color:#382c21}
+.module-nav button.active{background:linear-gradient(90deg,rgba(198,154,82,.12),rgba(198,154,82,.03));border-color:#54412c;color:#fff0d0}
+.module-nav .micon{font-size:17px}
+.app.sidebar-collapsed .module-nav button span:last-child{display:none}
+.app.sidebar-collapsed .module-nav button{justify-content:center;padding:10px 6px}
+.pin-btn{width:32px;height:32px;border:1px solid var(--line);background:#1a1511;color:#cdbfa9;border-radius:8px;cursor:pointer}
+body.sidebar-unpinned:not(.sidebar-hovering) .app:not(.sidebar-collapsed){grid-template-columns:68px 1fr}
+body.sidebar-unpinned:not(.sidebar-hovering) .app:not(.sidebar-collapsed) .sidebar{padding-left:10px;padding-right:10px;overflow-x:hidden}
+body.sidebar-unpinned:not(.sidebar-hovering) .app:not(.sidebar-collapsed) .brand{font-size:0}
+body.sidebar-unpinned:not(.sidebar-hovering) .app:not(.sidebar-collapsed) .brand:before{font-size:15px;margin:7px 0 0 7px;display:inline-block}
+body.sidebar-unpinned:not(.sidebar-hovering) .app:not(.sidebar-collapsed) .brand small,
+body.sidebar-unpinned:not(.sidebar-hovering) .app:not(.sidebar-collapsed) .section-label,
+body.sidebar-unpinned:not(.sidebar-hovering) .app:not(.sidebar-collapsed) .category span:nth-child(2),
+body.sidebar-unpinned:not(.sidebar-hovering) .app:not(.sidebar-collapsed) .category .count,
+body.sidebar-unpinned:not(.sidebar-hovering) .app:not(.sidebar-collapsed) .side-actions{display:none!important}
+body.sidebar-unpinned:not(.sidebar-hovering) .app:not(.sidebar-collapsed) .category{justify-content:center;padding:11px 6px;font-size:18px}
+body.sidebar-unpinned:not(.sidebar-hovering) .app:not(.sidebar-collapsed) .module-nav button span:last-child{display:none}
+body.sidebar-unpinned:not(.sidebar-hovering) .app:not(.sidebar-collapsed) .module-nav button{justify-content:center}
+body.sidebar-unpinned:not(.sidebar-hovering) .now{left:68px}
+
+.module-panel{display:none}
+.module-panel.active{display:block}
+.music-shell{display:block}
+
+.scene-nav-buttons{display:flex;gap:7px;margin-top:7px}
+.scene-nav-buttons button{flex:1;border:1px solid #5b4632;background:#1c1612;color:#cfb995;border-radius:8px;padding:6px 8px;cursor:pointer;font-size:10px}
+
+/* Simple theme keeps visible square cards */
+body.theme-simple .grid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0}
+body.theme-simple .track,body.theme-simple .scene-play-card{
+  background:#151515!important;border:1px solid #444!important;border-radius:0!important;
+  margin:0!important;padding:11px 12px!important;display:block!important
+}
+body.theme-simple .track:hover{background:#1d1d1d!important;border-color:#666!important}
+
+/* Map module */
+.map-toolbar,.character-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:14px 0}
+.map-layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:14px}
+.map-list,.character-list{border:1px solid var(--line);background:rgba(20,16,13,.7);padding:8px;border-radius:10px;max-height:70vh;overflow:auto}
+.map-list-item,.character-list-item{display:flex;align-items:center;gap:8px;padding:9px;border:1px solid transparent;border-radius:8px;cursor:pointer}
+.map-list-item:hover,.character-list-item:hover{background:rgba(255,255,255,.04)}
+.map-list-item.active,.character-list-item.active{border-color:var(--gold);background:rgba(198,154,82,.08)}
+.map-list-item .grow,.character-list-item .grow{flex:1;min-width:0}
+.map-list-item strong,.character-list-item strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.map-list-item small,.character-list-item small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.map-stage-wrap{border:1px solid var(--line);background:#0b0908;border-radius:10px;overflow:auto;min-height:420px;position:relative}
+.map-stage{position:relative;display:inline-block;min-width:100%;min-height:420px;user-select:none}
+.map-stage img{display:block;max-width:none;width:auto;height:auto}
+.map-stage canvas{position:absolute;left:0;top:0;touch-action:none;cursor:crosshair}
+.map-empty{padding:60px 20px;text-align:center;color:var(--muted)}
+.map-status{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:9px}
+.measure-toggle.active{background:var(--gold);color:#171009}
+.map-mode-help{font-size:11px;color:var(--muted);margin:6px 0 10px}
+.map-scale-grid{display:grid;grid-template-columns:repeat(4,minmax(100px,1fr));gap:8px}
+.map-scale-grid input,.map-scale-grid select{width:100%}
+.distance-readout{font-size:14px;color:var(--gold2);font-weight:800;margin-top:8px}
+
+/* Characters */
+.character-layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:14px}
+.character-card{border:1px solid var(--line);background:linear-gradient(180deg,rgba(38,29,22,.95),rgba(25,20,16,.98));border-radius:12px;padding:16px}
+.character-header{display:flex;gap:14px;align-items:flex-start}
+.avatar{width:76px;height:76px;border-radius:10px;background:#211912;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:34px;overflow:hidden;flex:0 0 auto}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.character-title h2{margin:0;font-size:25px}
+.character-title p{margin:4px 0 0;color:var(--muted)}
+.char-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
+.stat{border:1px solid var(--line);padding:8px;border-radius:8px;text-align:center}
+.stat strong{display:block;font-size:18px}.stat small{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.08em}
+.char-section{margin-top:15px}.char-section h3{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);margin:0 0 6px}
+.char-section p{white-space:pre-wrap;margin:0;color:#cdbfa9;font-size:12px;line-height:1.45}
+.tag-list{display:flex;flex-wrap:wrap;gap:5px}.char-tag{border:1px solid var(--line);border-radius:999px;padding:4px 7px;font-size:10px;color:#cdbfa9}
+.hp-row{display:flex;gap:8px;align-items:center;margin-top:10px}.hp-row input{width:80px}
+.character-empty{padding:60px 20px;text-align:center;color:var(--muted)}
+
+/* Light + Medieval module support */
+body.theme-light .map-list,body.theme-light .character-list,body.theme-light .character-card{background:#fff}
+body.theme-medieval .map-list,body.theme-medieval .character-list,body.theme-medieval .character-card{
+ background:repeating-linear-gradient(0deg,rgba(90,57,25,.025) 0 1px,transparent 1px 4px),linear-gradient(135deg,#f0dca9,#dfbd7e);
+ border-color:#8d6337
+}
+body.theme-medieval .map-stage-wrap{background:#4d321f;border-color:#6b4728}
+body.theme-simple .map-list,body.theme-simple .character-list,body.theme-simple .character-card,
+body.theme-simple .map-stage-wrap,body.theme-simple .stat{border-radius:0!important}
+
+@media(max-width:880px){
+ .module-nav{display:grid;grid-template-columns:repeat(3,1fr)}
+ .module-nav button{justify-content:center}
+ .map-layout,.character-layout{grid-template-columns:1fr}
+ .map-list,.character-list{max-height:220px}
+ .map-scale-grid{grid-template-columns:1fr 1fr}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="sidebar">
   <div class="sidebar-head">
-    <div class="brand">Leonardo's D&D companion<small>Codex Sonorum · v0.4.5</small></div>
+    <div class="brand">Leonardo's D&D companion<small>Adventuring Toolkit · v0.5.0</small></div>
     <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Colapsar o expandir sidebar">‹</button>
   </div>
   <div class="rule"></div>
+  <div class="section-label">Secciones</div>
+  <div class="module-nav">
+    <button class="active" data-module="music" onclick="switchModule('music')"><span class="micon">♫</span><span>Música</span></button>
+    <button data-module="maps" onclick="switchModule('maps')"><span class="micon">🗺️</span><span>Mapas</span></button>
+    <button data-module="characters" onclick="switchModule('characters')"><span class="micon">🧙</span><span>Personajes</span></button>
+  </div>
+  <div id="musicSidebar">
   <div class="section-label">Escenas</div>
   <div id="categories"></div>
   <div class="section-label edit-only hidden">Biblioteca</div>
@@ -217,9 +326,11 @@ body.theme-medieval .audio-chip{background:#55371f;color:#edd2a1;border-color:#7
     <button onclick="openLibrary()">Categorías</button>
     <button onclick="openCategoryForm(selectedCategory)">Editar actual</button>
   </div>
+  </div>
 </aside>
 
 <main class="main">
+<div id="moduleMusic" class="module-panel active">
   <div class="topbar">
     <div class="title">
       <div class="eyebrow">Scene soundtrack</div>
@@ -248,10 +359,47 @@ body.theme-medieval .audio-chip{background:#55371f;color:#edd2a1;border-color:#7
     <summary>Diagnóstico de YouTube</summary>
     <div class="players"><div class="playerbox"><div id="playerA"></div></div><div class="playerbox"><div id="playerB"></div></div></div>
   </details>
+</div>
+
+<div id="moduleMaps" class="module-panel">
+  <div class="topbar">
+    <div class="title"><div class="eyebrow">Cartografía</div><h1>Mapas</h1><p>Cargue mapas, defina escala y mida rutas.</p></div>
+  </div>
+  <div class="map-toolbar">
+    <button class="primarybtn" onclick="openMapForm()">+ Agregar mapa</button>
+    <button class="secondarybtn" onclick="exportMapsJson()">Exportar JSON</button>
+    <button class="secondarybtn" onclick="$('mapsJsonFile').click()">Importar JSON</button>
+    <input id="mapsJsonFile" type="file" class="hidden" accept=".json,application/json" onchange="importMapsJson(this)">
+  </div>
+  <div class="map-layout">
+    <div class="map-list" id="mapList"></div>
+    <div>
+      <div id="mapControls"></div>
+      <div class="map-stage-wrap"><div class="map-stage" id="mapStage"><div class="map-empty">Agregue un mapa PNG o JPG.</div></div></div>
+      <div class="map-status" id="mapStatus"></div>
+    </div>
+  </div>
+</div>
+
+<div id="moduleCharacters" class="module-panel">
+  <div class="topbar">
+    <div class="title"><div class="eyebrow">Party & NPCs</div><h1>Personajes</h1><p>Fichas rápidas para jugadores, aliados y NPCs.</p></div>
+  </div>
+  <div class="character-toolbar">
+    <button class="primarybtn" onclick="openCharacterForm()">+ Personaje</button>
+    <button class="secondarybtn" onclick="exportCharactersJson()">Exportar JSON</button>
+    <button class="secondarybtn" onclick="$('charactersJsonFile').click()">Importar JSON</button>
+    <input id="charactersJsonFile" type="file" class="hidden" accept=".json,application/json" onchange="importCharactersJson(this)">
+  </div>
+  <div class="character-layout">
+    <div class="character-list" id="characterList"></div>
+    <div id="characterDetail"></div>
+  </div>
+</div>
 </main>
 </div>
 
-<div class="now">
+<div class="now" id="musicNowBar">
   <div class="nowrow">
     <div class="np">
       <small>Now Playing</small>
@@ -286,6 +434,8 @@ const LS_DRAFT='dnd.v04.libraryDraft';
 const LS_DIRTY='dnd.v04.dirty';
 const LS_SETTINGS='dnd.v04.settings';
 const LS_PINHASH='dnd.v04.pinHash';
+const LS_MAPS='dnd.v05.maps';
+const LS_CHARACTERS='dnd.v05.characters';
 
 let library={schemaVersion:1,revision:0,updatedAt:null,categories:[]};
 let remoteLibrary=null, selectedCategory=null, currentTrack=null;
@@ -295,6 +445,15 @@ let syncInProgress=false;
 let scenePlayMode=null;
 let scenePlayCategoryId=null;
 let playlistImportPreview=null;
+let activeModule='music';
+let mapsData={version:1,maps:[]};
+let selectedMapId=null;
+let mapMeasureMode='line';
+let mapPointerActive=false;
+let mapRoutePoints=[];
+let mapLinePoints=[];
+let charactersData={version:1,characters:[]};
+let selectedCharacterId=null;
 const isiOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 const $=id=>document.getElementById(id);
 const settings=()=>JSON.parse(localStorage.getItem(LS_SETTINGS)||'{}');
@@ -340,16 +499,37 @@ function markDirty(){
 }
 function renderAll(){applyUiPreferences();renderCategories();renderHeader();renderTracks();updateEditUI()}
 function applyUiPreferences(){
- const s=settings(),style=s.appStyle||'legacy',collapsed=!!s.sidebarCollapsed;
+ const s=settings(),style=s.appStyle||'legacy',collapsed=!!s.sidebarCollapsed,pinned=s.sidebarPinned!==false;
  document.body.classList.remove('theme-legacy','theme-simple','theme-light','theme-medieval');
  document.body.classList.add('theme-'+style);
  document.querySelector('.app')?.classList.toggle('sidebar-collapsed',collapsed);
  document.body.classList.toggle('sidebar-is-collapsed',collapsed);
+ document.body.classList.toggle('sidebar-unpinned',!pinned);
  const btn=$('sidebarToggle');if(btn){btn.textContent=collapsed?'›':'‹';btn.title=collapsed?'Expandir sidebar':'Colapsar sidebar'}
+ const pin=$('sidebarPin');if(pin){pin.textContent=pinned?'📌':'📍';pin.title=pinned?'Sidebar fijado':'Sidebar automático'}
 }
 function toggleSidebar(){
  const collapsed=!document.querySelector('.app')?.classList.contains('sidebar-collapsed');
  saveSettings({sidebarCollapsed:collapsed});applyUiPreferences();
+}
+function toggleSidebarPin(){
+ const s=settings(),pinned=s.sidebarPinned!==false;
+ saveSettings({sidebarPinned:!pinned,sidebarCollapsed:false});applyUiPreferences();
+}
+function setupSidebarHover(){
+ const side=document.querySelector('.sidebar');if(!side)return;
+ side.addEventListener('mouseenter',()=>document.body.classList.add('sidebar-hovering'));
+ side.addEventListener('mouseleave',()=>document.body.classList.remove('sidebar-hovering'));
+}
+function switchModule(module){
+ activeModule=module;
+ document.querySelectorAll('.module-panel').forEach(p=>p.classList.remove('active'));
+ $('module'+module[0].toUpperCase()+module.slice(1))?.classList.add('active');
+ document.querySelectorAll('.module-nav button').forEach(b=>b.classList.toggle('active',b.dataset.module===module));
+ $('musicSidebar')?.classList.toggle('hidden',module!=='music');
+ $('musicNowBar')?.classList.toggle('hidden',module!=='music');
+ if(module==='maps')renderMapsModule();
+ if(module==='characters')renderCharactersModule();
 }
 function selectedCat(){return library.categories.find(c=>c.id===selectedCategory)||library.categories[0]}
 function renderHeader(){
@@ -368,7 +548,8 @@ function renderTracks(){
  const q=($('searchInput')?.value||'').toLowerCase(), f=$('intensityFilter')?.value||'';
  let tracks=(c.tracks||[]).filter(t=>(!q||`${t.title} ${t.author||''}`.toLowerCase().includes(q))&&(!f||t.intensity===f));
  const sceneMode=(scenePlayCategoryId===c.id)?scenePlayMode:null;
- const sceneCard=`<article class="scene-play-card"><div><div class="kicker">Escena completa</div><div class="scene-title">${escapeHtml(c.icon||'◆')} ${escapeHtml(c.name)}</div><div class="scene-meta">${c.tracks.length} pistas disponibles</div>${sceneMode?`<div class="scene-mode-badge">Modo: ${sceneMode==='ordered'?'en orden':'aleatorio'}</div>`:''}</div><div class="scene-buttons"><button class="${sceneMode==='ordered'?'active':''}" onclick="startScenePlayback('ordered')">▶ Reproducir en orden</button><button class="${sceneMode==='random'?'active':''}" onclick="startScenePlayback('random')">⤨ Reproducir aleatorio</button></div></article>`;
+ const sceneCard=`<article class="scene-play-card"><div><div class="kicker">Escena completa</div><div class="scene-title">${escapeHtml(c.icon||'◆')} ${escapeHtml(c.name)}</div><div class="scene-meta">${c.tracks.length} pistas disponibles</div>${sceneMode?`<div class="scene-mode-badge">Modo: ${sceneMode==='ordered'?'en orden':'aleatorio'}</div>`:''}</div><div class="scene-buttons"><button class="${sceneMode==='ordered'?'active':''}" onclick="startScenePlayback('ordered')">▶ Reproducir en orden</button><button class="${sceneMode==='random'?'active':''}" onclick="startScenePlayback('random')">⤨ Reproducir aleatorio</button></div>
+ <div class="scene-nav-buttons"><button onclick="playPreviousSceneTrack()">← Anterior</button><button onclick="playNextSceneTrack()">Siguiente →</button></div></article>`;
  if(!tracks.length){$('tracks').innerHTML=sceneCard+'<div class="empty">No hay pistas para mostrar en esta escena.</div>';return}
  $('tracks').innerHTML=sceneCard+tracks.map(t=>{const playing=currentTrack?.id===t.id;return `<article class="track ${playing?'playing':''} ${t.favorite?'favorite':''}" data-id="${t.id}"><button class="seal" title="Favorito" data-fav="${t.id}" style="border:0;background:none;cursor:pointer">★</button><div class="kicker">${escapeHtml(t.intensity||'Track')}</div><h3>${escapeHtml(t.title||'Sin título')}</h3><p>${escapeHtml(t.author||'YouTube')}</p><div class="row"><button class="play">${playing?'SONANDO':'▶ REPRODUCIR'}</button></div></article>`}).join('');
  document.querySelectorAll('.track').forEach(card=>card.onclick=e=>{const fav=e.target.closest('[data-fav]');if(fav){e.stopPropagation();toggleFavorite(fav.dataset.fav);return}scenePlayMode=null;scenePlayCategoryId=null;const t=c.tracks.find(x=>x.id===card.dataset.id);if(t)playTrack(t,c)});
@@ -387,6 +568,22 @@ function playNextSceneTrack(){
  else if(c.tracks.length===1)next=c.tracks[0];
  else{const pool=c.tracks.filter(t=>t.id!==currentTrack?.id);next=pool[Math.floor(Math.random()*pool.length)]}
  if(next)playTrack(next,c);
+}
+
+function playPreviousSceneTrack(){
+ const c=selectedCat();if(!c?.tracks?.length)return;
+ scenePlayCategoryId=c.id;
+ if(!scenePlayMode)scenePlayMode='ordered';
+ const i=c.tracks.findIndex(t=>t.id===currentTrack?.id);
+ let prev;
+ if(scenePlayMode==='random'){
+   const pool=c.tracks.filter(t=>t.id!==currentTrack?.id);
+   prev=pool.length?pool[Math.floor(Math.random()*pool.length)]:c.tracks[0];
+ }else{
+   const pos=i<0?0:(i-1+c.tracks.length)%c.tracks.length;
+   prev=c.tracks[pos];
+ }
+ if(prev)playTrack(prev,c);
 }
 function toggleFavorite(id){const c=selectedCat(),t=c.tracks.find(x=>x.id===id);if(t){t.favorite=!t.favorite;markDirty();renderTracks()}}
 
@@ -635,7 +832,7 @@ function openSettings(){
  <div class="notice">Las credenciales quedan guardadas solo en este navegador. Use un token GitHub limitado al repositorio y una YouTube Data API key para importar playlists públicas.</div>
  <div class="formgrid">
  <div class="field"><label>Owner</label><input id="setOwner" value="${escapeHtml(s.owner||APP.repoOwner)}"></div><div class="field"><label>Repositorio</label><input id="setRepo" value="${escapeHtml(s.repo||APP.repoName)}"></div>
- <div class="field"><label>Branch</label><input id="setBranch" value="${escapeHtml(s.branch||APP.branch)}"></div><div class="field"><label>Crossfade (segundos)</label><select id="setFade">${[0,2,4,6,10].map(x=>`<option value="${x}" ${Number(s.fadeSeconds??4)===x?'selected':''}>${x}</option>`).join('')}</select></div><div class="field"><label>Estilo de la app</label><select id="setAppStyle"><option value="legacy" ${(s.appStyle||'legacy')==='legacy'?'selected':''}>Legacy</option><option value="simple" ${s.appStyle==='simple'?'selected':''}>Simple</option><option value="light" ${s.appStyle==='light'?'selected':''}>Light</option><option value="medieval" ${s.appStyle==='medieval'?'selected':''}>Medieval</option></select></div>
+ <div class="field"><label>Branch</label><input id="setBranch" value="${escapeHtml(s.branch||APP.branch)}"></div><div class="field"><label>Fade / crossfade (segundos)</label><select id="setFade">${Array.from({length:31},(_,x)=>`<option value="${x}" ${Number(s.fadeSeconds??4)===x?'selected':''}>${x}</option>`).join('')}</select></div><div class="field"><label>Estilo de la app</label><select id="setAppStyle"><option value="legacy" ${(s.appStyle||'legacy')==='legacy'?'selected':''}>Legacy</option><option value="simple" ${s.appStyle==='simple'?'selected':''}>Simple</option><option value="light" ${s.appStyle==='light'?'selected':''}>Light</option><option value="medieval" ${s.appStyle==='medieval'?'selected':''}>Medieval</option></select></div>
  <div class="field full"><label>GitHub token (opcional hasta sincronizar)</label><input id="setToken" type="password" value="${escapeHtml(s.token||'')}" placeholder="github_pat_..."></div>
  <div class="field full"><label>YouTube Data API key</label><input id="setYouTubeApiKey" type="password" value="${escapeHtml(s.youtubeApiKey||'')}" placeholder="AIza..."></div>
  </div>
@@ -827,7 +1024,152 @@ async function syncToGitHub(){
  }
 }
 
+
+/* ===== Maps ===== */
+function loadModuleData(){
+ try{mapsData=JSON.parse(localStorage.getItem(LS_MAPS)||'{"version":1,"maps":[]}')}catch{mapsData={version:1,maps:[]}}
+ try{charactersData=JSON.parse(localStorage.getItem(LS_CHARACTERS)||'{"version":1,"characters":[]}')}catch{charactersData={version:1,characters:[]}}
+ selectedMapId=mapsData.maps[0]?.id||null;
+ selectedCharacterId=charactersData.characters[0]?.id||null;
+}
+function saveMaps(){localStorage.setItem(LS_MAPS,JSON.stringify(mapsData))}
+function saveCharacters(){localStorage.setItem(LS_CHARACTERS,JSON.stringify(charactersData))}
+function exportJsonFile(obj,name){const b=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),400)}
+function exportMapsJson(){exportJsonFile(mapsData,'maps.json')}
+function exportCharactersJson(){exportJsonFile(charactersData,'characters.json')}
+async function importMapsJson(inp){const f=inp.files?.[0];if(!f)return;try{const o=JSON.parse(await f.text());if(!Array.isArray(o.maps))throw 0;mapsData=o;saveMaps();selectedMapId=mapsData.maps[0]?.id||null;renderMapsModule()}catch{alert('maps.json no válido.')}}
+async function importCharactersJson(inp){const f=inp.files?.[0];if(!f)return;try{const o=JSON.parse(await f.text());if(!Array.isArray(o.characters))throw 0;charactersData=o;saveCharacters();selectedCharacterId=charactersData.characters[0]?.id||null;renderCharactersModule()}catch{alert('characters.json no válido.')}}
+
+function openMapForm(id=''){
+ const m=id?mapsData.maps.find(x=>x.id===id):{name:'',imageData:'',pixelWidth:0,pixelHeight:0,worldWidth:100,worldHeight:100,unit:'ft'};
+ modal(`<div class="modalhead"><h2>${id?'Editar':'Nuevo'} mapa</h2><button class="close" onclick="closeModal()">×</button></div>
+ <div class="modalbody"><div class="formgrid">
+   <div class="field full"><label>Nombre</label><input id="mapName" value="${escapeHtml(m.name||'')}"></div>
+   <div class="field full"><label>Imagen PNG/JPG ${id?'(opcional para reemplazar)':''}</label><input id="mapImageFile" type="file" accept="image/png,image/jpeg"></div>
+   <div class="field"><label>Ancho total real</label><input id="mapWorldW" type="number" step="any" min="0" value="${m.worldWidth||100}"></div>
+   <div class="field"><label>Alto total real</label><input id="mapWorldH" type="number" step="any" min="0" value="${m.worldHeight||100}"></div>
+   <div class="field"><label>Unidad</label><select id="mapUnit">${['ft','m','km','mi','hex','cuadros'].map(u=>`<option ${u===m.unit?'selected':''}>${u}</option>`).join('')}</select></div>
+ </div>
+ <div class="notice" style="margin-top:12px">La escala usa el ancho y alto completos del mapa. Las mediciones lineales y de ruta se calculan proporcionalmente sobre la imagen.</div>
+ </div><div class="modalfoot">${id?`<button class="dangerbtn" onclick="deleteMap('${id}')">Eliminar</button>`:''}<button class="secondarybtn" onclick="closeModal()">Cancelar</button><button class="primarybtn" onclick="saveMapForm('${id}')">Guardar</button></div>`);
+}
+async function fileToDataUrl(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
+async function imageDimensions(dataUrl){return new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve({w:i.naturalWidth,h:i.naturalHeight});i.onerror=reject;i.src=dataUrl})}
+async function saveMapForm(id){
+ const name=$('mapName').value.trim(),worldWidth=+$('mapWorldW').value,worldHeight=+$('mapWorldH').value,unit=$('mapUnit').value,file=$('mapImageFile').files?.[0];
+ if(!name||worldWidth<=0||worldHeight<=0)return alert('Nombre y escala válida son obligatorios.');
+ let m=id?mapsData.maps.find(x=>x.id===id):{id:uid('map'),imageData:'',pixelWidth:0,pixelHeight:0};
+ if(file){m.imageData=await fileToDataUrl(file);const d=await imageDimensions(m.imageData);m.pixelWidth=d.w;m.pixelHeight=d.h}
+ if(!m.imageData)return alert('Seleccione una imagen PNG o JPG.');
+ Object.assign(m,{name,worldWidth,worldHeight,unit});
+ if(!id)mapsData.maps.push(m);
+ saveMaps();selectedMapId=m.id;closeModal();renderMapsModule();
+}
+function deleteMap(id){if(!confirm('¿Eliminar este mapa?'))return;mapsData.maps=mapsData.maps.filter(x=>x.id!==id);saveMaps();selectedMapId=mapsData.maps[0]?.id||null;closeModal();renderMapsModule()}
+function renderMapsModule(){
+ const list=$('mapList');if(!list)return;
+ list.innerHTML=mapsData.maps.map(m=>`<div class="map-list-item ${m.id===selectedMapId?'active':''}" onclick="selectMap('${m.id}')"><span>🗺️</span><div class="grow"><strong>${escapeHtml(m.name)}</strong><small>${m.worldWidth} × ${m.worldHeight} ${escapeHtml(m.unit)}</small></div><button class="mini" onclick="event.stopPropagation();openMapForm('${m.id}')">Editar</button></div>`).join('')||'<div class="map-empty">Sin mapas.</div>';
+ renderSelectedMap();
+}
+function selectMap(id){selectedMapId=id;mapRoutePoints=[];mapLinePoints=[];renderMapsModule()}
+function currentMap(){return mapsData.maps.find(x=>x.id===selectedMapId)}
+function renderSelectedMap(){
+ const m=currentMap(),stage=$('mapStage'),controls=$('mapControls'),status=$('mapStatus');if(!stage||!controls)return;
+ if(!m){stage.innerHTML='<div class="map-empty">Agregue un mapa PNG o JPG.</div>';controls.innerHTML='';status.innerHTML='';return}
+ controls.innerHTML=`<div class="map-toolbar">
+   <button class="secondarybtn measure-toggle ${mapMeasureMode==='line'?'active':''}" onclick="setMeasureMode('line')">Distancia lineal</button>
+   <button class="secondarybtn measure-toggle ${mapMeasureMode==='route'?'active':''}" onclick="setMeasureMode('route')">Ruta a mano alzada</button>
+   <button class="secondarybtn" onclick="clearMapMeasurement()">Limpiar medición</button>
+   <button class="secondarybtn" onclick="openMapForm('${m.id}')">Editar escala</button>
+ </div><div class="map-mode-help">${mapMeasureMode==='line'?'Toque/clic en origen y luego en destino.':'Arrastre sobre el mapa siguiendo la ruta.'}</div><div class="distance-readout" id="distanceReadout">Sin medición</div>`;
+ stage.innerHTML=`<img id="mapImage" src="${m.imageData}" alt="${escapeHtml(m.name)}"><canvas id="mapCanvas"></canvas>`;
+ const img=$('mapImage');
+ img.onload=()=>setupMapCanvas(m,img);
+ if(img.complete)setupMapCanvas(m,img);
+ status.innerHTML=`<span>Escala: ${m.worldWidth} × ${m.worldHeight} ${escapeHtml(m.unit)}</span><span>Imagen: ${m.pixelWidth} × ${m.pixelHeight}px</span>`;
+}
+function setupMapCanvas(m,img){
+ const canvas=$('mapCanvas');if(!canvas)return;
+ const displayW=img.width||img.naturalWidth,displayH=img.height||img.naturalHeight;
+ canvas.width=displayW;canvas.height=displayH;canvas.style.width=displayW+'px';canvas.style.height=displayH+'px';
+ canvas.onpointerdown=e=>mapPointerDown(e,canvas);
+ canvas.onpointermove=e=>mapPointerMove(e,canvas);
+ canvas.onpointerup=e=>mapPointerUp(e,canvas);
+ canvas.onpointercancel=e=>mapPointerUp(e,canvas);
+ drawMapMeasurement();
+}
+function canvasPoint(e,canvas){const r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)*(canvas.width/r.width),y:(e.clientY-r.top)*(canvas.height/r.height)}}
+function setMeasureMode(mode){mapMeasureMode=mode;mapRoutePoints=[];mapLinePoints=[];renderSelectedMap()}
+function clearMapMeasurement(){mapRoutePoints=[];mapLinePoints=[];drawMapMeasurement();updateDistanceReadout()}
+function mapPointerDown(e,canvas){
+ e.preventDefault();canvas.setPointerCapture?.(e.pointerId);const p=canvasPoint(e,canvas);
+ if(mapMeasureMode==='line'){if(mapLinePoints.length>=2)mapLinePoints=[];mapLinePoints.push(p);drawMapMeasurement();updateDistanceReadout()}
+ else{mapPointerActive=true;mapRoutePoints=[p];drawMapMeasurement()}
+}
+function mapPointerMove(e,canvas){if(mapMeasureMode!=='route'||!mapPointerActive)return;e.preventDefault();const p=canvasPoint(e,canvas);const last=mapRoutePoints[mapRoutePoints.length-1];if(!last||Math.hypot(p.x-last.x,p.y-last.y)>3){mapRoutePoints.push(p);drawMapMeasurement();updateDistanceReadout()}}
+function mapPointerUp(e,canvas){if(mapMeasureMode==='route'&&mapPointerActive){mapPointerActive=false;updateDistanceReadout()}}
+function drawMapMeasurement(){
+ const c=$('mapCanvas');if(!c)return;const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);ctx.lineWidth=3;ctx.strokeStyle='#ffdf78';ctx.fillStyle='#ffdf78';ctx.lineJoin='round';ctx.lineCap='round';
+ const pts=mapMeasureMode==='line'?mapLinePoints:mapRoutePoints;if(!pts.length)return;
+ ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i].x,pts[i].y);ctx.stroke();
+ for(const p of (mapMeasureMode==='line'?pts:[])){ctx.beginPath();ctx.arc(p.x,p.y,6,0,Math.PI*2);ctx.fill()}
+}
+function segmentWorldDistance(a,b,m,canvas){
+ const sx=m.worldWidth/canvas.width,sy=m.worldHeight/canvas.height;
+ return Math.hypot((b.x-a.x)*sx,(b.y-a.y)*sy);
+}
+function currentMeasuredDistance(){
+ const m=currentMap(),c=$('mapCanvas');if(!m||!c)return 0;const pts=mapMeasureMode==='line'?mapLinePoints:mapRoutePoints;if(pts.length<2)return 0;
+ let d=0;for(let i=1;i<pts.length;i++)d+=segmentWorldDistance(pts[i-1],pts[i],m,c);return d;
+}
+function updateDistanceReadout(){const m=currentMap(),el=$('distanceReadout');if(!el||!m)return;const d=currentMeasuredDistance();el.textContent=d?`Distancia: ${formatDistance(d)} ${m.unit}`:'Sin medición'}
+function formatDistance(d){return d>=100?d.toFixed(0):d>=10?d.toFixed(1):d.toFixed(2)}
+
+/* ===== Characters ===== */
+function openCharacterForm(id=''){
+ const c=id?charactersData.characters.find(x=>x.id===id):{name:'',type:'PC',player:'',race:'',className:'',level:1,alignment:'',ac:10,hp:10,maxHp:10,speed:'30 ft',initiative:0,passivePerception:10,portraitData:'',notes:'',personality:'',bonds:'',goals:'',secrets:'',tags:[]};
+ modal(`<div class="modalhead"><h2>${id?'Editar':'Nuevo'} personaje</h2><button class="close" onclick="closeModal()">×</button></div><div class="modalbody"><div class="formgrid">
+ <div class="field"><label>Nombre</label><input id="charName" value="${escapeHtml(c.name||'')}"></div><div class="field"><label>Tipo</label><select id="charType">${['PC','NPC','Aliado','Enemigo','Facción'].map(x=>`<option ${x===c.type?'selected':''}>${x}</option>`).join('')}</select></div>
+ <div class="field"><label>Jugador</label><input id="charPlayer" value="${escapeHtml(c.player||'')}"></div><div class="field"><label>Raza / especie</label><input id="charRace" value="${escapeHtml(c.race||'')}"></div>
+ <div class="field"><label>Clase / rol</label><input id="charClass" value="${escapeHtml(c.className||'')}"></div><div class="field"><label>Nivel</label><input id="charLevel" type="number" min="0" value="${c.level??1}"></div>
+ <div class="field"><label>CA</label><input id="charAC" type="number" value="${c.ac??10}"></div><div class="field"><label>HP máximo</label><input id="charMaxHP" type="number" value="${c.maxHp??10}"></div>
+ <div class="field"><label>Velocidad</label><input id="charSpeed" value="${escapeHtml(c.speed||'')}"></div><div class="field"><label>Percepción pasiva</label><input id="charPP" type="number" value="${c.passivePerception??10}"></div>
+ <div class="field full"><label>Retrato PNG/JPG</label><input id="charPortrait" type="file" accept="image/png,image/jpeg"></div>
+ <div class="field full"><label>Tags (separados por coma)</label><input id="charTags" value="${escapeHtml((c.tags||[]).join(', '))}"></div>
+ <div class="field full"><label>Personalidad</label><textarea id="charPersonality" rows="2">${escapeHtml(c.personality||'')}</textarea></div>
+ <div class="field full"><label>Objetivos</label><textarea id="charGoals" rows="2">${escapeHtml(c.goals||'')}</textarea></div>
+ <div class="field full"><label>Vínculos</label><textarea id="charBonds" rows="2">${escapeHtml(c.bonds||'')}</textarea></div>
+ <div class="field full"><label>Secretos / información del DM</label><textarea id="charSecrets" rows="2">${escapeHtml(c.secrets||'')}</textarea></div>
+ <div class="field full"><label>Notas</label><textarea id="charNotes" rows="3">${escapeHtml(c.notes||'')}</textarea></div>
+ </div></div><div class="modalfoot">${id?`<button class="dangerbtn" onclick="deleteCharacter('${id}')">Eliminar</button>`:''}<button class="secondarybtn" onclick="closeModal()">Cancelar</button><button class="primarybtn" onclick="saveCharacterForm('${id}')">Guardar</button></div>`);
+}
+async function saveCharacterForm(id){
+ const name=$('charName').value.trim();if(!name)return alert('Nombre obligatorio.');
+ let c=id?charactersData.characters.find(x=>x.id===id):{id:uid('char'),hp:0,portraitData:''};
+ const f=$('charPortrait').files?.[0];if(f)c.portraitData=await fileToDataUrl(f);
+ Object.assign(c,{name,type:$('charType').value,player:$('charPlayer').value.trim(),race:$('charRace').value.trim(),className:$('charClass').value.trim(),level:+$('charLevel').value||0,ac:+$('charAC').value||0,maxHp:+$('charMaxHP').value||0,speed:$('charSpeed').value.trim(),passivePerception:+$('charPP').value||0,tags:$('charTags').value.split(',').map(x=>x.trim()).filter(Boolean),personality:$('charPersonality').value.trim(),goals:$('charGoals').value.trim(),bonds:$('charBonds').value.trim(),secrets:$('charSecrets').value.trim(),notes:$('charNotes').value.trim()});
+ if(!id){c.hp=c.maxHp;charactersData.characters.push(c)}
+ saveCharacters();selectedCharacterId=c.id;closeModal();renderCharactersModule();
+}
+function deleteCharacter(id){if(!confirm('¿Eliminar este personaje?'))return;charactersData.characters=charactersData.characters.filter(x=>x.id!==id);saveCharacters();selectedCharacterId=charactersData.characters[0]?.id||null;closeModal();renderCharactersModule()}
+function renderCharactersModule(){
+ const list=$('characterList'),detail=$('characterDetail');if(!list||!detail)return;
+ list.innerHTML=charactersData.characters.map(c=>`<div class="character-list-item ${c.id===selectedCharacterId?'active':''}" onclick="selectCharacter('${c.id}')"><span>${c.type==='PC'?'🧝':c.type==='Enemigo'?'👹':'🧙'}</span><div class="grow"><strong>${escapeHtml(c.name)}</strong><small>${escapeHtml(c.type)} · ${escapeHtml(c.className||c.race||'')}</small></div></div>`).join('')||'<div class="character-empty">Sin personajes.</div>';
+ const c=charactersData.characters.find(x=>x.id===selectedCharacterId);if(!c){detail.innerHTML='<div class="character-empty">Seleccione o agregue un personaje.</div>';return}
+ detail.innerHTML=`<div class="character-card"><div class="character-header"><div class="avatar">${c.portraitData?`<img src="${c.portraitData}" alt="">`:(c.type==='PC'?'🧝':'🧙')}</div><div class="character-title"><h2>${escapeHtml(c.name)}</h2><p>${escapeHtml([c.race,c.className,c.level?`Nivel ${c.level}`:''].filter(Boolean).join(' · '))}</p><div class="tag-list">${(c.tags||[]).map(t=>`<span class="char-tag">${escapeHtml(t)}</span>`).join('')}</div></div></div>
+ <div class="hp-row"><strong>HP</strong><input type="number" value="${c.hp??c.maxHp??0}" onchange="updateCharacterHP('${c.id}',this.value)"> / <span>${c.maxHp??0}</span><button class="mini" onclick="adjustCharacterHP('${c.id}',-1)">−1</button><button class="mini" onclick="adjustCharacterHP('${c.id}',1)">+1</button><button class="mini" onclick="openCharacterForm('${c.id}')">Editar</button></div>
+ <div class="char-grid"><div class="stat"><strong>${c.ac??0}</strong><small>CA</small></div><div class="stat"><strong>${escapeHtml(c.speed||'—')}</strong><small>Velocidad</small></div><div class="stat"><strong>${c.passivePerception??0}</strong><small>Percepción pasiva</small></div></div>
+ ${charTextSection('Personalidad',c.personality)}${charTextSection('Objetivos',c.goals)}${charTextSection('Vínculos',c.bonds)}${charTextSection('Secretos / DM',c.secrets)}${charTextSection('Notas',c.notes)}
+ </div>`;
+}
+function charTextSection(title,text){return text?`<div class="char-section"><h3>${title}</h3><p>${escapeHtml(text)}</p></div>`:''}
+function selectCharacter(id){selectedCharacterId=id;renderCharactersModule()}
+function updateCharacterHP(id,value){const c=charactersData.characters.find(x=>x.id===id);if(!c)return;c.hp=Math.max(0,+value||0);saveCharacters();renderCharactersModule()}
+function adjustCharacterHP(id,delta){const c=charactersData.characters.find(x=>x.id===id);if(!c)return;c.hp=Math.max(0,(c.hp??c.maxHp??0)+delta);saveCharacters();renderCharactersModule()}
+
 const yt=document.createElement('script');yt.src='https://www.youtube.com/iframe_api';document.head.appendChild(yt);
+loadModuleData();
+setupSidebarHover();
 applyUiPreferences();
 loadInitialLibrary();
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
