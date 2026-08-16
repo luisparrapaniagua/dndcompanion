@@ -447,7 +447,7 @@ body.theme-simple .map-stage-wrap,body.theme-simple .stat{border-radius:0!import
 }
 
 
-/* ===== v0.7.1 sidebar navigation ===== */
+/* ===== v0.7.2 sidebar navigation ===== */
 .side-list{display:flex;flex-direction:column}
 .side-list-item{
   display:flex;align-items:center;gap:8px;
@@ -467,7 +467,7 @@ body.sidebar-unpinned:not(.sidebar-hovering) .side-list-item .grow{display:none}
 body.sidebar-unpinned:not(.sidebar-hovering) .side-list-item{justify-content:center}
 
 
-/* v0.7.1 fixes */
+/* v0.7.2 fixes */
 .sidebar-head .brand{overflow:visible!important;text-overflow:clip!important}
 .route-style-pop .close-pop{
   position:absolute;right:6px;top:5px;
@@ -492,7 +492,7 @@ body.sidebar-unpinned:not(.sidebar-hovering) .module-nav button.active{box-shado
 .meta-progress{height:8px;background:#17120f;border:1px solid var(--line);border-radius:999px;overflow:hidden}.meta-progress>div{height:100%;width:0;background:var(--gold);transition:width .2s}
 
 
-/* ===== v0.7.1 stability fixes ===== */
+/* ===== v0.7.2 stability fixes ===== */
 
 /* Sidebar controls must always remain available when collapsed */
 .app.sidebar-collapsed .sidebar-head,
@@ -536,9 +536,33 @@ body.sidebar-unpinned:not(.sidebar-hovering) .sidebar-head-actions{
 
 /* Bottom player after removing timeline */
 .nowrow{
-  grid-template-columns:minmax(220px,1fr) auto 64px!important;
+  grid-template-columns:minmax(190px,1fr) auto auto 64px!important;
 }
 .progress-area{display:none!important}
+
+
+/* ===== v0.7.2 playback controls ===== */
+.track .play{
+  font-size:13px!important;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.track .play:before{content:none!important}
+.track.playing .play:before{content:none!important}
+.seek-buttons{
+  display:flex;
+  gap:5px;
+  align-items:center;
+  justify-content:center;
+}
+.seek-buttons button{
+  min-width:50px;
+  height:34px;
+  padding:0 7px;
+  font-size:10px;
+  white-space:nowrap;
+}
 
 </style>
 </head>
@@ -546,7 +570,7 @@ body.sidebar-unpinned:not(.sidebar-hovering) .sidebar-head-actions{
 <div class="app">
 <aside class="sidebar">
   <div class="sidebar-head">
-    <div class="brand" data-version="Version 0.7.1" title="Version 0.7.1">Leo's D&D app</div>
+    <div class="brand" data-version="Version 0.7.2" title="Version 0.7.2">Leo's D&D app</div>
     <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Colapsar o expandir sidebar">‹</button>
   </div>
   <div class="rule"></div>
@@ -654,6 +678,12 @@ body.sidebar-unpinned:not(.sidebar-hovering) .sidebar-head-actions{
 <div class="now" id="musicNowBar">
   <div class="nowrow">
     <div class="np"><small>Now Playing</small><strong id="nowTitle">Nada reproduciéndose</strong><span id="nowMeta">Seleccione una pista</span><button class="audio-chip" id="audioChip" onclick="ensureAudio()">Audio pendiente</button><div class="status"><span id="statusDot" class="dot"></span><span id="statusText">Inicializando YouTube…</span></div></div>
+    <div class="seek-buttons">
+      <button onclick="seekMusicBy(-30)" title="Retroceder 30 segundos">−30 s</button>
+      <button onclick="seekMusicBy(-10)" title="Retroceder 10 segundos">−10 s</button>
+      <button onclick="seekMusicBy(10)" title="Avanzar 10 segundos">+10 s</button>
+      <button onclick="seekMusicBy(30)" title="Avanzar 30 segundos">+30 s</button>
+    </div>
     <div class="transport"><button onclick="playPreviousMusicTrack()" title="Anterior">⏮</button><button class="primary toggle-play" id="playPauseBtn" onclick="togglePlayPause()" title="Play/Pausa">▶</button><button onclick="playNextMusicTrack()" title="Siguiente">⏭</button><button onclick="stopAll()" title="Stop">■</button></div>
     <div class="volume-vertical"><span class="vol-icon">🔊</span><input id="masterVolume" type="range" min="0" max="100" value="72" orient="vertical"><strong id="volumeLabel">72%</strong></div>
   </div></div>
@@ -832,8 +862,26 @@ function renderTracks(){
  const sceneMode=(scenePlayCategoryId===c.id)?scenePlayMode:null;
  const sceneCard=`<article class="scene-play-card"><div><div class="kicker">Escena completa</div><div class="scene-title">${escapeHtml(c.icon||'◆')} ${escapeHtml(c.name)}</div><div class="scene-meta">${c.tracks.length} pistas disponibles</div>${sceneMode?`<div class="scene-mode-badge">Modo: ${sceneMode==='ordered'?'en orden':'aleatorio'}</div>`:''}</div><div class="scene-buttons"><button class="${sceneMode==='ordered'?'active':''}" data-tooltip="Reproducir en orden" onclick="startScenePlayback('ordered')">▶</button><button class="${sceneMode==='random'?'active':''}" data-tooltip="Reproducir aleatorio" onclick="startScenePlayback('random')">⤨</button><button data-tooltip="Anterior" onclick="playPreviousSceneTrack()">⏮</button><button data-tooltip="Siguiente" onclick="playNextSceneTrack()">⏭</button></div></article>`;
  if(!tracks.length){$('tracks').innerHTML=sceneCard+'<div class="empty">No hay pistas para mostrar en esta escena.</div>';return}
- $('tracks').innerHTML=sceneCard+tracks.map(t=>{const playing=currentTrack?.id===t.id,s=settings();const cover=s.showTrackCovers!==false&&t.thumbnail?`<img class="track-cover" src="${escapeHtml(t.thumbnail)}" alt="">`:'';const artist=s.showTrackArtists!==false&&t.artist?`<div class="artist">${escapeHtml(t.artist)}</div>`:'';const album=s.showTrackAlbums===true&&t.album?`<div class="album">${escapeHtml(t.album)}</div>`:'';const meta=(artist||album)?`<div class="track-meta">${artist}${album}</div>`:'';return `<article class="track ${playing?'playing':''} ${t.favorite?'favorite':''}" data-id="${t.id}">${cover}<button class="seal" title="Favorito" data-fav="${t.id}" style="border:0;background:none;cursor:pointer">★</button><div class="kicker">${escapeHtml(t.intensity||'Track')}</div><h3>${escapeHtml(t.title||'Sin título')}</h3>${meta}<div class="row"><button class="play">${playing?'SONANDO':'▶ REPRODUCIR'}</button></div></article>`}).join('');
- document.querySelectorAll('.track').forEach(card=>card.onclick=e=>{const fav=e.target.closest('[data-fav]');if(fav){e.stopPropagation();toggleFavorite(fav.dataset.fav);return}scenePlayMode=null;scenePlayCategoryId=null;const t=c.tracks.find(x=>x.id===card.dataset.id);if(t)playTrack(t,c)});
+ $('tracks').innerHTML=sceneCard+tracks.map(t=>{const playing=currentTrack?.id===t.id,s=settings();const cover=s.showTrackCovers!==false&&t.thumbnail?`<img class="track-cover" src="${escapeHtml(t.thumbnail)}" alt="">`:'';const artist=s.showTrackArtists!==false&&t.artist?`<div class="artist">${escapeHtml(t.artist)}</div>`:'';const album=s.showTrackAlbums===true&&t.album?`<div class="album">${escapeHtml(t.album)}</div>`:'';const meta=(artist||album)?`<div class="track-meta">${artist}${album}</div>`:'';return `<article class="track ${playing?'playing':''} ${t.favorite?'favorite':''}" data-id="${t.id}">${cover}<button class="seal" title="Favorito" data-fav="${t.id}" style="border:0;background:none;cursor:pointer">★</button><div class="kicker">${escapeHtml(t.intensity||'Track')}</div><h3>${escapeHtml(t.title||'Sin título')}</h3>${meta}<div class="row"><button class="play" data-track-play="${t.id}" title="${playing&&isMusicPlaying?'Pausar':'Reproducir'}">${playing&&isMusicPlaying?'Ⅱ':'▶'}</button></div></article>`}).join('');
+ document.querySelectorAll('.track').forEach(card=>card.onclick=e=>{
+ const fav=e.target.closest('[data-fav]');
+ if(fav){e.stopPropagation();toggleFavorite(fav.dataset.fav);return}
+ const playBtn=e.target.closest('[data-track-play]');
+ const t=c.tracks.find(x=>x.id===card.dataset.id);
+ if(!t)return;
+ scenePlayMode=null;scenePlayCategoryId=null;
+ if(playBtn){
+   e.stopPropagation();
+   if(currentTrack?.id===t.id){
+     if(isMusicPlaying)pauseCurrent();
+     else resumeCurrent();
+   }else{
+     playTrack(t,c);
+   }
+   return;
+ }
+ playTrack(t,c);
+});
 }
 async function startScenePlayback(mode){
  const c=selectedCat();if(!c?.tracks?.length){setStatus('La escena no tiene pistas','error');return}
@@ -887,15 +935,15 @@ function onMainPlayerStateChange(e){
 
  if(e.data===YT.PlayerState.PLAYING){
    isMusicPlaying=true;
-   updatePlayPauseButton();
+   updatePlayPauseButton();renderTracks();
    
  }else if(e.data===YT.PlayerState.PAUSED||e.data===YT.PlayerState.CUED){
    isMusicPlaying=false;
-   updatePlayPauseButton();
+   updatePlayPauseButton();renderTracks();
    
  }else if(e.data===YT.PlayerState.ENDED){
    isMusicPlaying=false;
-   updatePlayPauseButton();
+   updatePlayPauseButton();renderTracks();
    
    if(scenePlayMode&&scenePlayCategoryId)setTimeout(playNextSceneTrack,120);
  }
@@ -950,16 +998,38 @@ function resolvePlaybackPlayer(){
  return best;
 }
 
+function seekMusicBy(seconds){
+ const p=resolvePlaybackPlayer()||players[activeIndex];
+ if(!p)return;
+ try{
+   const current=Number(p.getCurrentTime?.()||0);
+   const duration=Number(p.getDuration?.()||0);
+   let target=current+Number(seconds||0);
+   target=Math.max(0,target);
+   if(duration>0)target=Math.min(duration,target);
+   p.seekTo(target,true);
+   setStatus(`${seconds>0?'+':''}${seconds} s`,'ready');
+ }catch(e){
+   console.warn('Seek failed',e);
+ }
+}
+
 function updatePlayPauseButton(){
  const b=$('playPauseBtn');if(!b)return;
  b.textContent=isMusicPlaying?'Ⅱ':'▶';
  b.title=isMusicPlaying?'Pausar':'Reproducir';
 }
 function pauseCurrent(){
- try{const p=resolvePlaybackPlayer();p?.pauseVideo();isMusicPlaying=false;updatePlayPauseButton();setStatus('Pausado')}catch{}
+ try{
+   const p=resolvePlaybackPlayer();p?.pauseVideo();
+   isMusicPlaying=false;updatePlayPauseButton();renderTracks();setStatus('Pausado')
+ }catch{}
 }
 function resumeCurrent(){
- ensureAudio().then(()=>{try{const p=resolvePlaybackPlayer()||players[activeIndex];p?.playVideo();isMusicPlaying=true;updatePlayPauseButton();setStatus('Reproduciendo','ready')}catch{}})
+ ensureAudio().then(()=>{try{
+ const p=resolvePlaybackPlayer()||players[activeIndex];p?.playVideo();
+ isMusicPlaying=true;updatePlayPauseButton();renderTracks();setStatus('Reproduciendo','ready')
+}catch{}})
 }
 function togglePlayPause(){
  if(isMusicPlaying)pauseCurrent();else resumeCurrent();
@@ -982,7 +1052,7 @@ function playNextMusicTrack(){
  if(!scenePlayMode)scenePlayMode='ordered';
  playTrack(c.tracks[idx],c);
 }
-function stopAll(){scenePlayMode=null;scenePlayCategoryId=null;isMusicPlaying=false;updatePlayPauseButton();players.forEach(p=>{try{p.stopVideo()}catch{}});currentTrack=null;$('nowTitle').textContent='Nada reproduciéndose';$('nowMeta').textContent='Seleccione una pista';setStatus('Detenido');renderTracks()}
+function stopAll(){scenePlayMode=null;scenePlayCategoryId=null;isMusicPlaying=false;updatePlayPauseButton();renderTracks();players.forEach(p=>{try{p.stopVideo()}catch{}});currentTrack=null;$('nowTitle').textContent='Nada reproduciéndose';$('nowMeta').textContent='Seleccione una pista';setStatus('Detenido');renderTracks()}
 $('masterVolume').oninput=e=>{const v=+e.target.value;$('volumeLabel').textContent=v+'%';setVol(players[activeIndex],v)};
 
 async function sha256(s){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join('')}

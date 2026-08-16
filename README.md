@@ -1,4 +1,4 @@
-# Leo's D&D app v0.7.1
+# Leo's D&D app v0.7.2
 
 Companion musical web/PWA para sesiones de D&D.
 
@@ -196,3 +196,9 @@ Las playlists privadas pueden requerir autenticación adicional y no forman part
 - La YouTube API key ya existente no se borra si el campo queda vacío.
 - Se intenta recuperar automáticamente la API key desde claves locales usadas por versiones anteriores.
 - El token GitHub también se conserva si se guarda Configuración con el campo vacío.
+
+
+## v0.7.2
+- El botón de cada canción alterna Play/Pausa para la pista actual.
+- La barra inferior incorpora −30 s, −10 s, +10 s y +30 s.
+- Los saltos usan el reproductor activo y `seekTo()`.
