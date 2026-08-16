@@ -446,13 +446,33 @@ body.theme-simple .map-stage-wrap,body.theme-simple .stat{border-radius:0!import
  .map-stage-wrap{height:calc(100vh - 205px)!important}
 }
 
+
+/* ===== v0.6.1 sidebar navigation ===== */
+.side-list{display:flex;flex-direction:column}
+.side-list-item{
+  display:flex;align-items:center;gap:8px;
+  width:100%;padding:7px 8px;
+  border:0;border-bottom:1px solid rgba(120,95,65,.22);
+  background:transparent;color:#cfc2ae;
+  cursor:pointer;text-align:left;
+}
+.side-list-item:hover{background:rgba(255,255,255,.025)}
+.side-list-item.active{background:linear-gradient(90deg,rgba(198,154,82,.11),transparent);box-shadow:inset 3px 0 0 var(--gold)}
+.side-list-item .grow{flex:1;min-width:0}
+.side-list-item strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}
+.side-list-item small{display:block;color:var(--muted);font-size:9px;margin-top:2px}
+.app.sidebar-collapsed .side-list-item .grow,
+body.sidebar-unpinned:not(.sidebar-hovering) .side-list-item .grow{display:none}
+.app.sidebar-collapsed .side-list-item,
+body.sidebar-unpinned:not(.sidebar-hovering) .side-list-item{justify-content:center}
+
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="sidebar">
   <div class="sidebar-head">
-    <div class="brand" data-version="Version 0.6.0">Leo's D&D app</div>
+    <div class="brand" data-version="Version 0.6.1">Leo's D&D app</div>
     <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Colapsar o expandir sidebar">‹</button>
   </div>
   <div class="rule"></div>
@@ -463,13 +483,33 @@ body.theme-simple .map-stage-wrap,body.theme-simple .stat{border-radius:0!import
     <button data-module="characters" data-label="Personajes" onclick="switchModule('characters')" aria-label="Personajes"><span class="micon">♙</span><span>Personajes</span></button>
   </div>
   <div id="musicSidebar">
-  <div class="section-label">Escenas</div>
-  <div id="categories"></div>
-  <div class="section-label edit-only hidden">Biblioteca</div>
-  <div class="side-actions edit-only hidden">
-    <button onclick="openLibrary()">Categorías</button>
-    <button onclick="openCategoryForm(selectedCategory)">Editar actual</button>
+    <div class="section-label">Escenas</div>
+    <div id="categories"></div>
+    <div class="section-label edit-only hidden">Biblioteca</div>
+    <div class="side-actions edit-only hidden">
+      <button onclick="openLibrary()">Categorías</button>
+      <button onclick="openCategoryForm(selectedCategory)">Editar actual</button>
+    </div>
   </div>
+
+  <div id="mapsSidebar" class="hidden">
+    <div class="section-label">Mapas</div>
+    <div id="sidebarMapList"></div>
+    <div class="section-label">Gestión</div>
+    <div class="side-actions">
+      <button onclick="openMapLibrary()">Biblioteca</button>
+      <button onclick="openMapForm()">+ Mapa</button>
+    </div>
+  </div>
+
+  <div id="charactersSidebar" class="hidden">
+    <div class="section-label">Personajes</div>
+    <div id="sidebarCharacterList"></div>
+    <div class="section-label">Gestión</div>
+    <div class="side-actions">
+      <button onclick="openCharacterForm()">+ Personaje</button>
+      <button onclick="openCharacterManager()">Gestionar</button>
+    </div>
   </div>
 </aside>
 
@@ -661,10 +701,29 @@ function switchModule(module){
  document.querySelectorAll('.module-panel').forEach(p=>p.classList.remove('active'));
  $('module'+module[0].toUpperCase()+module.slice(1))?.classList.add('active');
  document.querySelectorAll('.module-nav button').forEach(b=>b.classList.toggle('active',b.dataset.module===module));
+
  $('musicSidebar')?.classList.toggle('hidden',module!=='music');
+ $('mapsSidebar')?.classList.toggle('hidden',module!=='maps');
+ $('charactersSidebar')?.classList.toggle('hidden',module!=='characters');
  $('musicNowBar')?.classList.toggle('hidden',module!=='music');
- if(module==='maps')renderMapsModule();
- if(module==='characters')renderCharactersModule();
+
+ if(module==='maps'){
+   renderMapsSidebar();
+   if(!selectedMapId && mapsData.maps.length){
+     selectedMapId=settings().lastMapId&&mapsData.maps.some(m=>m.id===settings().lastMapId)
+       ? settings().lastMapId
+       : mapsData.maps[0].id;
+   }
+   renderMapsModule();
+   if(!selectedMapId && mapsData.maps.length===0){
+     setTimeout(openMapLibrary,0);
+   }
+ }
+ if(module==='characters'){
+   renderCharactersSidebar();
+   if(!selectedCharacterId && charactersData.characters.length)selectedCharacterId=charactersData.characters[0].id;
+   renderCharactersModule();
+ }
 }
 function selectedCat(){return library.categories.find(c=>c.id===selectedCategory)||library.categories[0]}
 function renderHeader(){
@@ -731,7 +790,7 @@ function onMainReady(){readyCount++;if(readyCount===2){ytReady=true;setStatus('Y
 function onMainPlayerStateChange(e){
  if(!window.YT||e.target!==players[activeIndex])return;
  if(e.data===YT.PlayerState.PLAYING){
-   isMusicPlaying=true;updatePlayPauseButton();
+   isMusicPlaying=true;updatePlayPauseButton();updatePlaybackProgress();
  }else if(e.data===YT.PlayerState.PAUSED||e.data===YT.PlayerState.CUED){
    isMusicPlaying=false;updatePlayPauseButton();
  }else if(e.data===YT.PlayerState.ENDED){
@@ -753,20 +812,80 @@ async function playTrack(track,category){
  if(!ytReady)return;
  if(transitionTimer){clearInterval(transitionTimer);transitionTimer=null}
  const master=+$('masterVolume').value,fadeMs=+(settings().fadeSeconds??4)*1000;
- currentTrack=track;isMusicPlaying=true;updatePlayPauseButton();$('nowTitle').textContent=track.title;$('nowMeta').textContent=`${category.name} · ${track.author||'YouTube'}`;renderTracks();
+ currentTrack=track;isMusicPlaying=true;updatePlayPauseButton();$('nowTitle').textContent=track.title;setTimeout(updatePlaybackProgress,300);$('nowMeta').textContent=`${category.name} · ${track.author||'YouTube'}`;renderTracks();
  if(isiOS){
    const p=players[activeIndex];setStatus('Transición iPad','fading');
    await ramp(p,master,0,fadeMs/2);try{p.loadVideoById(track.youtubeId);p.playVideo()}catch{};await wait(160);await ramp(p,0,master,fadeMs/2);setStatus('Reproduciendo','ready');return;
  }
- const oi=activeIndex,ni=1-activeIndex,old=players[oi],next=players[ni];setVol(next,0);try{next.loadVideoById(track.youtubeId);next.playVideo()}catch{};activeIndex=ni;
+ const oi=activeIndex,ni=1-activeIndex,old=players[oi],next=players[ni];
+ activeIndex=ni;
+ setVol(next,0);
+ try{next.loadVideoById(track.youtubeId);next.playVideo()}catch{};
  if(fadeMs===0){try{old.stopVideo()}catch{}setVol(next,master);setStatus('Reproduciendo','ready');return}
  setStatus('Crossfade','fading');const st=performance.now();transitionTimer=setInterval(()=>{const f=Math.min(1,(performance.now()-st)/fadeMs);setVol(old,master*(1-f));setVol(next,master*f);if(f>=1){clearInterval(transitionTimer);transitionTimer=null;try{old.stopVideo()}catch{}setVol(next,master);setStatus('Reproduciendo','ready')}},60);
 }
-function formatPlaybackTime(sec){sec=Math.max(0,Math.floor(Number(sec)||0));const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;return h?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${m}:${String(s).padStart(2,'0')}`}
-function updatePlaybackProgress(){const p=players[activeIndex],sl=$('progressSlider');if(!p||!sl)return;try{const c=p.getCurrentTime?.()||0,t=p.getDuration?.()||0,l=p.getVideoLoadedFraction?.()||0;if(!userSeeking&&t>0)sl.value=Math.round(c/t*1000);$('elapsedTime').textContent=formatPlaybackTime(c);$('totalTime').textContent=formatPlaybackTime(t);$('bufferLine')?.style.setProperty('--buffer',Math.round(l*100)+'%')}catch{}}
-function startProgressTimer(){if(!progressTimer)progressTimer=setInterval(updatePlaybackProgress,350)}
-function setupProgressSeek(){const s=$('progressSlider');if(!s||s.dataset.ready)return;s.dataset.ready='1';s.addEventListener('pointerdown',()=>userSeeking=true);s.addEventListener('input',()=>{userSeeking=true;try{const t=players[activeIndex]?.getDuration?.()||0;$('elapsedTime').textContent=formatPlaybackTime(t*Number(s.value)/1000)}catch{}});const commit=()=>{try{const p=players[activeIndex],t=p?.getDuration?.()||0;if(t>0)p.seekTo(t*Number(s.value)/1000,true)}catch{}userSeeking=false};s.addEventListener('change',commit);s.addEventListener('pointerup',commit)}
-
+function formatPlaybackTime(sec){
+ sec=Math.max(0,Math.floor(Number(sec)||0));
+ const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;
+ return h?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${m}:${String(s).padStart(2,'0')}`;
+}
+function getCurrentPlaybackPlayer(){
+ const p=players[activeIndex];
+ if(!p)return null;
+ return p;
+}
+function updatePlaybackProgress(){
+ const p=getCurrentPlaybackPlayer(),sl=$('progressSlider');
+ if(!p||!sl)return;
+ try{
+   const state=p.getPlayerState?.();
+   const current=Number(p.getCurrentTime?.()||0);
+   const total=Number(p.getDuration?.()||0);
+   const loaded=Number(p.getVideoLoadedFraction?.()||0);
+   if(total>0){
+     if(!userSeeking)sl.value=Math.round((current/total)*1000);
+     $('elapsedTime').textContent=formatPlaybackTime(current);
+     $('totalTime').textContent=formatPlaybackTime(total);
+   }else{
+     if(!userSeeking)sl.value=0;
+     $('elapsedTime').textContent='0:00';
+     $('totalTime').textContent='0:00';
+   }
+   $('bufferLine')?.style.setProperty('--buffer',Math.round(Math.max(0,Math.min(1,loaded))*100)+'%');
+ }catch(e){}
+}
+function startProgressTimer(){
+ if(progressTimer)clearInterval(progressTimer);
+ progressTimer=setInterval(updatePlaybackProgress,250);
+ updatePlaybackProgress();
+}
+function setupProgressSeek(){
+ const s=$('progressSlider');if(!s||s.dataset.ready)return;
+ s.dataset.ready='1';
+ const preview=()=>{
+   const p=getCurrentPlaybackPlayer();
+   const total=Number(p?.getDuration?.()||0);
+   if(total>0)$('elapsedTime').textContent=formatPlaybackTime(total*(Number(s.value)/1000));
+ };
+ s.addEventListener('pointerdown',()=>{userSeeking=true});
+ s.addEventListener('touchstart',()=>{userSeeking=true},{passive:true});
+ s.addEventListener('input',()=>{userSeeking=true;preview()});
+ const commit=()=>{
+   const p=getCurrentPlaybackPlayer();
+   try{
+     const total=Number(p?.getDuration?.()||0);
+     if(total>0){
+       const target=total*(Number(s.value)/1000);
+       p.seekTo(target,true);
+       $('elapsedTime').textContent=formatPlaybackTime(target);
+     }
+   }catch(e){}
+   setTimeout(()=>{userSeeking=false;updatePlaybackProgress()},120);
+ };
+ s.addEventListener('change',commit);
+ s.addEventListener('pointerup',commit);
+ s.addEventListener('touchend',commit,{passive:true});
+}
 function updatePlayPauseButton(){
  const b=$('playPauseBtn');if(!b)return;
  b.textContent=isMusicPlaying?'Ⅱ':'▶';
@@ -1318,7 +1437,7 @@ async function importCharactersJson(inp){const f=inp.files?.[0];if(!f)return;try
 function openMapLibrary(){
  modal(`<div class="modalhead"><h2>Biblioteca de mapas</h2><button class="close" onclick="closeModal()">×</button></div><div class="modalbody"><div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px"><button class="primarybtn" onclick="closeModal();openMapForm()">+ Mapa</button><button class="secondarybtn" onclick="exportMapsJson()">Exportar JSON</button><button class="secondarybtn" onclick="closeModal();$('mapsJsonFile').click()">Importar JSON</button></div><div class="map-library-list">${mapsData.maps.map(m=>`<div class="map-library-item"><div class="grow"><strong>${escapeHtml(m.name)}</strong><small>${m.worldWidth} × ${m.worldHeight} ${escapeHtml(m.unit)}</small></div><button class="mini" onclick="selectMapFromLibrary('${m.id}')">Abrir</button><button class="mini" onclick="closeModal();openMapForm('${m.id}')">Editar</button></div>`).join('')||'<div class="empty">Sin mapas.</div>'}</div></div><div class="modalfoot"><button class="secondarybtn" onclick="closeModal()">Cerrar</button></div>`);
 }
-function selectMapFromLibrary(id){selectedMapId=id;saveSettings({lastMapId:id});closeModal();renderMapsModule()}
+function selectMapFromLibrary(id){selectedMapId=id;saveSettings({lastMapId:id});closeModal();renderMapsSidebar();renderMapsModule()}
 function openMapForm(id=''){
  const m=id?mapsData.maps.find(x=>x.id===id):{name:'',pixelWidth:0,pixelHeight:0,worldWidth:100,worldHeight:100,unit:'ft',hasImage:false};
  modal(`<div class="modalhead"><h2>${id?'Editar':'Nuevo'} mapa</h2><button class="close" onclick="closeModal()">×</button></div>
@@ -1377,7 +1496,42 @@ async function deleteMap(id){
  try{await deleteMapImage(id)}catch(e){console.warn(e)}
  selectedMapId=mapsData.maps[0]?.id||null;closeModal();renderMapsModule()
 }
+function renderMapsSidebar(){
+ const el=$('sidebarMapList');if(!el)return;
+ el.className='side-list';
+ el.innerHTML=mapsData.maps.map(m=>`<button class="side-list-item ${m.id===selectedMapId?'active':''}" onclick="selectMapFromSidebar('${m.id}')"><span>🗺</span><span class="grow"><strong>${escapeHtml(m.name)}</strong><small>${m.worldWidth} × ${m.worldHeight} ${escapeHtml(m.unit)}</small></span></button>`).join('')||'<div class="empty" style="padding:12px 6px">Sin mapas.</div>';
+}
+function selectMapFromSidebar(id){
+ captureMapViewState();
+ selectedMapId=id;
+ saveSettings({lastMapId:id});
+ mapRoutePoints=[];mapLinePoints=[];
+ renderMapsSidebar();
+ renderSelectedMap();
+}
+function renderCharactersSidebar(){
+ const el=$('sidebarCharacterList');if(!el)return;
+ el.className='side-list';
+ el.innerHTML=charactersData.characters.map(c=>`<button class="side-list-item ${c.id===selectedCharacterId?'active':''}" onclick="selectCharacterFromSidebar('${c.id}')"><span>${c.type==='PC'?'♙':c.type==='Enemigo'?'☠':'♟'}</span><span class="grow"><strong>${escapeHtml(c.name)}</strong><small>${escapeHtml(c.type||'')}</small></span></button>`).join('')||'<div class="empty" style="padding:12px 6px">Sin personajes.</div>';
+}
+function selectCharacterFromSidebar(id){
+ selectedCharacterId=id;
+ renderCharactersSidebar();
+ renderCharactersModule();
+}
+function openCharacterManager(){
+ modal(`<div class="modalhead"><h2>Personajes</h2><button class="close" onclick="closeModal()">×</button></div>
+ <div class="modalbody"><div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px">
+   <button class="primarybtn" onclick="closeModal();openCharacterForm()">+ Personaje</button>
+   <button class="secondarybtn" onclick="exportCharactersJson()">Exportar JSON</button>
+   <button class="secondarybtn" onclick="closeModal();$('charactersJsonFile').click()">Importar JSON</button>
+ </div>
+ <div class="map-library-list">${charactersData.characters.map(c=>`<div class="map-library-item"><div class="grow"><strong>${escapeHtml(c.name)}</strong><small>${escapeHtml(c.type||'')} · ${escapeHtml(c.className||c.race||'')}</small></div><button class="mini" onclick="closeModal();openCharacterForm('${c.id}')">Editar</button></div>`).join('')||'<div class="empty">Sin personajes.</div>'}</div>
+ </div><div class="modalfoot"><button class="secondarybtn" onclick="closeModal()">Cerrar</button></div>`);
+}
+
 function renderMapsModule(){
+ renderMapsSidebar();
  const list=$('mapList');if(!list)return;
  list.innerHTML=mapsData.maps.map(m=>`<div class="map-list-item ${m.id===selectedMapId?'active':''}" onclick="selectMap('${m.id}')"><span>🗺️</span><div class="grow"><strong>${escapeHtml(m.name)}</strong><small>${m.worldWidth} × ${m.worldHeight} ${escapeHtml(m.unit)}</small></div><button class="mini" onclick="event.stopPropagation();openMapForm('${m.id}')">Editar</button></div>`).join('')||'<div class="map-empty">Sin mapas.</div>';
  renderSelectedMap();
@@ -1388,7 +1542,12 @@ function captureMapViewState(){const m=currentMap(),w=document.querySelector('.m
 function restoreMapViewState(){const m=currentMap(),w=document.querySelector('.map-stage-wrap');if(!m||!w)return;const s=mapViewStateById[m.id];if(s){mapZoom=s.zoom||mapFitZoom||1;setTimeout(()=>{applyMapZoom();w.scrollLeft=s.scrollLeft||0;w.scrollTop=s.scrollTop||0},0)}}
 async function renderSelectedMap(){
  const m=currentMap(),stage=$('mapStage'),controls=$('mapControls'),status=$('mapStatus');if(!stage||!controls)return;
- if(!m){stage.innerHTML='<div class="map-empty">Agregue un mapa PNG o JPG.</div>';controls.innerHTML='';status.innerHTML='';return}
+ if(!m){
+ stage.innerHTML='<div class="map-empty">No hay mapas disponibles.<br><br><button class="primarybtn" onclick="openMapLibrary()">Gestionar mapas</button></div>';
+ controls.innerHTML='';
+ status.innerHTML='';
+ return;
+}
  controls.innerHTML=`<div class="map-view-header"><div class="map-view-title"><span>🗺</span><strong>${escapeHtml(m.name)}</strong></div><button class="secondarybtn tooltip-btn" data-tooltip="Biblioteca de mapas" onclick="openMapLibrary()">▦</button></div><div class="map-toolstrip"><button class="secondarybtn ${mapInteractionMode==='pan'?'active':''}" data-map-mode="pan" data-tooltip="Mover mapa" onclick="setMapInteractionMode('pan')">✋</button><button class="secondarybtn ${mapInteractionMode==='measure'&&mapMeasureMode==='line'?'active':''}" data-map-mode="line" data-tooltip="Distancia lineal" onclick="setMeasureMode('line')">↔</button><button class="secondarybtn ${mapInteractionMode==='measure'&&mapMeasureMode==='route'?'active':''}" data-map-mode="route" data-tooltip="Ruta a mano alzada" onclick="setMeasureMode('route')">✎</button><button class="secondarybtn" data-tooltip="Limpiar medición" onclick="clearMapMeasurement()">⌫</button><span class="separator"></span><button class="secondarybtn" data-tooltip="Alejar" onclick="zoomMapOut()">−</button><button class="secondarybtn" data-tooltip="Ajustar" onclick="fitMapToViewport()">⊙</button><button class="secondarybtn" data-tooltip="Acercar" onclick="zoomMapIn()">+</button><span class="separator"></span><button class="secondarybtn" data-tooltip="Estilo de ruta" onclick="toggleRouteStylePopover(this)">🎨</button><button class="secondarybtn" data-tooltip="Editar escala" onclick="openMapForm('${m.id}')">⚙</button><span class="map-zoom-label" id="mapZoomLabel">100%</span></div><div class="map-mode-help" id="mapModeHelp">${mapInteractionMode==='pan'?'Arrastre para mover. Use rueda del mouse o pellizco para zoom.':mapMeasureMode==='line'?'Toque/clic en origen y luego en destino.':'Arrastre siguiendo la ruta.'}</div><div class="distance-readout" id="distanceReadout">Sin medición</div>`;
 
  stage.innerHTML='<div class="map-empty">Cargando mapa…</div>';
@@ -1642,6 +1801,7 @@ async function saveCharacterForm(id){
 }
 function deleteCharacter(id){if(!confirm('¿Eliminar este personaje?'))return;charactersData.characters=charactersData.characters.filter(x=>x.id!==id);saveCharacters();selectedCharacterId=charactersData.characters[0]?.id||null;closeModal();renderCharactersModule()}
 function renderCharactersModule(){
+ renderCharactersSidebar();
  const list=$('characterList'),detail=$('characterDetail');if(!list||!detail)return;
  list.innerHTML=charactersData.characters.map(c=>`<div class="character-list-item ${c.id===selectedCharacterId?'active':''}" onclick="selectCharacter('${c.id}')"><span>${c.type==='PC'?'🧝':c.type==='Enemigo'?'👹':'🧙'}</span><div class="grow"><strong>${escapeHtml(c.name)}</strong><small>${escapeHtml(c.type)} · ${escapeHtml(c.className||c.race||'')}</small></div></div>`).join('')||'<div class="character-empty">Sin personajes.</div>';
  const c=charactersData.characters.find(x=>x.id===selectedCharacterId);if(!c){detail.innerHTML='<div class="character-empty">Seleccione o agregue un personaje.</div>';return}
@@ -1652,7 +1812,7 @@ function renderCharactersModule(){
  </div>`;
 }
 function charTextSection(title,text){return text?`<div class="char-section"><h3>${title}</h3><p>${escapeHtml(text)}</p></div>`:''}
-function selectCharacter(id){selectedCharacterId=id;renderCharactersModule()}
+function selectCharacter(id){selectedCharacterId=id;renderCharactersSidebar();renderCharactersModule()}
 function updateCharacterHP(id,value){const c=charactersData.characters.find(x=>x.id===id);if(!c)return;c.hp=Math.max(0,+value||0);saveCharacters();renderCharactersModule()}
 function adjustCharacterHP(id,delta){const c=charactersData.characters.find(x=>x.id===id);if(!c)return;c.hp=Math.max(0,(c.hp??c.maxHp??0)+delta);saveCharacters();renderCharactersModule()}
 

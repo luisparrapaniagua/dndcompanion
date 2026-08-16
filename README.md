@@ -1,4 +1,4 @@
-# Leo's D&D app v0.6.0
+# Leo's D&D app v0.6.1
 
 Companion musical web/PWA para sesiones de D&D.
 
@@ -164,3 +164,10 @@ Las playlists privadas pueden requerir autenticación adicional y no forman part
 - Compact Session UI: navegación, música y mapas optimizados para espacio.
 - Seek musical con tiempos debajo de la barra y volumen vertical.
 - Mapas abren el último visor, biblioteca separada y herramientas sin resetear zoom.
+
+
+## v0.6.1
+- Corregida barra temporal de YouTube y seek.
+- Mapas usa sidebar propio con selección de mapa y acceso a gestión.
+- Si no existe mapa previo ni mapas disponibles, abre gestión automáticamente.
+- Personajes usa sidebar propio con selección y gestión.
