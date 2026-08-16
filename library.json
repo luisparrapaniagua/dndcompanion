@@ -5,7 +5,7 @@
   "categories": [
     {
       "name": "World",
-      "icon": "🌎",
+      "icon": "◆",
       "description": "",
       "accent": "#5366c6",
       "id": "cat-msuyaozz-3b6nq",
@@ -118,7 +118,7 @@
     },
     {
       "name": "Imperia",
-      "icon": "⚜️",
+      "icon": "◆",
       "description": "",
       "accent": "#c69a52",
       "id": "cat-msuybkd6-s0cm1",
@@ -187,7 +187,7 @@
     },
     {
       "name": "Dinastic Union",
-      "icon": "👑",
+      "icon": "◆",
       "description": "",
       "accent": "#53c65b",
       "id": "cat-msuyc60f-pmqw0",
@@ -275,8 +275,8 @@
       ]
     },
     {
-      "name": "Trantor",
-      "icon": "🪐",
+      "name": "Empire of Trantor",
+      "icon": "◆",
       "description": "",
       "accent": "#c65375",
       "id": "cat-msuydhxt-ggr3y",
@@ -344,8 +344,8 @@
       ]
     },
     {
-      "name": "Great houses",
-      "icon": "🇲🇰",
+      "name": "Great Houses",
+      "icon": "◆",
       "description": "",
       "accent": "#53c4c6",
       "id": "cat-msuyel5w-ogjmi",
@@ -443,8 +443,77 @@
       ]
     },
     {
-      "name": "Free cities",
-      "icon": "⛓️‍💥",
+      "name": "S.I.N",
+      "icon": "◆",
+      "description": "",
+      "accent": "#b0ac36",
+      "id": "cat-msuyg6n0-ml6s1",
+      "tracks": [
+        {
+          "id": "tr-msuz5y66-fe6yn",
+          "title": "Vichnaya Pamyat",
+          "author": "Release - Topic",
+          "youtubeId": "4Poc3MF8GFk",
+          "intensity": "Medium",
+          "favorite": false,
+          "thumbnail": "https://i.ytimg.com/vi/4Poc3MF8GFk/maxresdefault.jpg",
+          "artist": "Release - Topic"
+        },
+        {
+          "id": "tr-msuz5y66-2ywev",
+          "title": "The Door",
+          "author": "Hildur Guðnadóttir - Topic",
+          "youtubeId": "QC1aBVDsoWw",
+          "intensity": "Medium",
+          "favorite": false,
+          "thumbnail": "https://i.ytimg.com/vi/QC1aBVDsoWw/maxresdefault.jpg",
+          "artist": "Hildur Guðnadóttir - Topic"
+        },
+        {
+          "id": "tr-msuz5y66-yh8n8",
+          "title": "Bridge of Death (From “Chernobyl” TV Series Soundtrack)",
+          "author": "Hildur Guðnadóttir - Topic",
+          "youtubeId": "aM_HhU_CV44",
+          "intensity": "Medium",
+          "favorite": false,
+          "thumbnail": "https://i.ytimg.com/vi/aM_HhU_CV44/maxresdefault.jpg",
+          "artist": "Hildur Guðnadóttir - Topic"
+        },
+        {
+          "id": "tr-msuz5y66-qv1q6",
+          "title": "Evacuation",
+          "author": "Hildur Guðnadóttir - Topic",
+          "youtubeId": "JGID4ZhF45I",
+          "intensity": "Medium",
+          "favorite": false,
+          "thumbnail": "https://i.ytimg.com/vi/JGID4ZhF45I/maxresdefault.jpg",
+          "artist": "Hildur Guðnadóttir - Topic"
+        },
+        {
+          "id": "tr-msuz5y66-13pq3",
+          "title": "Pump Room",
+          "author": "Hildur Guðnadóttir - Topic",
+          "youtubeId": "XR68p_k_I88",
+          "intensity": "Medium",
+          "favorite": false,
+          "thumbnail": "https://i.ytimg.com/vi/XR68p_k_I88/maxresdefault.jpg",
+          "artist": "Hildur Guðnadóttir - Topic"
+        },
+        {
+          "id": "tr-msuz5y66-mx8v7",
+          "title": "12 Hours Before",
+          "author": "Hildur Guðnadóttir - Topic",
+          "youtubeId": "NPoeV9Vgx_Q",
+          "intensity": "Medium",
+          "favorite": false,
+          "thumbnail": "https://i.ytimg.com/vi/NPoeV9Vgx_Q/maxresdefault.jpg",
+          "artist": "Hildur Guðnadóttir - Topic"
+        }
+      ]
+    },
+    {
+      "name": "Free Cities",
+      "icon": "◆",
       "description": "",
       "accent": "#8f8d8a",
       "id": "cat-msuyf2s1-99zfz",
@@ -562,77 +631,154 @@
       ]
     },
     {
-      "name": "Nossia",
-      "icon": "🙏",
+      "name": "The Alchemists",
+      "icon": "◆",
       "description": "",
-      "accent": "#b0ac36",
-      "id": "cat-msuyg6n0-ml6s1",
+      "accent": "#c69a52",
+      "id": "cat-msvyfd4z-15usy",
       "tracks": [
         {
-          "id": "tr-msuz5y66-fe6yn",
-          "title": "Vichnaya Pamyat",
-          "author": "Release - Topic",
-          "youtubeId": "4Poc3MF8GFk",
+          "id": "tr-msvyg24k-9gsgq",
+          "title": "RAINY NIGHT IN TALLINN",
+          "author": "Ludwig Göransson - Topic",
+          "artist": "Ludwig Göransson - Topic",
+          "thumbnail": "https://i.ytimg.com/vi/p0tQLPPYcRY/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "p0tQLPPYcRY",
           "intensity": "Medium",
-          "favorite": false,
-          "thumbnail": "https://i.ytimg.com/vi/4Poc3MF8GFk/maxresdefault.jpg",
-          "artist": "Release - Topic"
+          "favorite": false
         },
         {
-          "id": "tr-msuz5y66-2ywev",
-          "title": "The Door",
-          "author": "Hildur Guðnadóttir - Topic",
-          "youtubeId": "QC1aBVDsoWw",
+          "id": "tr-msvyg24k-lx02m",
+          "title": "WINDMILLS",
+          "author": "Ludwig Göransson - Topic",
+          "artist": "Ludwig Göransson - Topic",
+          "thumbnail": "https://i.ytimg.com/vi/8nkTQSKQqME/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "8nkTQSKQqME",
           "intensity": "Medium",
-          "favorite": false,
-          "thumbnail": "https://i.ytimg.com/vi/QC1aBVDsoWw/maxresdefault.jpg",
-          "artist": "Hildur Guðnadóttir - Topic"
+          "favorite": false
         },
         {
-          "id": "tr-msuz5y66-yh8n8",
-          "title": "Bridge of Death (From “Chernobyl” TV Series Soundtrack)",
-          "author": "Hildur Guðnadóttir - Topic",
-          "youtubeId": "aM_HhU_CV44",
+          "id": "tr-msvyg24k-fn9kq",
+          "title": "BETRAYAL",
+          "author": "Ludwig Göransson - Topic",
+          "artist": "Ludwig Göransson - Topic",
+          "thumbnail": "https://i.ytimg.com/vi/hyauG3YVy74/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "hyauG3YVy74",
           "intensity": "Medium",
-          "favorite": false,
-          "thumbnail": "https://i.ytimg.com/vi/aM_HhU_CV44/maxresdefault.jpg",
-          "artist": "Hildur Guðnadóttir - Topic"
+          "favorite": false
         },
         {
-          "id": "tr-msuz5y66-qv1q6",
-          "title": "Evacuation",
-          "author": "Hildur Guðnadóttir - Topic",
-          "youtubeId": "JGID4ZhF45I",
+          "id": "tr-msvyg24k-6qnpd",
+          "title": "FREEPORT",
+          "author": "Ludwig Göransson - Topic",
+          "artist": "Ludwig Göransson - Topic",
+          "thumbnail": "https://i.ytimg.com/vi/OVqLUFHMDjM/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "OVqLUFHMDjM",
           "intensity": "Medium",
-          "favorite": false,
-          "thumbnail": "https://i.ytimg.com/vi/JGID4ZhF45I/maxresdefault.jpg",
-          "artist": "Hildur Guðnadóttir - Topic"
+          "favorite": false
         },
         {
-          "id": "tr-msuz5y66-13pq3",
-          "title": "Pump Room",
-          "author": "Hildur Guðnadóttir - Topic",
-          "youtubeId": "XR68p_k_I88",
+          "id": "tr-msvyg24k-4r83c",
+          "title": "747",
+          "author": "Ludwig Göransson - Topic",
+          "artist": "Ludwig Göransson - Topic",
+          "thumbnail": "https://i.ytimg.com/vi/_uJDnBAikrQ/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "_uJDnBAikrQ",
           "intensity": "Medium",
-          "favorite": false,
-          "thumbnail": "https://i.ytimg.com/vi/XR68p_k_I88/maxresdefault.jpg",
-          "artist": "Hildur Guðnadóttir - Topic"
+          "favorite": false
         },
         {
-          "id": "tr-msuz5y66-mx8v7",
-          "title": "12 Hours Before",
-          "author": "Hildur Guðnadóttir - Topic",
-          "youtubeId": "NPoeV9Vgx_Q",
+          "id": "tr-msvyg24k-s049q",
+          "title": "FROM MUMBAI TO AMALFI",
+          "author": "Ludwig Göransson - Topic",
+          "artist": "Ludwig Göransson - Topic",
+          "thumbnail": "https://i.ytimg.com/vi/FF5NbinQjiY/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "FF5NbinQjiY",
           "intensity": "Medium",
-          "favorite": false,
-          "thumbnail": "https://i.ytimg.com/vi/NPoeV9Vgx_Q/maxresdefault.jpg",
-          "artist": "Hildur Guðnadóttir - Topic"
+          "favorite": false
+        },
+        {
+          "id": "tr-msvyg24k-qh64n",
+          "title": "FOILS",
+          "author": "Ludwig Göransson - Topic",
+          "artist": "Ludwig Göransson - Topic",
+          "thumbnail": "https://i.ytimg.com/vi/tODW3YPAclA/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "tODW3YPAclA",
+          "intensity": "Medium",
+          "favorite": false
+        }
+      ]
+    },
+    {
+      "name": "The Mimicker",
+      "icon": "◆",
+      "description": "",
+      "accent": "#c69a52",
+      "id": "cat-msvyhbj3-ktcir",
+      "tracks": [
+        {
+          "id": "tr-msvyiico-cglsu",
+          "title": "Wither Storm - FULL GAME MUSIC",
+          "author": "Antimo & Welles",
+          "artist": "Antimo & Welles",
+          "thumbnail": "https://i.ytimg.com/vi/WvZ3hwwRSkY/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "WvZ3hwwRSkY",
+          "intensity": "Medium",
+          "favorite": false
+        }
+      ]
+    },
+    {
+      "name": "The first Martyr",
+      "icon": "◆",
+      "description": "",
+      "accent": "#c69a52",
+      "id": "cat-msvyjcyd-73p7y",
+      "tracks": [
+        {
+          "id": "tr-msvyjuns-hk75h",
+          "title": "Game of Thrones - The Night King Extended",
+          "author": "Epic Music Mix",
+          "artist": "Epic Music Mix",
+          "thumbnail": "https://i.ytimg.com/vi/7fAt-rstUM4/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "7fAt-rstUM4",
+          "intensity": "Medium",
+          "favorite": false
+        }
+      ]
+    },
+    {
+      "name": "Fleet Of The 2 Suns",
+      "icon": "◆",
+      "description": "",
+      "accent": "#c69a52",
+      "id": "cat-msvyl4nu-r7gpl",
+      "tracks": [
+        {
+          "id": "tr-msvylwt2-5k8zt",
+          "title": "Attacking Divine Beast Vah Ruta - The Legend of Zelda: Breath of the Wild - Extended",
+          "author": "Musical Toasters",
+          "artist": "Musical Toasters",
+          "thumbnail": "https://i.ytimg.com/vi/2As_DjNkwiI/sddefault.jpg",
+          "album": "",
+          "youtubeId": "2As_DjNkwiI",
+          "intensity": "Medium",
+          "favorite": false
         }
       ]
     },
     {
       "name": "Extras",
-      "icon": "📜",
+      "icon": "◆",
       "description": "",
       "accent": "#c69a52",
       "id": "cat-msuz6pww-tgwqo",
@@ -744,152 +890,6 @@
           "thumbnail": "https://i.ytimg.com/vi/vSGKjB0OR9g/sddefault.jpg",
           "album": "",
           "youtubeId": "vSGKjB0OR9g",
-          "intensity": "Medium",
-          "favorite": false
-        }
-      ]
-    },
-    {
-      "name": "Alchemists",
-      "icon": "🧙‍♂️",
-      "description": "",
-      "accent": "#c69a52",
-      "id": "cat-msvyfd4z-15usy",
-      "tracks": [
-        {
-          "id": "tr-msvyg24k-9gsgq",
-          "title": "RAINY NIGHT IN TALLINN",
-          "author": "Ludwig Göransson - Topic",
-          "artist": "Ludwig Göransson - Topic",
-          "thumbnail": "https://i.ytimg.com/vi/p0tQLPPYcRY/maxresdefault.jpg",
-          "album": "",
-          "youtubeId": "p0tQLPPYcRY",
-          "intensity": "Medium",
-          "favorite": false
-        },
-        {
-          "id": "tr-msvyg24k-lx02m",
-          "title": "WINDMILLS",
-          "author": "Ludwig Göransson - Topic",
-          "artist": "Ludwig Göransson - Topic",
-          "thumbnail": "https://i.ytimg.com/vi/8nkTQSKQqME/maxresdefault.jpg",
-          "album": "",
-          "youtubeId": "8nkTQSKQqME",
-          "intensity": "Medium",
-          "favorite": false
-        },
-        {
-          "id": "tr-msvyg24k-fn9kq",
-          "title": "BETRAYAL",
-          "author": "Ludwig Göransson - Topic",
-          "artist": "Ludwig Göransson - Topic",
-          "thumbnail": "https://i.ytimg.com/vi/hyauG3YVy74/maxresdefault.jpg",
-          "album": "",
-          "youtubeId": "hyauG3YVy74",
-          "intensity": "Medium",
-          "favorite": false
-        },
-        {
-          "id": "tr-msvyg24k-6qnpd",
-          "title": "FREEPORT",
-          "author": "Ludwig Göransson - Topic",
-          "artist": "Ludwig Göransson - Topic",
-          "thumbnail": "https://i.ytimg.com/vi/OVqLUFHMDjM/maxresdefault.jpg",
-          "album": "",
-          "youtubeId": "OVqLUFHMDjM",
-          "intensity": "Medium",
-          "favorite": false
-        },
-        {
-          "id": "tr-msvyg24k-4r83c",
-          "title": "747",
-          "author": "Ludwig Göransson - Topic",
-          "artist": "Ludwig Göransson - Topic",
-          "thumbnail": "https://i.ytimg.com/vi/_uJDnBAikrQ/maxresdefault.jpg",
-          "album": "",
-          "youtubeId": "_uJDnBAikrQ",
-          "intensity": "Medium",
-          "favorite": false
-        },
-        {
-          "id": "tr-msvyg24k-s049q",
-          "title": "FROM MUMBAI TO AMALFI",
-          "author": "Ludwig Göransson - Topic",
-          "artist": "Ludwig Göransson - Topic",
-          "thumbnail": "https://i.ytimg.com/vi/FF5NbinQjiY/maxresdefault.jpg",
-          "album": "",
-          "youtubeId": "FF5NbinQjiY",
-          "intensity": "Medium",
-          "favorite": false
-        },
-        {
-          "id": "tr-msvyg24k-qh64n",
-          "title": "FOILS",
-          "author": "Ludwig Göransson - Topic",
-          "artist": "Ludwig Göransson - Topic",
-          "thumbnail": "https://i.ytimg.com/vi/tODW3YPAclA/maxresdefault.jpg",
-          "album": "",
-          "youtubeId": "tODW3YPAclA",
-          "intensity": "Medium",
-          "favorite": false
-        }
-      ]
-    },
-    {
-      "name": "Horde Prince",
-      "icon": "🔱",
-      "description": "",
-      "accent": "#c69a52",
-      "id": "cat-msvyhbj3-ktcir",
-      "tracks": [
-        {
-          "id": "tr-msvyiico-cglsu",
-          "title": "Wither Storm - FULL GAME MUSIC",
-          "author": "Antimo & Welles",
-          "artist": "Antimo & Welles",
-          "thumbnail": "https://i.ytimg.com/vi/WvZ3hwwRSkY/maxresdefault.jpg",
-          "album": "",
-          "youtubeId": "WvZ3hwwRSkY",
-          "intensity": "Medium",
-          "favorite": false
-        }
-      ]
-    },
-    {
-      "name": "The first martyr",
-      "icon": "🔨",
-      "description": "",
-      "accent": "#c69a52",
-      "id": "cat-msvyjcyd-73p7y",
-      "tracks": [
-        {
-          "id": "tr-msvyjuns-hk75h",
-          "title": "Game of Thrones - The Night King Extended",
-          "author": "Epic Music Mix",
-          "artist": "Epic Music Mix",
-          "thumbnail": "https://i.ytimg.com/vi/7fAt-rstUM4/maxresdefault.jpg",
-          "album": "",
-          "youtubeId": "7fAt-rstUM4",
-          "intensity": "Medium",
-          "favorite": false
-        }
-      ]
-    },
-    {
-      "name": "The fleat of two suns",
-      "icon": "☀️☀️",
-      "description": "",
-      "accent": "#c69a52",
-      "id": "cat-msvyl4nu-r7gpl",
-      "tracks": [
-        {
-          "id": "tr-msvylwt2-5k8zt",
-          "title": "Attacking Divine Beast Vah Ruta - The Legend of Zelda: Breath of the Wild - Extended",
-          "author": "Musical Toasters",
-          "artist": "Musical Toasters",
-          "thumbnail": "https://i.ytimg.com/vi/2As_DjNkwiI/sddefault.jpg",
-          "album": "",
-          "youtubeId": "2As_DjNkwiI",
           "intensity": "Medium",
           "favorite": false
         }
