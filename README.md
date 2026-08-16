@@ -1,4 +1,4 @@
-# Leonardo's D&D companion v0.5.4
+# Leo's D&D app v0.6.0
 
 Companion musical web/PWA para sesiones de D&D.
 
@@ -158,3 +158,9 @@ Las playlists privadas pueden requerir autenticación adicional y no forman part
 ### Música
 - Barra inferior: Anterior · Play/Pausa · Siguiente · Stop.
 - Play y Pausa ahora comparten un solo botón y cambian según el estado del reproductor.
+
+
+## v0.6.0
+- Compact Session UI: navegación, música y mapas optimizados para espacio.
+- Seek musical con tiempos debajo de la barra y volumen vertical.
+- Mapas abren el último visor, biblioteca separada y herramientas sin resetear zoom.
