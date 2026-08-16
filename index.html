@@ -447,7 +447,7 @@ body.theme-simple .map-stage-wrap,body.theme-simple .stat{border-radius:0!import
 }
 
 
-/* ===== v0.7.0 sidebar navigation ===== */
+/* ===== v0.7.1 sidebar navigation ===== */
 .side-list{display:flex;flex-direction:column}
 .side-list-item{
   display:flex;align-items:center;gap:8px;
@@ -467,7 +467,7 @@ body.sidebar-unpinned:not(.sidebar-hovering) .side-list-item .grow{display:none}
 body.sidebar-unpinned:not(.sidebar-hovering) .side-list-item{justify-content:center}
 
 
-/* v0.7.0 fixes */
+/* v0.7.1 fixes */
 .sidebar-head .brand{overflow:visible!important;text-overflow:clip!important}
 .route-style-pop .close-pop{
   position:absolute;right:6px;top:5px;
@@ -491,13 +491,62 @@ body.sidebar-unpinned:not(.sidebar-hovering) .module-nav button.active{box-shado
 .meta-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.meta-summary .stat{border:1px solid var(--line);padding:8px;border-radius:8px;text-align:center}.meta-summary .stat strong{display:block;font-size:18px}.meta-summary .stat small{font-size:9px;color:var(--muted)}
 .meta-progress{height:8px;background:#17120f;border:1px solid var(--line);border-radius:999px;overflow:hidden}.meta-progress>div{height:100%;width:0;background:var(--gold);transition:width .2s}
 
+
+/* ===== v0.7.1 stability fixes ===== */
+
+/* Sidebar controls must always remain available when collapsed */
+.app.sidebar-collapsed .sidebar-head,
+body.sidebar-unpinned:not(.sidebar-hovering) .sidebar-head{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  gap:6px!important;
+}
+.app.sidebar-collapsed .brand,
+body.sidebar-unpinned:not(.sidebar-hovering) .brand{
+  display:none!important;
+}
+.app.sidebar-collapsed #sidebarToggle,
+body.sidebar-unpinned:not(.sidebar-hovering) #sidebarToggle{
+  display:flex!important;
+  width:42px!important;
+  height:38px!important;
+  min-width:42px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  position:relative!important;
+  z-index:50!important;
+}
+.app.sidebar-collapsed #sidebarPin,
+body.sidebar-unpinned:not(.sidebar-hovering) #sidebarPin{
+  display:flex!important;
+  width:42px!important;
+  height:34px!important;
+  min-width:42px!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+.app.sidebar-collapsed .sidebar-head-actions,
+body.sidebar-unpinned:not(.sidebar-hovering) .sidebar-head-actions{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:5px!important;
+  align-items:center!important;
+}
+
+/* Bottom player after removing timeline */
+.nowrow{
+  grid-template-columns:minmax(220px,1fr) auto 64px!important;
+}
+.progress-area{display:none!important}
+
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="sidebar">
   <div class="sidebar-head">
-    <div class="brand" data-version="Version 0.7.0" title="Version 0.7.0">Leo's D&D app</div>
+    <div class="brand" data-version="Version 0.7.1" title="Version 0.7.1">Leo's D&D app</div>
     <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Colapsar o expandir sidebar">‹</button>
   </div>
   <div class="rule"></div>
@@ -605,7 +654,6 @@ body.sidebar-unpinned:not(.sidebar-hovering) .module-nav button.active{box-shado
 <div class="now" id="musicNowBar">
   <div class="nowrow">
     <div class="np"><small>Now Playing</small><strong id="nowTitle">Nada reproduciéndose</strong><span id="nowMeta">Seleccione una pista</span><button class="audio-chip" id="audioChip" onclick="ensureAudio()">Audio pendiente</button><div class="status"><span id="statusDot" class="dot"></span><span id="statusText">Inicializando YouTube…</span></div></div>
-    <div class="progress-area"><div class="progress-track-wrap"><div class="buffer-line" id="bufferLine"></div><input id="progressSlider" class="progress-slider" type="range" min="0" max="1000" value="0" step="1"></div><div class="progress-times"><span id="elapsedTime">0:00</span><span id="totalTime">0:00</span></div></div>
     <div class="transport"><button onclick="playPreviousMusicTrack()" title="Anterior">⏮</button><button class="primary toggle-play" id="playPauseBtn" onclick="togglePlayPause()" title="Play/Pausa">▶</button><button onclick="playNextMusicTrack()" title="Siguiente">⏭</button><button onclick="stopAll()" title="Stop">■</button></div>
     <div class="volume-vertical"><span class="vol-icon">🔊</span><input id="masterVolume" type="range" min="0" max="100" value="72" orient="vertical"><strong id="volumeLabel">72%</strong></div>
   </div></div>
@@ -623,6 +671,21 @@ const APP = {
 const LS_DRAFT='dnd.v04.libraryDraft';
 const LS_DIRTY='dnd.v04.dirty';
 const LS_SETTINGS='dnd.v04.settings';
+
+const LEGACY_YT_KEY_KEYS=['youtubeApiKey','dnd.youtubeApiKey','dnd.v03.youtubeApiKey','dnd.v04.youtubeApiKey','dnd.v05.youtubeApiKey'];
+function recoverYouTubeApiKey(){
+ const s=settings();
+ if(s.youtubeApiKey)return s.youtubeApiKey;
+ for(const k of LEGACY_YT_KEY_KEYS){
+   const v=localStorage.getItem(k);
+   if(v){
+     saveSettings({youtubeApiKey:v});
+     return v;
+   }
+ }
+ return '';
+}
+
 const LS_PINHASH='dnd.v04.pinHash';
 const LS_MAPS='dnd.v05.maps';
 const LS_CHARACTERS='dnd.v05.characters';
@@ -705,7 +768,7 @@ function applyUiPreferences(){
  document.querySelector('.app')?.classList.toggle('sidebar-collapsed',collapsed);
  document.body.classList.toggle('sidebar-is-collapsed',collapsed);
  document.body.classList.toggle('sidebar-unpinned',!pinned);
- const btn=$('sidebarToggle');if(btn){btn.textContent=collapsed?'›':'‹';btn.title=collapsed?'Expandir sidebar':'Colapsar sidebar'}
+ const btn=$('sidebarToggle');if(btn){btn.textContent=collapsed?'»':'«';btn.title=collapsed?'Expandir sidebar':'Colapsar sidebar'}
  const pin=$('sidebarPin');if(pin){pin.textContent=pinned?'📌':'📍';pin.title=pinned?'Sidebar fijado':'Sidebar automático'}
 }
 function toggleSidebar(){
@@ -811,7 +874,7 @@ function onYouTubeIframeAPIReady(){
  players[0]=new YT.Player('playerA',{...common,events:{onReady:onMainReady,onError:onPlayerError,onAutoplayBlocked:onAutoplayBlocked,onStateChange:onMainPlayerStateChange}});
  players[1]=new YT.Player('playerB',{...common,events:{onReady:onMainReady,onError:onPlayerError,onAutoplayBlocked:onAutoplayBlocked,onStateChange:onMainPlayerStateChange}});
 }
-function onMainReady(){readyCount++;if(readyCount===2){ytReady=true;setStatus('YouTube listo','ready');startProgressTimer();setupProgressSeek()}}
+function onMainReady(){readyCount++;if(readyCount===2){ytReady=true;setStatus('YouTube listo','ready')}}
 function onMainPlayerStateChange(e){
  if(!window.YT)return;
  const id=getPlayerVideoId(e.target);
@@ -825,15 +888,15 @@ function onMainPlayerStateChange(e){
  if(e.data===YT.PlayerState.PLAYING){
    isMusicPlaying=true;
    updatePlayPauseButton();
-   updatePlaybackProgress();
+   
  }else if(e.data===YT.PlayerState.PAUSED||e.data===YT.PlayerState.CUED){
    isMusicPlaying=false;
    updatePlayPauseButton();
-   updatePlaybackProgress();
+   
  }else if(e.data===YT.PlayerState.ENDED){
    isMusicPlaying=false;
    updatePlayPauseButton();
-   updatePlaybackProgress();
+   
    if(scenePlayMode&&scenePlayCategoryId)setTimeout(playNextSceneTrack,120);
  }
 }
@@ -851,7 +914,7 @@ async function playTrack(track,category){
  if(!ytReady)return;
  if(transitionTimer){clearInterval(transitionTimer);transitionTimer=null}
  const master=+$('masterVolume').value,fadeMs=+(settings().fadeSeconds??4)*1000;
- currentTrack=track;isMusicPlaying=true;updatePlayPauseButton();$('nowTitle').textContent=track.title;setTimeout(updatePlaybackProgress,300);$('nowMeta').textContent=`${category.name} · ${track.author||'YouTube'}`;renderTracks();
+ currentTrack=track;isMusicPlaying=true;updatePlayPauseButton();$('nowTitle').textContent=track.title;$('nowMeta').textContent=`${category.name} · ${track.author||'YouTube'}`;renderTracks();
  if(isiOS){
    const p=players[activeIndex];setStatus('Transición iPad','fading');
    await ramp(p,master,0,fadeMs/2);try{p.loadVideoById(track.youtubeId);p.playVideo()}catch{};await wait(160);await ramp(p,0,master,fadeMs/2);setStatus('Reproduciendo','ready');return;
@@ -863,30 +926,21 @@ async function playTrack(track,category){
  if(fadeMs===0){try{old.stopVideo()}catch{}setVol(next,master);setStatus('Reproduciendo','ready');return}
  setStatus('Crossfade','fading');const st=performance.now();transitionTimer=setInterval(()=>{const f=Math.min(1,(performance.now()-st)/fadeMs);setVol(old,master*(1-f));setVol(next,master*f);if(f>=1){clearInterval(transitionTimer);transitionTimer=null;try{old.stopVideo()}catch{}setVol(next,master);setStatus('Reproduciendo','ready')}},60);
 }
-function formatPlaybackTime(sec){
- sec=Math.max(0,Math.floor(Number(sec)||0));
- const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;
- return h?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${m}:${String(s).padStart(2,'0')}`;
-}
 function getPlayerVideoId(p){
  try{return p?.getVideoData?.()?.video_id||''}catch{return ''}
 }
 function resolvePlaybackPlayer(){
  const expected=currentTrack?.youtubeId||'';
  let best=null,bestIndex=-1,bestScore=-999;
-
  for(let i=0;i<players.length;i++){
    const p=players[i];if(!p)continue;
    try{
-     const id=getPlayerVideoId(p);
-     const state=p.getPlayerState?.();
-     const duration=Number(p.getDuration?.()||0);
+     const id=getPlayerVideoId(p),state=p.getPlayerState?.(),duration=Number(p.getDuration?.()||0);
      let score=0;
      if(expected&&id===expected)score+=100;
-     if(state===YT.PlayerState.PLAYING)score+=50;
-     else if(state===YT.PlayerState.PAUSED)score+=30;
-     else if(state===YT.PlayerState.BUFFERING)score+=20;
-     else if(state===YT.PlayerState.CUED)score+=10;
+     if(window.YT&&state===YT.PlayerState.PLAYING)score+=50;
+     else if(window.YT&&state===YT.PlayerState.PAUSED)score+=30;
+     else if(window.YT&&state===YT.PlayerState.BUFFERING)score+=20;
      if(duration>0)score+=5;
      if(i===activeIndex)score+=1;
      if(score>bestScore){best=p;bestIndex=i;bestScore=score}
@@ -895,58 +949,7 @@ function resolvePlaybackPlayer(){
  if(best&&bestIndex>=0&&bestScore>0)activeIndex=bestIndex;
  return best;
 }
-function updatePlaybackProgress(){
- const p=resolvePlaybackPlayer(),sl=$('progressSlider');
- if(!p||!sl)return;
- try{
-   const current=Number(p.getCurrentTime?.()||0);
-   const total=Number(p.getDuration?.()||0);
-   const loaded=Number(p.getVideoLoadedFraction?.()||0);
 
-   if(total>0){
-     if(!userSeeking)sl.value=Math.round((current/total)*1000);
-     $('elapsedTime').textContent=formatPlaybackTime(current);
-     $('totalTime').textContent=formatPlaybackTime(total);
-   }
-   $('bufferLine')?.style.setProperty('--buffer',Math.round(Math.max(0,Math.min(1,loaded))*100)+'%');
- }catch{}
-}
-function startProgressTimer(){
- if(progressTimer)clearInterval(progressTimer);
- progressTimer=setInterval(updatePlaybackProgress,200);
- updatePlaybackProgress();
-}
-function setupProgressSeek(){
- const s=$('progressSlider');if(!s||s.dataset.ready)return;
- s.dataset.ready='1';
-
- const preview=()=>{
-   const p=resolvePlaybackPlayer();
-   const total=Number(p?.getDuration?.()||0);
-   if(total>0)$('elapsedTime').textContent=formatPlaybackTime(total*(Number(s.value)/1000));
- };
-
- s.addEventListener('pointerdown',()=>{userSeeking=true});
- s.addEventListener('touchstart',()=>{userSeeking=true},{passive:true});
- s.addEventListener('input',()=>{userSeeking=true;preview()});
-
- const commit=()=>{
-   const p=resolvePlaybackPlayer();
-   try{
-     const total=Number(p?.getDuration?.()||0);
-     if(total>0){
-       const target=total*(Number(s.value)/1000);
-       p.seekTo(target,true);
-       $('elapsedTime').textContent=formatPlaybackTime(target);
-     }
-   }catch(e){console.warn('seek failed',e)}
-   setTimeout(()=>{userSeeking=false;updatePlaybackProgress()},180);
- };
-
- s.addEventListener('change',commit);
- s.addEventListener('pointerup',commit);
- s.addEventListener('touchend',commit,{passive:true});
-}
 function updatePlayPauseButton(){
  const b=$('playPauseBtn');if(!b)return;
  b.textContent=isMusicPlaying?'Ⅱ':'▶';
@@ -1101,7 +1104,7 @@ function moveTrackInCategory(catId,trackId,d){
 function extractYouTubeId(v){try{const u=new URL(v);if(u.hostname.includes('youtu.be'))return u.pathname.slice(1).split('/')[0];return u.searchParams.get('v')||v}catch{return v.trim()}}
 
 
-function getYouTubeApiKey(){return settings().youtubeApiKey||''}
+function getYouTubeApiKey(){return settings().youtubeApiKey||recoverYouTubeApiKey()||''}
 async function fetchYouTubeVideoMetadata(videoIds){
  const key=getYouTubeApiKey();if(!key)throw new Error('Falta la YouTube Data API key en Configuración.');
  const ids=[...new Set(videoIds.filter(Boolean))],out={};
@@ -1233,12 +1236,29 @@ function openSettings(){
  <label class="check"><input id="setShowTrackArtists" type="checkbox" ${s.showTrackArtists!==false?'checked':''}> Mostrar artistas</label>
  <label class="check"><input id="setShowTrackAlbums" type="checkbox" ${s.showTrackAlbums===true?'checked':''}> Mostrar álbum</label>
  </div>
- <div class="field full"><label>YouTube Data API key</label><input id="setYouTubeApiKey" type="password" value="${escapeHtml(s.youtubeApiKey||'')}" placeholder="AIza..."></div>
+ <div class="field full"><label>YouTube Data API key</label><input id="setYouTubeApiKey" type="password" value="${escapeHtml(s.youtubeApiKey||recoverYouTubeApiKey()||'')}" placeholder="AIza..."></div>
  </div>
  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="secondarybtn" onclick="openYouTubeTab()">Abrir YouTube / Premium</button><button class="secondarybtn" onclick="downloadLibrary()">Exportar JSON</button><button class="secondarybtn" onclick="$('jsonFile').click()">Importar JSON local</button><input id="jsonFile" class="hidden" type="file" accept=".json,application/json" onchange="importJsonFile(this)">${hasPin?'<button class="secondarybtn" onclick="changePin()">Cambiar PIN</button>':''}</div>
  </div><div class="modalfoot"><button class="secondarybtn" onclick="reloadFromRepository()">Recargar repositorio</button><button class="primarybtn" onclick="saveSettingsForm()">Guardar</button></div>`);
 }
-function saveSettingsForm(){saveSettings({owner:$('setOwner').value.trim(),repo:$('setRepo').value.trim(),branch:$('setBranch').value.trim(),fadeSeconds:+$('setFade').value,appStyle:$('setAppStyle').value,token:$('setToken').value.trim(),youtubeApiKey:$('setYouTubeApiKey').value.trim(),showTrackCovers:$('setShowTrackCovers')?.checked!==false,showTrackArtists:$('setShowTrackArtists')?.checked!==false,showTrackAlbums:$('setShowTrackAlbums')?.checked===true});closeModal();applyUiPreferences();renderAll();setStatus('Configuración guardada','ready')}
+function saveSettingsForm(){
+ const existing=settings();
+ const enteredKey=$('setYouTubeApiKey')?.value.trim()||'';
+ const youtubeApiKey=enteredKey||existing.youtubeApiKey||recoverYouTubeApiKey()||'';
+ saveSettings({
+   owner:$('setOwner').value.trim(),
+   repo:$('setRepo').value.trim(),
+   branch:$('setBranch').value.trim(),
+   fadeSeconds:+$('setFade').value,
+   appStyle:$('setAppStyle').value,
+   token:$('setToken').value.trim()||existing.token||'',
+   youtubeApiKey,
+   showTrackCovers:$('setShowTrackCovers')?.checked!==false,
+   showTrackArtists:$('setShowTrackArtists')?.checked!==false,
+   showTrackAlbums:$('setShowTrackAlbums')?.checked===true
+ });
+ closeModal();applyUiPreferences();renderAll();setStatus('Configuración guardada','ready');
+}
 function openYouTubeTab(){window.open('https://www.youtube.com/','_blank','noopener')}
 function changePin(){closeModal();openFirstSetup()}
 function downloadLibrary(){
@@ -1994,6 +2014,7 @@ document.addEventListener('keydown',e=>{
 });
 function setupTouchTooltips(){document.addEventListener('touchstart',e=>{const el=e.target.closest('[data-tooltip],[data-label]');if(el)el.setAttribute('title',el.dataset.tooltip||el.dataset.label||'')},{passive:true})}
 const yt=document.createElement('script');yt.src='https://www.youtube.com/iframe_api';document.head.appendChild(yt);
+recoverYouTubeApiKey();
 loadModuleData();
 setupSidebarHover();
 setupTouchTooltips();
