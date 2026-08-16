@@ -680,6 +680,218 @@
           "favorite": false,
           "thumbnail": "https://i.ytimg.com/vi/bZJ5Id5GhHE/maxresdefault.jpg",
           "artist": "Peaches Lamb"
+        },
+        {
+          "id": "tr-msvymohd-hm3rt",
+          "title": "Requiem",
+          "author": "Heaven Pierce Her - Topic",
+          "artist": "Heaven Pierce Her - Topic",
+          "thumbnail": "https://i.ytimg.com/vi/rD3ONF40PYw/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "rD3ONF40PYw",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msvymohd-xaxcz",
+          "title": "Glory",
+          "author": "Heaven Pierce Her - Topic",
+          "artist": "Heaven Pierce Her - Topic",
+          "thumbnail": "https://i.ytimg.com/vi/kzbbO_lyZ94/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "kzbbO_lyZ94",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msvymohd-v7pla",
+          "title": "A Shattered Illusion",
+          "author": "Heaven Pierce Her - Topic",
+          "artist": "Heaven Pierce Her - Topic",
+          "thumbnail": "https://i.ytimg.com/vi/pUqKjJJTvj4/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "pUqKjJJTvj4",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msvymohd-865ig",
+          "title": "Unstoppable Force",
+          "author": "Heaven Pierce Her - Topic",
+          "artist": "Heaven Pierce Her - Topic",
+          "thumbnail": "https://i.ytimg.com/vi/tkLVbp0IH_E/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "tkLVbp0IH_E",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msvymohd-gmb85",
+          "title": "Final boss theme of a game that doesn't exist",
+          "author": "The socket snatcher",
+          "artist": "The socket snatcher",
+          "thumbnail": "https://i.ytimg.com/vi/y1OmSCrYGts/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "y1OmSCrYGts",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msvymohd-jn22g",
+          "title": "Church Organ Swichted Off Sound",
+          "author": "Hosea Matthews",
+          "artist": "Hosea Matthews",
+          "thumbnail": "https://i.ytimg.com/vi/vSGKjB0OR9g/sddefault.jpg",
+          "album": "",
+          "youtubeId": "vSGKjB0OR9g",
+          "intensity": "Medium",
+          "favorite": false
+        }
+      ]
+    },
+    {
+      "name": "Alchemists",
+      "icon": "🧙‍♂️",
+      "description": "",
+      "accent": "#c69a52",
+      "id": "cat-msvyfd4z-15usy",
+      "tracks": [
+        {
+          "id": "tr-msvyg24k-9gsgq",
+          "title": "RAINY NIGHT IN TALLINN",
+          "author": "Ludwig Göransson - Topic",
+          "artist": "Ludwig Göransson - Topic",
+          "thumbnail": "https://i.ytimg.com/vi/p0tQLPPYcRY/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "p0tQLPPYcRY",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msvyg24k-lx02m",
+          "title": "WINDMILLS",
+          "author": "Ludwig Göransson - Topic",
+          "artist": "Ludwig Göransson - Topic",
+          "thumbnail": "https://i.ytimg.com/vi/8nkTQSKQqME/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "8nkTQSKQqME",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msvyg24k-fn9kq",
+          "title": "BETRAYAL",
+          "author": "Ludwig Göransson - Topic",
+          "artist": "Ludwig Göransson - Topic",
+          "thumbnail": "https://i.ytimg.com/vi/hyauG3YVy74/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "hyauG3YVy74",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msvyg24k-6qnpd",
+          "title": "FREEPORT",
+          "author": "Ludwig Göransson - Topic",
+          "artist": "Ludwig Göransson - Topic",
+          "thumbnail": "https://i.ytimg.com/vi/OVqLUFHMDjM/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "OVqLUFHMDjM",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msvyg24k-4r83c",
+          "title": "747",
+          "author": "Ludwig Göransson - Topic",
+          "artist": "Ludwig Göransson - Topic",
+          "thumbnail": "https://i.ytimg.com/vi/_uJDnBAikrQ/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "_uJDnBAikrQ",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msvyg24k-s049q",
+          "title": "FROM MUMBAI TO AMALFI",
+          "author": "Ludwig Göransson - Topic",
+          "artist": "Ludwig Göransson - Topic",
+          "thumbnail": "https://i.ytimg.com/vi/FF5NbinQjiY/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "FF5NbinQjiY",
+          "intensity": "Medium",
+          "favorite": false
+        },
+        {
+          "id": "tr-msvyg24k-qh64n",
+          "title": "FOILS",
+          "author": "Ludwig Göransson - Topic",
+          "artist": "Ludwig Göransson - Topic",
+          "thumbnail": "https://i.ytimg.com/vi/tODW3YPAclA/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "tODW3YPAclA",
+          "intensity": "Medium",
+          "favorite": false
+        }
+      ]
+    },
+    {
+      "name": "Horde Prince",
+      "icon": "🔱",
+      "description": "",
+      "accent": "#c69a52",
+      "id": "cat-msvyhbj3-ktcir",
+      "tracks": [
+        {
+          "id": "tr-msvyiico-cglsu",
+          "title": "Wither Storm - FULL GAME MUSIC",
+          "author": "Antimo & Welles",
+          "artist": "Antimo & Welles",
+          "thumbnail": "https://i.ytimg.com/vi/WvZ3hwwRSkY/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "WvZ3hwwRSkY",
+          "intensity": "Medium",
+          "favorite": false
+        }
+      ]
+    },
+    {
+      "name": "The first martyr",
+      "icon": "🔨",
+      "description": "",
+      "accent": "#c69a52",
+      "id": "cat-msvyjcyd-73p7y",
+      "tracks": [
+        {
+          "id": "tr-msvyjuns-hk75h",
+          "title": "Game of Thrones - The Night King Extended",
+          "author": "Epic Music Mix",
+          "artist": "Epic Music Mix",
+          "thumbnail": "https://i.ytimg.com/vi/7fAt-rstUM4/maxresdefault.jpg",
+          "album": "",
+          "youtubeId": "7fAt-rstUM4",
+          "intensity": "Medium",
+          "favorite": false
+        }
+      ]
+    },
+    {
+      "name": "The fleat of two suns",
+      "icon": "☀️☀️",
+      "description": "",
+      "accent": "#c69a52",
+      "id": "cat-msvyl4nu-r7gpl",
+      "tracks": [
+        {
+          "id": "tr-msvylwt2-5k8zt",
+          "title": "Attacking Divine Beast Vah Ruta - The Legend of Zelda: Breath of the Wild - Extended",
+          "author": "Musical Toasters",
+          "artist": "Musical Toasters",
+          "thumbnail": "https://i.ytimg.com/vi/2As_DjNkwiI/sddefault.jpg",
+          "album": "",
+          "youtubeId": "2As_DjNkwiI",
+          "intensity": "Medium",
+          "favorite": false
         }
       ]
     }
