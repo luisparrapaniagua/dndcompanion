@@ -1,4 +1,4 @@
-# Leo's D&D app v0.6.1
+# Leo's D&D app v0.7.0
 
 Companion musical web/PWA para sesiones de D&D.
 
@@ -171,3 +171,19 @@ Las playlists privadas pueden requerir autenticación adicional y no forman part
 - Mapas usa sidebar propio con selección de mapa y acceso a gestión.
 - Si no existe mapa previo ni mapas disponibles, abre gestión automáticamente.
 - Personajes usa sidebar propio con selección y gestión.
+
+
+## v0.6.2
+- `maps.json` se carga automáticamente desde GitHub Pages al iniciar.
+- El popover de estilo de ruta se cierra con ×, clic fuera, Escape o pulsando nuevamente 🎨.
+- `Transparencia` pasa a `Opacidad`.
+- Se elimina el acceso a Biblioteca del área central del visor de mapas.
+- El título muestra la versión por hover mediante tooltip nativo y visual.
+- La barra de tiempo resuelve el reproductor real por `video_id` y estado, no solo por `activeIndex`.
+
+
+## v0.7.0
+- Sidebar compacto con módulos verticales.
+- Portada, artista y álbum por canción.
+- Mostrar/ocultar cada metadata independientemente.
+- Completar faltantes por canción, categoría o biblioteca sin sobreescribir datos.
